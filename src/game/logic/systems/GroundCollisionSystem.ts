@@ -1,0 +1,47 @@
+import { System, Entity } from "../core/ECS";
+import { Transform } from "../components/Transform";
+import { Airborne } from "../components/Airborne";
+import { groundConfig } from "../../consts/backgrounds";
+import { Boomerang } from "../components/Boomerang";
+import { Velocity } from "../components/Velocity";
+import { Grounded } from "../components/Grounded";
+import { ConfigManager } from "../../api/ConfigManager";
+
+export class GroundCollisionSystem extends System {
+    public componentsRequired = new Set<Function>([
+        Boomerang,
+        Airborne,
+        Transform,
+    ]);
+
+    private groundY: number;
+
+    constructor() {
+        super();
+        // Cache the ground's top y-coordinate.
+        this.groundY = ConfigManager.get().GameHeight - groundConfig().height;
+    }
+
+    public update(entities: Set<Entity>): void {
+        for (const entity of entities) {
+            const transform = this.ecs.getComponent(entity, Transform);
+
+            // Check for collision with the ground.
+            if (transform.pos.y >= this.groundY) {
+                // Snap position to the ground.
+                transform.pos.y = this.groundY;
+
+                // Change state from Airborne to Grounded.
+                this.ecs.removeComponent(entity, Airborne);
+                this.ecs.addComponent(entity, new Grounded());
+
+                // The boomerang is now "stuck" in the ground, so it has no velocity.
+                if (this.ecs.hasComponent(entity, Velocity)) {
+                    this.ecs.removeComponent(entity, Velocity);
+                }
+            }
+        }
+    }
+
+    public destroy(): void {}
+}
