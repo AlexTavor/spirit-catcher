@@ -3,7 +3,6 @@ import { Transform } from "../components/Transform";
 import { IsWalking } from "../components/IsWalking";
 import { WalkTarget } from "../components/WalkTarget";
 import { PlayerConfig } from "../components/PlayerConfig";
-import { MathUtils } from "../../../utils/Math";
 import { ConfigManager } from "../../api/ConfigManager";
 
 export class MovementSystem extends System {
@@ -16,38 +15,36 @@ export class MovementSystem extends System {
 
     public update(entities: Set<Entity>, delta: number): void {
         const dt = delta / 1000; // Convert to seconds
+        const config = ConfigManager.get();
 
         for (const entity of entities) {
             const transform = this.ecs.getComponent(entity, Transform);
             const walkTarget = this.ecs.getComponent(entity, WalkTarget);
             const playerConfig = this.ecs.getComponent(entity, PlayerConfig);
 
-            const distance = MathUtils.distance(transform.pos, walkTarget.pos);
+            const horizontalDistance = Math.abs(
+                transform.pos.x - walkTarget.pos.x,
+            );
 
             // Stop if close enough to the target
-            if (distance < 5) {
+            if (horizontalDistance < 5) {
                 this.ecs.removeComponent(entity, IsWalking);
                 this.ecs.removeComponent(entity, WalkTarget);
                 continue;
             }
 
-            // Move towards target
-            const direction = MathUtils.normalize(
-                MathUtils.subtract(walkTarget.pos, transform.pos),
-            );
+            // Move towards target using only horizontal direction for constant speed
+            const directionX = Math.sign(walkTarget.pos.x - transform.pos.x);
+            transform.pos.x += directionX * playerConfig.walkSpeed * dt;
 
-            transform.pos.x += direction.x * playerConfig.walkSpeed * dt;
-            //transform.pos.y += direction.y * playerConfig.walkSpeed * dt;
-
+            // Prevent moving out of bounds
             if (transform.pos.x < 0) {
-                transform.pos.x = 0; // Prevent moving out of bounds
+                transform.pos.x = 0;
             } else if (
                 transform.pos.x >
-                ConfigManager.get().GameWidth - ConfigManager.get().PlayerWidth
+                config.GameWidth - config.PlayerWidth
             ) {
-                transform.pos.x =
-                    ConfigManager.get().GameWidth -
-                    ConfigManager.get().PlayerWidth; // Prevent moving out of bounds
+                transform.pos.x = config.GameWidth - config.PlayerWidth;
             }
         }
     }

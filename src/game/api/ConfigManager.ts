@@ -22,6 +22,8 @@ const DEFAULTS = {
     BoomerangSpawnOffsetY: 10,
     BoomerangRotationSpeed: 10,
     BoomerangRestitution: 0.8,
+    BoomerangWidth: 32,
+    BoomerangHeight: 8,
 };
 
 type ConfigType = typeof DEFAULTS;

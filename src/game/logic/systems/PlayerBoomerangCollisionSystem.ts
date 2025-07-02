@@ -3,7 +3,6 @@ import { Transform } from "../components/Transform";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";
 import { HasBoomerang } from "../components/HasBoomerang";
 import { Boomerang } from "../components/Boomerang";
-import { MathUtils } from "../../../utils/Math";
 import { ConfigManager } from "../../api/ConfigManager";
 
 export class PlayerBoomerangCollisionSystem extends System {
@@ -19,6 +18,15 @@ export class PlayerBoomerangCollisionSystem extends System {
 
         const playerTransform = this.ecs.getComponent(player, Transform);
         const boomerangs = this.ecs.getEntitiesWithComponent(Boomerang);
+        const config = ConfigManager.get();
+
+        // Player bounds (origin is top-left)
+        const playerRect = {
+            x: playerTransform.pos.x,
+            y: playerTransform.pos.y,
+            width: config.PlayerWidth,
+            height: config.PlayerHeight,
+        };
 
         for (const boomerang of boomerangs) {
             const boomerangTransform = this.ecs.getComponent(
@@ -26,13 +34,22 @@ export class PlayerBoomerangCollisionSystem extends System {
                 Transform,
             );
 
-            const distance = MathUtils.distance(
-                playerTransform.pos,
-                boomerangTransform.pos,
-            );
+            // Boomerang bounds (origin is center)
+            const boomerangRect = {
+                x: boomerangTransform.pos.x - config.BoomerangWidth / 2,
+                y: boomerangTransform.pos.y - config.BoomerangHeight / 2,
+                width: config.BoomerangWidth,
+                height: config.BoomerangHeight,
+            };
 
-            // Check if the player is close enough to pick it up.
-            if (distance < ConfigManager.get().PlayerPickupRadius) {
+            // AABB collision check
+            const isColliding =
+                playerRect.x < boomerangRect.x + boomerangRect.width &&
+                playerRect.x + playerRect.width > boomerangRect.x &&
+                playerRect.y < boomerangRect.y + boomerangRect.height &&
+                playerRect.y + playerRect.height > boomerangRect.y;
+
+            if (isColliding) {
                 // Give boomerang back to player and remove the boomerang entity.
                 this.ecs.addComponent(player, new HasBoomerang());
                 this.ecs.removeEntity(boomerang);

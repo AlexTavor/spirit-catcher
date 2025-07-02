@@ -8,9 +8,13 @@ export class BoomerangDisplay {
         this.graphic = scene.add.graphics();
         container.add(this.graphic);
 
-        // Draw the boomerang shape
+        const config = ConfigManager.get();
+        const width = config.BoomerangWidth;
+        const height = config.BoomerangHeight;
+
+        // Draw the boomerang shape using values from ConfigManager
         this.graphic.fillStyle(0xffff00); // Yellow
-        this.graphic.fillRect(-15, -4, 30, 8);
+        this.graphic.fillRect(-width / 2, -height / 2, width, height);
     }
 
     /**
