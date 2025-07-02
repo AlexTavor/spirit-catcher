@@ -1,8 +1,1 @@
 TODO:
-    Fix layout
-        Have a given size for canvas
-        Scale it to fit available space
-        Positions all UI accordingly (so that the UI scales down with the canvas)
-    Finish migrating everything that should be API, to API
-    Foraging
-        Siwtch to foraging if wanna eat and have no food

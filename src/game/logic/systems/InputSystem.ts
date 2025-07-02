@@ -13,6 +13,7 @@ import { PlayerConfig } from "../components/PlayerConfig";
 import { TargetIndicator } from "../components/TargetIndicator";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";
 import { GROUND_EVENTS } from "./MovementInputSystem";
+import { Config } from "../../consts/Config";
 
 export class InputSystem extends System {
     public componentsRequired = new Set<Function>();
@@ -39,7 +40,10 @@ export class InputSystem extends System {
 
         // If there is no boomerang, we want to signal the ground that the player tapped.
         if (!this.ecs.hasComponent(playerEntity, HasBoomerang)) {
-            EventBus.emit(GROUND_EVENTS.DOWN, pos);
+            EventBus.emit(GROUND_EVENTS.DOWN, {
+                x: pos.x > Config.GameWidth / 2 ? Config.GameWidth : 0,
+                y: 0,
+            });
             return;
         }
 
