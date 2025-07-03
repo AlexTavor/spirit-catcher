@@ -1,1 +1,1 @@
-Cozy Story Driven Colony Sim
+Collect Spirits With A Magic Boomerang

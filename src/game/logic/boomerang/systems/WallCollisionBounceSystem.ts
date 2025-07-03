@@ -1,7 +1,7 @@
-import { System, Entity } from "../core/ECS";
-import { Velocity } from "../components/Velocity";
+import { ConfigManager } from "../../../api/ConfigManager";
+import { Velocity } from "../../components/Velocity";
+import { System, Entity } from "../../core/ECS";
 import { HitWallFlag } from "../components/HitWallFlag";
-import { ConfigManager } from "../../api/ConfigManager";
 
 export class WallCollisionBounceSystem extends System {
     public componentsRequired = new Set<Function>([HitWallFlag, Velocity]);
@@ -10,7 +10,7 @@ export class WallCollisionBounceSystem extends System {
         for (const entity of entities) {
             const velocity = this.ecs.getComponent(entity, Velocity);
             // Invert horizontal velocity and apply restitution
-            velocity.x *= -ConfigManager.get().BoomerangRestitution;
+            velocity.x *= -ConfigManager.get().BoomerangWallBounce;
         }
     }
 

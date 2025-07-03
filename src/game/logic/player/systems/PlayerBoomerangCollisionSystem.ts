@@ -1,9 +1,9 @@
-import { System } from "../core/ECS";
-import { Transform } from "../components/Transform";
-import { getPlayerEntity } from "../../utils/getPlayerEntity";
+import { System } from "../../core/ECS";
+import { Transform } from "../../components/Transform";
+import { getPlayerEntity } from "../../../utils/getPlayerEntity";
+import { Boomerang } from "../../boomerang/components/Boomerang";
+import { ConfigManager } from "../../../api/ConfigManager";
 import { HasBoomerang } from "../components/HasBoomerang";
-import { Boomerang } from "../components/Boomerang";
-import { ConfigManager } from "../../api/ConfigManager";
 
 export class PlayerBoomerangCollisionSystem extends System {
     public componentsRequired = new Set<Function>();

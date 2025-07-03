@@ -16,14 +16,23 @@ const DEFAULTS = {
     BoomerangGravity: 300,
     BoomerangHomingForce: 12,
     BoomerangAirDrag: 0.5,
-    BoomerangThrowMinYVelocity: 200,
-    BoomerangThrowMaxYVelocity: 2000,
-    BoomerangThrowXVelocityScale: 2.5,
+    BoomerangThrowMinForce: 200,
+    BoomerangThrowMaxForce: 2000,
     BoomerangSpawnOffsetY: 10,
     BoomerangRotationSpeed: 10,
-    BoomerangRestitution: 0.8,
+    BoomerangWallBounce: 0.8,
     BoomerangWidth: 32,
     BoomerangHeight: 8,
+    BoomerangImpactMaxVelocity: 800, // Max horizontal velocity for impact force calculation
+
+    // --- Explosion Config ---
+    ExplosionBaseDuration: 300, // ms
+    ExplosionDurationPerForce: 700, // ms
+    ExplosionForceToSizeRatio: 250, // pixels per unit of force
+    ExplosionShockwaveColor: 0xffffff,
+    ExplosionShockwaveWidth: 4, // pixels
+    CamShakeBaseIntensity: 0.01,
+    CamShakeDuration: 150, // ms
 };
 
 type ConfigType = typeof DEFAULTS;
@@ -77,5 +86,14 @@ export class ConfigManager {
         } catch (e) {
             console.error("Failed to save config to Local Storage.", e);
         }
+    }
+
+    /**
+     * Clears the configuration from Local Storage and resets the active config to defaults.
+     */
+    public static clear(): void {
+        localStorage.removeItem(STORAGE_KEY);
+        this.activeConfig = null; // Reset to force reload on next get()
+        this.load(); // Load defaults again
     }
 }

@@ -1,9 +1,9 @@
-import { System, Entity } from "../core/ECS";
-import { Transform } from "../components/Transform";
+import { System, Entity } from "../../core/ECS";
+import { Transform } from "../../components/Transform";
 import { IsWalking } from "../components/IsWalking";
 import { WalkTarget } from "../components/WalkTarget";
 import { PlayerConfig } from "../components/PlayerConfig";
-import { ConfigManager } from "../../api/ConfigManager";
+import { ConfigManager } from "../../../api/ConfigManager";
 
 export class MovementSystem extends System {
     public componentsRequired = new Set<Function>([

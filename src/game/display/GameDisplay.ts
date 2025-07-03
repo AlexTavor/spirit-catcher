@@ -7,17 +7,19 @@ import { Transform } from "../logic/components/Transform";
 import { NoiseView } from "./views/NoiseView";
 import { Layers } from "./core/Layers";
 import { backgroundConfig, groundConfig } from "../consts/backgrounds";
-import { Player } from "../logic/components/Player";
 import { PlayerView } from "./views/PlayerView";
 import { TapInput } from "./core/TapInput";
 import { Pos } from "../../utils/Math";
 import { EventBus } from "../api/EventBus";
 import { GROUND_EVENTS } from "../logic/systems/MovementInputSystem";
 import { GameUIEvent } from "../consts/GameUIEvent";
-import { Boomerang } from "../logic/components/Boomerang";
+import { Boomerang } from "../logic/boomerang/components/Boomerang";
 import { BoomerangView } from "./views/BoomerangView";
 import { KeyboardInput } from "./core/KeyboardInput";
 import { ConfigManager } from "../api/ConfigManager";
+import { Player } from "../logic/player/components/Player";
+import { Explosion } from "../logic/explosion/Explosion";
+import { ExplosionView } from "./views/ExplosionView";
 
 // Define a type for a constructable class that extends View
 type ConstructableView = new (scene: Scene, ecs: ECS, entity: Entity) => View;
@@ -58,6 +60,7 @@ export class GameDisplay {
         this.registerViewClass(Charging, ChargingView);
         this.registerViewClass(Player, PlayerView);
         this.registerViewClass(Boomerang, BoomerangView);
+        this.registerViewClass(Explosion, ExplosionView);
 
         this.addInputs();
     }

@@ -1,19 +1,18 @@
-import { System } from "../core/ECS";
-import { EventBus } from "../../api/EventBus";
-import { GameUIEvent } from "../../consts/GameUIEvent";
 import { Pos } from "../../../utils/Math";
 import { CommandBus } from "../../api/CommandBus";
-import { GameCommands } from "../../consts/GameCommands";
-
-import { Charging } from "../components/Charging";
-import { Transform } from "../components/Transform";
-import { HasBoomerang } from "../components/HasBoomerang";
-import { IsCharging } from "../components/IsCharging";
-import { PlayerConfig } from "../components/PlayerConfig";
-import { TargetIndicator } from "../components/TargetIndicator";
-import { getPlayerEntity } from "../../utils/getPlayerEntity";
-import { GROUND_EVENTS } from "./MovementInputSystem";
+import { EventBus } from "../../api/EventBus";
 import { Config } from "../../consts/Config";
+import { GameCommands } from "../../consts/GameCommands";
+import { GameUIEvent } from "../../consts/GameUIEvent";
+import { getPlayerEntity } from "../../utils/getPlayerEntity";
+import { Charging } from "../components/Charging";
+import { TargetIndicator } from "../components/TargetIndicator";
+import { Transform } from "../components/Transform";
+import { System } from "../core/ECS";
+import { HasBoomerang } from "../player/components/HasBoomerang";
+import { IsCharging } from "../player/components/IsCharging";
+import { PlayerConfig } from "../player/components/PlayerConfig";
+import { GROUND_EVENTS } from "./MovementInputSystem";
 
 export class InputSystem extends System {
     public componentsRequired = new Set<Function>();
@@ -45,6 +44,8 @@ export class InputSystem extends System {
                 y: 0,
             });
             return;
+        } else {
+            EventBus.emit(GROUND_EVENTS.UP);
         }
 
         // Can only start charging if holding a boomerang and not already charging.
@@ -83,8 +84,9 @@ export class InputSystem extends System {
     private handleTapEnd(): void {
         const playerEntity = getPlayerEntity(this.ecs);
 
+        EventBus.emit(GROUND_EVENTS.UP);
+
         if (!this.ecs.hasComponent(playerEntity, HasBoomerang)) {
-            EventBus.emit(GROUND_EVENTS.UP);
             return;
         }
 

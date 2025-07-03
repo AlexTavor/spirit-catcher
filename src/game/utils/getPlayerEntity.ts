@@ -1,5 +1,5 @@
-import { Player } from "../logic/components/Player";
 import { ECS, Entity } from "../logic/core/ECS";
+import { Player } from "../logic/player/components/Player";
 
 let player: number = -1;
 

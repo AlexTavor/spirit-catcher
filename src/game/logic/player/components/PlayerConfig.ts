@@ -1,4 +1,4 @@
-import { Component } from "../core/ECS";
+import { Component } from "../../core/ECS";
 
 export class PlayerConfig extends Component {
     public chargeMaxLevel = 100; // Maximum charge level

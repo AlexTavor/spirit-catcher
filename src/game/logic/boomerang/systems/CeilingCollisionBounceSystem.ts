@@ -1,6 +1,6 @@
-import { System, Entity } from "../core/ECS";
-import { Transform } from "../components/Transform";
-import { Velocity } from "../components/Velocity";
+import { Transform } from "../../components/Transform";
+import { Velocity } from "../../components/Velocity";
+import { System, Entity } from "../../core/ECS";
 import { HitCeilingFlag } from "../components/HitCeilingFlag";
 
 export class CeilingCollisionBounceSystem extends System {

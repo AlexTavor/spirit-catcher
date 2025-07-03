@@ -42,12 +42,17 @@ const Title = styled.h2`
 `;
 
 const Button = styled.button`
-    padding: 8px 16px;
+    padding: 8px 8px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
     margin-left: 10px;
+
+    &.clear {
+        background-color:rgb(182, 169, 25);
+        color: white;
+    }
 
     &.apply {
         background-color: #28a745;
@@ -101,6 +106,11 @@ export const ConfigEditor: React.FC<ConfigEditorProps> = ({ onClose }) => {
         window.location.reload();
     };
 
+    const handleClear = () => {
+        ConfigManager.clear();
+        window.location.reload();
+    };
+
     const handleExport = () => {
         const jsonString = JSON.stringify(config, null, 2);
         const blob = new Blob([jsonString], { type: 'application/json' });
@@ -120,6 +130,7 @@ export const ConfigEditor: React.FC<ConfigEditorProps> = ({ onClose }) => {
                 <Header>
                     <Title>Config Editor</Title>
                     <div>
+                        <Button className="clear" onClick={handleClear}>CLEAR</Button>
                         <Button className="apply" onClick={handleApply}>APPLY</Button>
                         <Button className="abort" onClick={onClose}>ABORT</Button>
                     </div>

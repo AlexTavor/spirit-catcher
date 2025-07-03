@@ -1,10 +1,10 @@
 import { GameObjects, Scene } from "phaser";
-import { ECS, Entity } from "../../logic/core/ECS";
-import { View } from "./View";
-import { IsWalking } from "../../logic/components/IsWalking";
-import { HasBoomerang } from "../../logic/components/HasBoomerang";
-import { BoomerangDisplay } from "./BoomerangDisplay";
 import { ConfigManager } from "../../api/ConfigManager";
+import { ECS, Entity } from "../../logic/core/ECS";
+import { HasBoomerang } from "../../logic/player/components/HasBoomerang";
+import { IsWalking } from "../../logic/player/components/IsWalking";
+import { BoomerangDisplay } from "./BoomerangDisplay";
+import { View } from "./View";
 
 export class PlayerView extends View {
     private body: GameObjects.Graphics;

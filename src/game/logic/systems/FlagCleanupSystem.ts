@@ -1,6 +1,6 @@
 import { System } from "../core/ECS";
-import { HitWallFlag } from "../components/HitWallFlag";
-import { HitCeilingFlag } from "../components/HitCeilingFlag";
+import { HitWallFlag } from "../boomerang/components/HitWallFlag";
+import { HitCeilingFlag } from "../boomerang/components/HitCeilingFlag";
 
 export class FlagCleanupSystem extends System {
     // This system doesn't operate on a specific component set.

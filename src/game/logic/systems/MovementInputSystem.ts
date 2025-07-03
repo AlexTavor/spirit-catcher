@@ -1,9 +1,9 @@
-import { System } from "../core/ECS";
-import { EventBus } from "../../api/EventBus";
 import { Pos } from "../../../utils/Math";
+import { EventBus } from "../../api/EventBus";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";
-import { WalkTarget } from "../components/WalkTarget";
-import { IsWalking } from "../components/IsWalking";
+import { System } from "../core/ECS";
+import { IsWalking } from "../player/components/IsWalking";
+import { WalkTarget } from "../player/components/WalkTarget";
 
 export const GROUND_EVENTS = {
     DOWN: "GROUND_POINTER_DOWN",

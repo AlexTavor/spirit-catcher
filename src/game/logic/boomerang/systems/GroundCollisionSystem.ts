@@ -1,11 +1,11 @@
-import { System, Entity } from "../core/ECS";
-import { Transform } from "../components/Transform";
+import { ConfigManager } from "../../../api/ConfigManager";
+import { groundConfig } from "../../../consts/backgrounds";
+import { Transform } from "../../components/Transform";
+import { Velocity } from "../../components/Velocity";
+import { System, Entity } from "../../core/ECS";
 import { Airborne } from "../components/Airborne";
-import { groundConfig } from "../../consts/backgrounds";
 import { Boomerang } from "../components/Boomerang";
-import { Velocity } from "../components/Velocity";
 import { Grounded } from "../components/Grounded";
-import { ConfigManager } from "../../api/ConfigManager";
 
 export class GroundCollisionSystem extends System {
     public componentsRequired = new Set<Function>([

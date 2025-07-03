@@ -1,10 +1,10 @@
-import { System, Entity } from "../core/ECS";
-import { Transform } from "../components/Transform";
+import { ConfigManager } from "../../../api/ConfigManager";
+import { Transform } from "../../components/Transform";
+import { Velocity } from "../../components/Velocity";
+import { System, Entity } from "../../core/ECS";
 import { Airborne } from "../components/Airborne";
-import { Velocity } from "../components/Velocity";
-import { HitWallFlag } from "../components/HitWallFlag";
 import { HitCeilingFlag } from "../components/HitCeilingFlag";
-import { ConfigManager } from "../../api/ConfigManager";
+import { HitWallFlag } from "../components/HitWallFlag";
 
 export class BoundaryCollisionSystem extends System {
     public componentsRequired = new Set<Function>([

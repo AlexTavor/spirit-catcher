@@ -1,12 +1,12 @@
-import { System, Entity } from "../core/ECS";
-import { CommandBus } from "../../api/CommandBus";
-import { GameCommands } from "../../consts/GameCommands";
-import { Pos, MathUtils } from "../../../utils/Math";
-import { Transform } from "../components/Transform";
-import { Velocity } from "../components/Velocity";
-import { Boomerang } from "../components/Boomerang";
-import { Airborne } from "../components/Airborne";
-import { ConfigManager } from "../../api/ConfigManager";
+import { System, Entity } from "../../core/ECS";
+import { CommandBus } from "../../../api/CommandBus";
+import { GameCommands } from "../../../consts/GameCommands";
+import { Pos, MathUtils } from "../../../../utils/Math";
+import { Transform } from "../../components/Transform";
+import { Velocity } from "../../components/Velocity";
+import { Boomerang } from "../../boomerang/components/Boomerang";
+import { Airborne } from "../../boomerang/components/Airborne";
+import { ConfigManager } from "../../../api/ConfigManager";
 
 interface ThrowPayload {
     chargeLevel: number;
@@ -64,9 +64,9 @@ export class ThrowBoomerangSystem extends System {
         // Calculate the magnitude of the throw based on charge level.
         const chargeRatio = Math.min(1, chargeLevel / maxChargeLevel);
         const throwSpeed =
-            ConfigManager.get().BoomerangThrowMinYVelocity +
-            (ConfigManager.get().BoomerangThrowMaxYVelocity -
-                ConfigManager.get().BoomerangThrowMinYVelocity) *
+            ConfigManager.get().BoomerangThrowMinForce +
+            (ConfigManager.get().BoomerangThrowMaxForce -
+                ConfigManager.get().BoomerangThrowMinForce) *
                 chargeRatio;
 
         // Combine direction and speed to get the final velocity vector.

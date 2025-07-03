@@ -1,9 +1,9 @@
-import { System, Entity } from "../core/ECS";
-import { Transform } from "../components/Transform";
-import { Velocity } from "../components/Velocity";
+import { ConfigManager } from "../../../api/ConfigManager";
+import { getPlayerEntity } from "../../../utils/getPlayerEntity";
+import { Transform } from "../../components/Transform";
+import { Velocity } from "../../components/Velocity";
+import { System, Entity } from "../../core/ECS";
 import { Airborne } from "../components/Airborne";
-import { getPlayerEntity } from "../../utils/getPlayerEntity";
-import { ConfigManager } from "../../api/ConfigManager";
 
 export class BoomerangPhysicsSystem extends System {
     public componentsRequired = new Set<Function>([
