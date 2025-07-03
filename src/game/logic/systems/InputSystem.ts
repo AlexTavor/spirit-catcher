@@ -1,7 +1,7 @@
 import { Pos } from "../../../utils/Math";
 import { CommandBus } from "../../api/CommandBus";
+import { ConfigManager } from "../../api/ConfigManager";
 import { EventBus } from "../../api/EventBus";
-import { Config } from "../../consts/Config";
 import { GameCommands } from "../../consts/GameCommands";
 import { GameUIEvent } from "../../consts/GameUIEvent";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";
@@ -11,7 +11,6 @@ import { Transform } from "../components/Transform";
 import { System } from "../core/ECS";
 import { HasBoomerang } from "../player/components/HasBoomerang";
 import { IsCharging } from "../player/components/IsCharging";
-import { PlayerConfig } from "../player/components/PlayerConfig";
 import { GROUND_EVENTS } from "./MovementInputSystem";
 
 export class InputSystem extends System {
@@ -37,10 +36,12 @@ export class InputSystem extends System {
     private handleTapStart(pos: Pos): void {
         const playerEntity = getPlayerEntity(this.ecs);
 
+        const config = ConfigManager.get();
+
         // If there is no boomerang, we want to signal the ground that the player tapped.
         if (!this.ecs.hasComponent(playerEntity, HasBoomerang)) {
             EventBus.emit(GROUND_EVENTS.DOWN, {
-                x: pos.x > Config.GameWidth / 2 ? Config.GameWidth : 0,
+                x: pos.x > config.GameWidth / 2 ? config.GameWidth : 0,
                 y: 0,
             });
             return;
@@ -62,17 +63,9 @@ export class InputSystem extends System {
         this.ecs.addComponent(indicatorEntity, transform);
         this.ecs.addComponent(indicatorEntity, new TargetIndicator());
 
-        // It also gets the Charging component, configured by the player.
-        const playerConfig = this.ecs.getComponent(playerEntity, PlayerConfig);
-        if (!playerConfig) {
-            throw new Error(
-                "PlayerConfig component is missing on the player entity.",
-            );
-        }
-
         const chargingComponent = new Charging();
-        chargingComponent.maxLevel = playerConfig.chargeMaxLevel;
-        chargingComponent.chargeRate = playerConfig.chargeRate;
+        chargingComponent.maxLevel = config.ChargeMaxLevel;
+        chargingComponent.chargeRate = config.ChargeRate;
         this.ecs.addComponent(indicatorEntity, chargingComponent);
 
         // Finally, update the player's state to link to the indicator.

@@ -1,6 +1,5 @@
 import { Scene } from "phaser";
 import { ConfigManager } from "../../api/ConfigManager";
-import { EventBus } from "../../api/EventBus";
 import { ECS, Entity } from "../../logic/core/ECS";
 import { View } from "./View";
 import { Explosion } from "../../logic/explosion/Explosion";

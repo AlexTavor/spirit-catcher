@@ -11,6 +11,9 @@ const DEFAULTS = {
     PlayerHeight: 128,
     PlayerWidth: 64,
     PlayerPickupRadius: 100,
+    ChargeMaxLevel: 100, // Maximum charge level
+    ChargeRate: 50, // Rate at which the charge level increases
+    WalkSpeed: 500, // Pixels per second
 
     // --- Boomerang Config ---
     BoomerangGravity: 300,

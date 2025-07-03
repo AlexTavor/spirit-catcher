@@ -12,7 +12,6 @@ import { WallCollisionBounceSystem } from "../logic/boomerang/systems/WallCollis
 import { Transform } from "../logic/components/Transform.ts";
 import { HasBoomerang } from "../logic/player/components/HasBoomerang.ts";
 import { Player } from "../logic/player/components/Player.ts";
-import { PlayerConfig } from "../logic/player/components/PlayerConfig.ts";
 import { MovementSystem } from "../logic/player/systems/MovementSystem.ts";
 import { PlayerBoomerangCollisionSystem } from "../logic/player/systems/PlayerBoomerangCollisionSystem.ts";
 import { ThrowBoomerangSystem } from "../logic/player/systems/ThrowBoomerangSystem.ts";
@@ -77,7 +76,6 @@ export class Game extends Scene {
         };
         this.ecs.addComponent(player, playerTransform);
         this.ecs.addComponent(player, new Player());
-        this.ecs.addComponent(player, new PlayerConfig());
         this.ecs.addComponent(player, new HasBoomerang());
     }
 

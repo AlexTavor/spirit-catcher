@@ -2,7 +2,6 @@ import { System, Entity } from "../../core/ECS";
 import { Transform } from "../../components/Transform";
 import { IsWalking } from "../components/IsWalking";
 import { WalkTarget } from "../components/WalkTarget";
-import { PlayerConfig } from "../components/PlayerConfig";
 import { ConfigManager } from "../../../api/ConfigManager";
 
 export class MovementSystem extends System {
@@ -10,7 +9,6 @@ export class MovementSystem extends System {
         Transform,
         IsWalking,
         WalkTarget,
-        PlayerConfig,
     ]);
 
     public update(entities: Set<Entity>, delta: number): void {
@@ -20,7 +18,6 @@ export class MovementSystem extends System {
         for (const entity of entities) {
             const transform = this.ecs.getComponent(entity, Transform);
             const walkTarget = this.ecs.getComponent(entity, WalkTarget);
-            const playerConfig = this.ecs.getComponent(entity, PlayerConfig);
 
             const horizontalDistance = Math.abs(
                 transform.pos.x - walkTarget.pos.x,
@@ -35,7 +32,7 @@ export class MovementSystem extends System {
 
             // Move towards target using only horizontal direction for constant speed
             const directionX = Math.sign(walkTarget.pos.x - transform.pos.x);
-            transform.pos.x += directionX * playerConfig.walkSpeed * dt;
+            transform.pos.x += directionX * config.WalkSpeed * dt;
 
             // Prevent moving out of bounds
             if (transform.pos.x < 0) {
