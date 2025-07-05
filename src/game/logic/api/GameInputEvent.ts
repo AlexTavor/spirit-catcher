@@ -3,7 +3,7 @@
  */
 
 export const GameInputEvent = {
-    DOWN: "GROUND_POINTER_DOWN",
-    UP: "GROUND_POINTER_UP",
-    MOVE: "GROUND_POINTER_MOVE",
+    DOWN: "POINTER_DOWN",
+    UP: "POINTER_UP",
+    MOVE: "POINTER_MOVE",
 };

@@ -14,6 +14,8 @@ import { Pos } from "../../../utils/Math";
 import { MoveIntention } from "../intentions/MoveIntention";
 import { ChargeIntention } from "../intentions/ChargeIntention";
 import { GameInputEvent } from "./GameInputEvent";
+import { Analytics } from "../../api/Analytics";
+import { AnalyticsEvent } from "./AnalyticsEvent";
 
 enum InputState {
     IDLE,
@@ -55,6 +57,11 @@ export class InputSystem extends System {
     }
 
     private onDown(payload: GameInputPayload): void {
+        Analytics.emit(AnalyticsEvent.DOWN, {
+            pos: { x: Math.round(payload.pos.x), y: Math.round(payload.pos.y) },
+            pointerId: payload.pointerId,
+        });
+
         if (this.activePointerId !== null) return;
 
         const player = getPlayerEntity(this.ecs);
@@ -121,6 +128,11 @@ export class InputSystem extends System {
     }
 
     private onUp(payload: GameInputPayload): void {
+        Analytics.emit(AnalyticsEvent.UP, {
+            pos: { x: Math.round(payload.pos.x), y: Math.round(payload.pos.y) },
+            pointerId: payload.pointerId,
+        });
+
         if (payload.pointerId !== this.activePointerId) return;
 
         const player = getPlayerEntity(this.ecs);

@@ -53,6 +53,7 @@ export class ThrowBoomerangSystem extends System {
                 ConfigManager.get().PlayerHeight -
                 ConfigManager.get().BoomerangSpawnOffsetY,
         };
+
         const transform = new Transform();
         transform.pos = spawnPos;
         this.ecs.addComponent(boomerang, transform);

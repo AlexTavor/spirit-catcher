@@ -2,9 +2,9 @@ import { System, Entity } from "../core/ECS";
 import { Velocity } from "../components/Velocity";
 import { Transform } from "../components/Transform";
 import { ConfigManager } from "../../api/ConfigManager";
-import { createExplosion } from "../factories/ExplosionFactory";
 import { Pos } from "../../../utils/Math";
 import { HitWallFlag } from "../boomerang/components/HitWallFlag";
+import { createExplosion } from "./ExplosionFactory";
 
 export class WallExplosionSystem extends System {
     /**
@@ -29,14 +29,14 @@ export class WallExplosionSystem extends System {
             const velocity = this.ecs.getComponent(entity, Velocity);
             const transform = this.ecs.getComponent(entity, Transform);
 
-            // 1. Calculate the normalized impact force based on horizontal velocity.
+            // Calculate the normalized impact force based on horizontal velocity.
             const impactVelocity = Math.abs(velocity.x);
             const force = Math.min(
                 1,
                 impactVelocity / config.BoomerangImpactMaxVelocity,
             );
 
-            // 2. Determine the impact position, snapping it to the wall's edge.
+            // Determine the impact position, snapping it to the wall's edge.
             const impactPos: Pos = {
                 x:
                     transform.pos.x <= config.GameWidth / 2
@@ -45,7 +45,7 @@ export class WallExplosionSystem extends System {
                 y: transform.pos.y,
             };
 
-            // 3. Use the factory to create the explosion entity.
+            // Use the factory to create the explosion entity.
             createExplosion(this.ecs, impactPos, force);
         }
     }
