@@ -1,11 +1,13 @@
+import { CommandBus } from "../../api/CommandBus";
 import { ConfigManager } from "../../api/ConfigManager";
-import { ChargeIntention } from "./ChargeIntention";
+import { GameCommands } from "../../consts/GameCommands";
 import { Charging } from "../components/Charging";
 import { TargetIndicator } from "../components/TargetIndicator";
 import { Transform } from "../components/Transform";
 import { System, Entity } from "../core/ECS";
 import { IsCharging } from "../player/components/IsCharging";
 import { Player } from "../player/components/Player";
+import { ChargeIntention } from "./ChargeIntention";
 
 export class ChargeIntentionSystem extends System {
     public componentsRequired = new Set<Function>([Player, ChargeIntention]);
@@ -22,7 +24,7 @@ export class ChargeIntentionSystem extends System {
                 // Intention is active, but not charging. Start charging.
                 this.startCharging(entity);
             } else if (!chargeIntention.active && isCharging) {
-                // Intention is not active, but we are charging. Stop charging.
+                // Intention is not active, but we are charging. Stop charging and throw.
                 this.stopCharging(entity, isCharging);
             }
         }
@@ -53,10 +55,25 @@ export class ChargeIntentionSystem extends System {
     }
 
     private stopCharging(player: Entity, isCharging: IsCharging): void {
-        // Clean up indicator entity and player's charging state
-        if (this.ecs.hasEntity(isCharging.indicatorEntityId)) {
-            this.ecs.removeEntity(isCharging.indicatorEntityId);
+        const indicatorId = isCharging.indicatorEntityId;
+
+        // Ensure the indicator entity still exists before trying to use it
+        if (this.ecs.hasEntity(indicatorId)) {
+            const charge = this.ecs.getComponent(indicatorId, Charging);
+            if (charge) {
+                // Emit the command with the final charge level
+                CommandBus.emit(GameCommands.ThrowBoomerangCommand, {
+                    chargeLevel: charge.level,
+                    maxChargeLevel: charge.maxLevel,
+                    playerId: player,
+                    target: { x: ConfigManager.get().GameWidth / 2, y: 0 },
+                });
+            }
+            // Clean up the charge indicator entity
+            this.ecs.removeEntity(indicatorId);
         }
+
+        // Remove the IsCharging state component from the player
         this.ecs.removeComponent(player, IsCharging);
     }
 
