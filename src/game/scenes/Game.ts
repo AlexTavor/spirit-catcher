@@ -17,10 +17,13 @@ import { PlayerBoomerangCollisionSystem } from "../logic/player/systems/PlayerBo
 import { ThrowBoomerangSystem } from "../logic/player/systems/ThrowBoomerangSystem.ts";
 import { ChargingSystem } from "../logic/systems/ChargingSystem.ts";
 import { FlagCleanupSystem } from "../logic/systems/FlagCleanupSystem.ts";
-import { InputSystem } from "../logic/systems/InputSystem.ts";
-import { MovementInputSystem } from "../logic/systems/MovementInputSystem.ts";
+import { InputSystem } from "../logic/api/InputSystem.ts";
 import { ExplosionSystem } from "../logic/explosion/ExplosionSystem.ts";
 import { WallExplosionSystem } from "../logic/explosion/WallExplosionSystem.ts";
+import { MoveIntention } from "../logic/intentions/MoveIntention.ts";
+import { ChargeIntention } from "../logic/intentions/ChargeIntention.ts";
+import { MoveIntentionSystem } from "../logic/intentions/MoveIntentionSystem.ts";
+import { ChargeIntentionSystem } from "../logic/intentions/ChargeIntentionSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -46,9 +49,10 @@ export class Game extends Scene {
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
         this.ecs.addSystem(new InputSystem());
+        this.ecs.addSystem(new MoveIntentionSystem());
+        this.ecs.addSystem(new ChargeIntentionSystem());
         this.ecs.addSystem(new ChargingSystem());
         this.ecs.addSystem(new MovementSystem());
-        this.ecs.addSystem(new MovementInputSystem());
         this.ecs.addSystem(new ThrowBoomerangSystem());
 
         this.ecs.addSystem(new BoomerangPhysicsSystem());
@@ -77,6 +81,8 @@ export class Game extends Scene {
         this.ecs.addComponent(player, playerTransform);
         this.ecs.addComponent(player, new Player());
         this.ecs.addComponent(player, new HasBoomerang());
+        this.ecs.addComponent(player, new MoveIntention());
+        this.ecs.addComponent(player, new ChargeIntention());
     }
 
     private destroy() {

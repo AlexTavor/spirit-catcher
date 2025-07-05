@@ -38,7 +38,7 @@ const DEFAULTS = {
     CamShakeDuration: 150, // ms
 };
 
-type ConfigType = typeof DEFAULTS;
+export type ConfigType = typeof DEFAULTS;
 
 export class ConfigManager {
     private static activeConfig: ConfigType | null = null;

@@ -7,6 +7,7 @@ import { Velocity } from "../../components/Velocity";
 import { Boomerang } from "../../boomerang/components/Boomerang";
 import { Airborne } from "../../boomerang/components/Airborne";
 import { ConfigManager } from "../../../api/ConfigManager";
+import { HasBoomerang } from "../components/HasBoomerang";
 
 interface ThrowPayload {
     chargeLevel: number;
@@ -79,8 +80,11 @@ export class ThrowBoomerangSystem extends System {
             new Velocity(velocityVector.x, velocityVector.y),
         );
 
-        // 3. Add tag components.
+        // Add tag components.
         this.ecs.addComponent(boomerang, new Boomerang());
         this.ecs.addComponent(boomerang, new Airborne());
+
+        // Remove the boomerang from the player.
+        this.ecs.removeComponent(playerId, HasBoomerang);
     }
 }

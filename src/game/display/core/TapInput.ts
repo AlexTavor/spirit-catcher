@@ -1,16 +1,19 @@
 import { GameObjects, Input as PhaserInput } from "phaser";
 import { Pos } from "../../../utils/Math";
 
-type TapCallback = (pos: Pos) => void;
+/**
+ * The callback for tap events, now including the pointer's unique ID.
+ */
+type TapCallback = (pos: Pos, pointerId: number) => void;
 
 export class TapInput {
-    private target: GameObjects.GameObject;
+    private target: GameObjects.GameObject | PhaserInput.InputPlugin;
     private onDown: TapCallback;
     private onUp: TapCallback;
     private onMove?: TapCallback;
 
     constructor(
-        target: GameObjects.GameObject,
+        target: GameObjects.GameObject | PhaserInput.InputPlugin,
         onDown: TapCallback,
         onUp: TapCallback,
         onMove?: TapCallback,
@@ -20,7 +23,10 @@ export class TapInput {
         this.onUp = onUp;
         this.onMove = onMove;
 
-        this.target.setInteractive();
+        if (this.target instanceof GameObjects.GameObject) {
+            this.target.setInteractive();
+        }
+
         this.target.on("pointerdown", this.handlePointerDown, this);
         this.target.on("pointerup", this.handlePointerUp, this);
         this.target.on("pointerout", this.handlePointerOut, this);
@@ -29,22 +35,25 @@ export class TapInput {
         }
     }
 
-    handlePointerOut(pointer: PhaserInput.Pointer): void {
-        this.onUp({ x: pointer.worldX, y: pointer.worldY });
-    }
-
     private handlePointerDown(pointer: PhaserInput.Pointer): void {
         if (!pointer.isDown) return;
-        this.onDown({ x: pointer.worldX, y: pointer.worldY });
+        this.onDown({ x: pointer.worldX, y: pointer.worldY }, pointer.id);
     }
 
     private handlePointerUp(pointer: PhaserInput.Pointer): void {
-        this.onUp({ x: pointer.worldX, y: pointer.worldY });
+        this.onUp({ x: pointer.worldX, y: pointer.worldY }, pointer.id);
+    }
+
+    /**
+     * Treats a pointer leaving the object area as an 'up' event.
+     */
+    private handlePointerOut(pointer: PhaserInput.Pointer): void {
+        this.onUp({ x: pointer.worldX, y: pointer.worldY }, pointer.id);
     }
 
     private handlePointerMove(pointer: PhaserInput.Pointer): void {
         if (!pointer.isDown || !this.onMove) return;
-        this.onMove({ x: pointer.worldX, y: pointer.worldY });
+        this.onMove({ x: pointer.worldX, y: pointer.worldY }, pointer.id);
     }
 
     public destroy(): void {

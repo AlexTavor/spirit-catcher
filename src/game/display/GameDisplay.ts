@@ -11,15 +11,14 @@ import { PlayerView } from "./views/PlayerView";
 import { TapInput } from "./core/TapInput";
 import { Pos } from "../../utils/Math";
 import { EventBus } from "../api/EventBus";
-import { GROUND_EVENTS } from "../logic/systems/MovementInputSystem";
-import { GameUIEvent } from "../consts/GameUIEvent";
 import { Boomerang } from "../logic/boomerang/components/Boomerang";
 import { BoomerangView } from "./views/BoomerangView";
-import { KeyboardInput } from "./core/KeyboardInput";
+import { KeyboardInput } from "./KeyboardInput";
 import { ConfigManager } from "../api/ConfigManager";
 import { Player } from "../logic/player/components/Player";
 import { Explosion } from "../logic/explosion/Explosion";
 import { ExplosionView } from "./views/ExplosionView";
+import { GameInputEvent } from "../logic/api/GameInputEvent";
 
 // Define a type for a constructable class that extends View
 type ConstructableView = new (scene: Scene, ecs: ECS, entity: Entity) => View;
@@ -29,7 +28,7 @@ export class GameDisplay {
     private viewRegistry = new Map<Function, ConstructableView>();
     private views = new Map<Entity, Map<Function, View>>();
     private ecs: ECS;
-    private groundInput: TapInput;
+    private tapInput: TapInput;
     private backgroundInput: TapInput;
     private backgroundView: NoiseView;
     private keyboardInput: KeyboardInput;
@@ -66,24 +65,14 @@ export class GameDisplay {
     }
 
     addInputs() {
-        this.groundInput = new TapInput(
-            this.groundView.image,
-            (pos: Pos) => EventBus.emit(GROUND_EVENTS.DOWN, pos),
-            (pos: Pos) => EventBus.emit(GROUND_EVENTS.UP, pos),
-            (pos: Pos) => EventBus.emit(GROUND_EVENTS.MOVE, pos),
-        );
-
-        this.backgroundInput = new TapInput(
-            this.backgroundView.image,
-            (pos: Pos) => {
-                EventBus.emit(GameUIEvent.TAP_START, pos);
-            },
-            (pos: Pos) => {
-                EventBus.emit(GameUIEvent.TAP_END, pos);
-            },
-            (_pos: Pos) => {
-                // Handle background tap move if needed
-            },
+        this.tapInput = new TapInput(
+            this.scene.input,
+            (pos: Pos, pointerId: number) =>
+                EventBus.emit(GameInputEvent.DOWN, { pos, pointerId }),
+            (pos: Pos, pointerId: number) =>
+                EventBus.emit(GameInputEvent.UP, { pos, pointerId }),
+            (pos: Pos, pointerId: number) =>
+                EventBus.emit(GameInputEvent.MOVE, { pos, pointerId }),
         );
     }
 
@@ -167,7 +156,7 @@ export class GameDisplay {
         this.groundView.destroy();
 
         this.backgroundInput.destroy();
-        this.groundInput.destroy();
+        this.tapInput.destroy();
         this.keyboardInput.destroy();
     }
 }

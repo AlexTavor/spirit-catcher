@@ -31,8 +31,10 @@ export class MovementSystem extends System {
             }
 
             // Move towards target using only horizontal direction for constant speed
-            const directionX = Math.sign(walkTarget.pos.x - transform.pos.x);
-            transform.pos.x += directionX * config.WalkSpeed * dt;
+            const step = walkTarget.pos.x - transform.pos.x;
+            const directionX = Math.sign(step);
+            transform.pos.x +=
+                directionX * Math.min(config.WalkSpeed * dt, Math.abs(step));
 
             // Prevent moving out of bounds
             if (transform.pos.x < 0) {

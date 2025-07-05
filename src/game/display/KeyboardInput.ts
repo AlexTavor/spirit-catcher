@@ -1,9 +1,8 @@
-import { EventBus } from "../../api/EventBus";
-import { GameUIEvent } from "../../consts/GameUIEvent";
-import { GROUND_EVENTS } from "../../logic/systems/MovementInputSystem";
-import { groundConfig } from "../../consts/backgrounds";
-import { Pos } from "../../../utils/Math";
-import { ConfigManager } from "../../api/ConfigManager";
+import { EventBus } from "../api/EventBus";
+import { GameInputEvent } from "../logic/api/GameInputEvent";
+import { groundConfig } from "../consts/backgrounds";
+import { Pos } from "../../utils/Math";
+import { ConfigManager } from "../api/ConfigManager";
 
 export class KeyboardInput {
     private leftKeyDown = false;
@@ -42,9 +41,15 @@ export class KeyboardInput {
                     // If moving right, release it first before starting left
                     if (this.rightKeyDown) {
                         this.rightKeyDown = false;
-                        EventBus.emit(GROUND_EVENTS.UP);
+                        EventBus.emit(GameInputEvent.UP, {
+                            pos: this.leftEdgePos,
+                            pointerId: Number.MAX_SAFE_INTEGER,
+                        });
                     }
-                    EventBus.emit(GROUND_EVENTS.DOWN, this.leftEdgePos);
+                    EventBus.emit(GameInputEvent.DOWN, {
+                        pos: this.leftEdgePos,
+                        pointerId: Number.MAX_SAFE_INTEGER,
+                    });
                 }
                 break;
             case "ArrowRight":
@@ -53,17 +58,26 @@ export class KeyboardInput {
                     // If moving left, release it first before starting right
                     if (this.leftKeyDown) {
                         this.leftKeyDown = false;
-                        EventBus.emit(GROUND_EVENTS.UP);
+                        EventBus.emit(GameInputEvent.UP, {
+                            pos: this.leftEdgePos,
+                            pointerId: Number.MAX_SAFE_INTEGER,
+                        });
                     }
-                    EventBus.emit(GROUND_EVENTS.DOWN, this.rightEdgePos);
+                    EventBus.emit(GameInputEvent.DOWN, {
+                        pos: this.rightEdgePos,
+                        pointerId: Number.MAX_SAFE_INTEGER,
+                    });
                 }
                 break;
             case "Space":
                 if (!this.spaceDown) {
                     this.spaceDown = true;
-                    EventBus.emit(GameUIEvent.TAP_START, {
-                        x: ConfigManager.get().GameWidth / 2,
-                        y: 0,
+                    EventBus.emit(GameInputEvent.DOWN, {
+                        pos: {
+                            x: ConfigManager.get().GameWidth / 2,
+                            y: 0,
+                        },
+                        pointerId: Number.MAX_SAFE_INTEGER,
                     });
                 }
                 break;
@@ -75,19 +89,31 @@ export class KeyboardInput {
             case "ArrowLeft":
                 if (this.leftKeyDown) {
                     this.leftKeyDown = false;
-                    EventBus.emit(GROUND_EVENTS.UP);
+                    EventBus.emit(GameInputEvent.UP, {
+                        pos: this.leftEdgePos,
+                        pointerId: Number.MAX_SAFE_INTEGER,
+                    });
                 }
                 break;
             case "ArrowRight":
                 if (this.rightKeyDown) {
                     this.rightKeyDown = false;
-                    EventBus.emit(GROUND_EVENTS.UP);
+                    EventBus.emit(GameInputEvent.UP, {
+                        pos: this.leftEdgePos,
+                        pointerId: Number.MAX_SAFE_INTEGER,
+                    });
                 }
                 break;
             case "Space":
                 if (this.spaceDown) {
                     this.spaceDown = false;
-                    EventBus.emit(GameUIEvent.TAP_END);
+                    EventBus.emit(GameInputEvent.UP, {
+                        pos: {
+                            x: ConfigManager.get().GameWidth / 2,
+                            y: 0,
+                        },
+                        pointerId: Number.MAX_SAFE_INTEGER,
+                    });
                 }
                 break;
         }
@@ -96,9 +122,15 @@ export class KeyboardInput {
     public update(): void {
         // Continuously fire MOVE event if a key is held down
         if (this.leftKeyDown) {
-            EventBus.emit(GROUND_EVENTS.MOVE, this.leftEdgePos);
+            EventBus.emit(GameInputEvent.MOVE, {
+                pos: this.leftEdgePos,
+                pointerId: Number.MAX_SAFE_INTEGER,
+            });
         } else if (this.rightKeyDown) {
-            EventBus.emit(GROUND_EVENTS.MOVE, this.rightEdgePos);
+            EventBus.emit(GameInputEvent.MOVE, {
+                pos: this.rightEdgePos,
+                pointerId: Number.MAX_SAFE_INTEGER,
+            });
         }
     }
 }
