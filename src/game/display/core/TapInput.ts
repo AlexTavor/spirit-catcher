@@ -32,6 +32,7 @@ export class TapInput {
         this.target.on("pointerout", this.handlePointerOut, this);
         if (this.onMove) {
             this.target.on("pointermove", this.handlePointerMove, this);
+            this.target.on("mousemove", this.handlePointerMove, this);
         }
     }
 
@@ -52,7 +53,7 @@ export class TapInput {
     }
 
     private handlePointerMove(pointer: PhaserInput.Pointer): void {
-        if (!pointer.isDown || !this.onMove) return;
+        if (!this.onMove) return;
         this.onMove({ x: pointer.worldX, y: pointer.worldY }, pointer.id);
     }
 
@@ -63,6 +64,7 @@ export class TapInput {
             this.target.off("pointerout", this.handlePointerOut, this);
             if (this.onMove) {
                 this.target.off("pointermove", this.handlePointerMove, this);
+                this.target.off("mousemove", this.handlePointerMove, this);
             }
         }
     }

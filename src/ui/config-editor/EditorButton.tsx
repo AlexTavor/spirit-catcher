@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ConfigEditor } from "./ConfigEditor";
 import styled from "@emotion/styled";
 
-const StyledButton = styled.button`
+const StyledButton = styled.div`
     position: fixed;
     top: 15px;
     left: 15px;
@@ -18,6 +18,7 @@ const StyledButton = styled.button`
     display: flex;
     align-items: center;
     gap: 8px;
+    user-select: none;
 
     &:hover {
         background-color: #555;
