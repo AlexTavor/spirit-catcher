@@ -4,6 +4,9 @@ import { groundConfig } from "../consts/backgrounds";
 import { Pos } from "../../utils/Math";
 import { ConfigManager } from "../api/ConfigManager";
 
+const POINTER_ID_MOVE = Number.MAX_SAFE_INTEGER;
+const POINTER_ID_CHARGE = Number.MAX_SAFE_INTEGER - 1;
+
 export class KeyboardInput {
     private leftKeyDown = false;
     private rightKeyDown = false;
@@ -43,12 +46,12 @@ export class KeyboardInput {
                         this.rightKeyDown = false;
                         EventBus.emit(GameInputEvent.UP, {
                             pos: this.leftEdgePos,
-                            pointerId: Number.MAX_SAFE_INTEGER,
+                            pointerId: POINTER_ID_MOVE,
                         });
                     }
                     EventBus.emit(GameInputEvent.DOWN, {
                         pos: this.leftEdgePos,
-                        pointerId: Number.MAX_SAFE_INTEGER,
+                        pointerId: POINTER_ID_MOVE,
                     });
                 }
                 break;
@@ -60,12 +63,12 @@ export class KeyboardInput {
                         this.leftKeyDown = false;
                         EventBus.emit(GameInputEvent.UP, {
                             pos: this.leftEdgePos,
-                            pointerId: Number.MAX_SAFE_INTEGER,
+                            pointerId: POINTER_ID_MOVE,
                         });
                     }
                     EventBus.emit(GameInputEvent.DOWN, {
                         pos: this.rightEdgePos,
-                        pointerId: Number.MAX_SAFE_INTEGER,
+                        pointerId: POINTER_ID_MOVE,
                     });
                 }
                 break;
@@ -77,7 +80,7 @@ export class KeyboardInput {
                             x: ConfigManager.get().GameWidth / 2,
                             y: 0,
                         },
-                        pointerId: Number.MAX_SAFE_INTEGER,
+                        pointerId: POINTER_ID_CHARGE,
                     });
                 }
                 break;
@@ -91,7 +94,7 @@ export class KeyboardInput {
                     this.leftKeyDown = false;
                     EventBus.emit(GameInputEvent.UP, {
                         pos: this.leftEdgePos,
-                        pointerId: Number.MAX_SAFE_INTEGER,
+                        pointerId: POINTER_ID_MOVE,
                     });
                 }
                 break;
@@ -99,8 +102,8 @@ export class KeyboardInput {
                 if (this.rightKeyDown) {
                     this.rightKeyDown = false;
                     EventBus.emit(GameInputEvent.UP, {
-                        pos: this.leftEdgePos,
-                        pointerId: Number.MAX_SAFE_INTEGER,
+                        pos: this.rightEdgePos,
+                        pointerId: POINTER_ID_MOVE,
                     });
                 }
                 break;
@@ -112,7 +115,7 @@ export class KeyboardInput {
                             x: ConfigManager.get().GameWidth / 2,
                             y: 0,
                         },
-                        pointerId: Number.MAX_SAFE_INTEGER,
+                        pointerId: POINTER_ID_CHARGE,
                     });
                 }
                 break;
@@ -124,12 +127,12 @@ export class KeyboardInput {
         if (this.leftKeyDown) {
             EventBus.emit(GameInputEvent.MOVE, {
                 pos: this.leftEdgePos,
-                pointerId: Number.MAX_SAFE_INTEGER,
+                pointerId: POINTER_ID_MOVE,
             });
         } else if (this.rightKeyDown) {
             EventBus.emit(GameInputEvent.MOVE, {
                 pos: this.rightEdgePos,
-                pointerId: Number.MAX_SAFE_INTEGER,
+                pointerId: POINTER_ID_MOVE,
             });
         }
     }

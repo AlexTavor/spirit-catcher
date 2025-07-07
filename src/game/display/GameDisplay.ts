@@ -29,7 +29,6 @@ export class GameDisplay {
     private views = new Map<Entity, Map<Function, View>>();
     private ecs: ECS;
     private tapInput: TapInput;
-    private backgroundInput: TapInput;
     private backgroundView: NoiseView;
     private keyboardInput: KeyboardInput;
     private groundView: NoiseView;
@@ -155,7 +154,6 @@ export class GameDisplay {
         this.backgroundView.destroy();
         this.groundView.destroy();
 
-        this.backgroundInput.destroy();
         this.tapInput.destroy();
         this.keyboardInput.destroy();
     }
