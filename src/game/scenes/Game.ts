@@ -73,6 +73,9 @@ export class Game extends Scene {
 
         this.events.on("destroy", this.destroy.bind(this));
         this.createPlayer();
+
+        // @ts-ignore
+        console.log(__APP_VERSION__);
     }
 
     private createPlayer() {
