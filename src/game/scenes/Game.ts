@@ -26,6 +26,7 @@ import { MoveIntentionSystem } from "../logic/intentions/MoveIntentionSystem.ts"
 import { ChargeIntentionSystem } from "../logic/intentions/ChargeIntentionSystem.ts";
 import { MovementAnalysisSystem } from "../logic/intentions/MovementAnalysisSystem.ts";
 import { ChargeAnalysisSystem } from "../logic/intentions/ChargeAnalysisSystem.ts";
+import { InputClassifierSystem } from "../logic/intentions/InputClassifierSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -51,6 +52,7 @@ export class Game extends Scene {
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
         this.ecs.addSystem(new InputSystem());
+        this.ecs.addSystem(new InputClassifierSystem());
         this.ecs.addSystem(new MovementAnalysisSystem());
         this.ecs.addSystem(new ChargeAnalysisSystem());
         this.ecs.addSystem(new MoveIntentionSystem());

@@ -33,7 +33,6 @@ export class PlayerBoomerangCollisionSystem extends System {
                 boomerang,
                 Transform,
             );
-
             // Boomerang bounds (origin is center)
             const boomerangRect = {
                 x: boomerangTransform.pos.x - config.BoomerangWidth / 2,

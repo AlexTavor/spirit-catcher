@@ -1,4 +1,4 @@
-import { Component } from "../ECS";
+import { Component, ECS } from "../ECS";
 import { Pos } from "../../../../utils/Math";
 
 /**
@@ -33,5 +33,17 @@ export class InputState extends Component {
                 downTimestamp: 0,
             });
         }
+    }
+
+    /**
+     * Retrieves the InputState component from the ECS, creating it if it doesn't exist.
+     * @param ecs The ECS instance to retrieve the InputState from.
+     * @returns The InputState component.
+     */
+    public static get(ecs: ECS): InputState {
+        if (!ecs.hasComponent(ecs.world, InputState)) {
+            ecs.addComponent(ecs.world, new InputState());
+        }
+        return ecs.getComponent(ecs.world, InputState);
     }
 }

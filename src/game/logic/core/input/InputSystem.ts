@@ -4,7 +4,7 @@ import { Pos } from "../../../../utils/Math";
 import { GameInputEvent } from "../../api/GameInputEvent";
 import { Analytics } from "../../../api/Analytics";
 import { AnalyticsEvent } from "../../api/AnalyticsEvent";
-import { InputState } from "./InputStateComponent";
+import { InputState } from "./InputState";
 
 interface GameInputPayload {
     pos: Pos;
