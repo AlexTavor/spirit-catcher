@@ -1,8 +1,10 @@
 import { ConfigManager } from "../../../api/ConfigManager";
 import { groundConfig } from "../../../consts/backgrounds";
+import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { Transform } from "../../components/Transform";
 import { Velocity } from "../../components/Velocity";
 import { System, Entity } from "../../core/ECS";
+import { HasBoomerang } from "../../player/components/HasBoomerang";
 import { Airborne } from "../components/Airborne";
 import { Boomerang } from "../components/Boomerang";
 import { Grounded } from "../components/Grounded";
@@ -30,6 +32,17 @@ export class GroundCollisionSystem extends System {
             if (transform.pos.y >= this.groundY) {
                 // Snap position to the ground.
                 transform.pos.y = this.groundY;
+
+                if (
+                    this.ecs.hasComponent(
+                        getPlayerEntity(this.ecs),
+                        HasBoomerang,
+                    )
+                ) {
+                    // If the player has a boomerang, we kill this boomerang
+                    this.ecs.removeEntity(entity);
+                    continue; // Skip to the next entity
+                }
 
                 // Change state from Airborne to Grounded.
                 this.ecs.removeComponent(entity, Airborne);

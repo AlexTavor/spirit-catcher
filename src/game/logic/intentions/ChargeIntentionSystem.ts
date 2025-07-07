@@ -61,12 +61,26 @@ export class ChargeIntentionSystem extends System {
         if (this.ecs.hasEntity(indicatorId)) {
             const charge = this.ecs.getComponent(indicatorId, Charging);
             if (charge) {
+                const playerTransform = this.ecs.getComponent(
+                    player,
+                    Transform,
+                );
+                const config = ConfigManager.get();
+                const from = {
+                    x: playerTransform.pos.x,
+                    y:
+                        playerTransform.pos.y -
+                        config.PlayerHeight -
+                        config.BoomerangSpawnOffsetY,
+                };
+
                 // Emit the command with the final charge level
                 CommandBus.emit(GameCommands.ThrowBoomerangCommand, {
                     chargeLevel: charge.level,
                     maxChargeLevel: charge.maxLevel,
                     playerId: player,
                     target: { x: ConfigManager.get().GameWidth / 2, y: 0 },
+                    from,
                 });
             }
             // Clean up the charge indicator entity

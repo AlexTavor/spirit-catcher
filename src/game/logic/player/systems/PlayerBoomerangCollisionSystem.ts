@@ -49,6 +49,12 @@ export class PlayerBoomerangCollisionSystem extends System {
                 playerRect.y + playerRect.height > boomerangRect.y;
 
             if (isColliding) {
+                // If player already has a boomerang, we destroy the boomerang entity.
+                if (this.ecs.hasComponent(player, HasBoomerang)) {
+                    this.ecs.removeEntity(boomerang);
+                    continue; // Skip to the next boomerang
+                }
+
                 // Give boomerang back to player and remove the boomerang entity.
                 this.ecs.addComponent(player, new HasBoomerang());
                 this.ecs.removeEntity(boomerang);

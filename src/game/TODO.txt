@@ -1,1 +1,2 @@
 TODO:
+    If I move while charging, I can no longer move without charging

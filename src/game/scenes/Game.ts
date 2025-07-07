@@ -27,6 +27,9 @@ import { ChargeIntentionSystem } from "../logic/intentions/ChargeIntentionSystem
 import { MovementAnalysisSystem } from "../logic/intentions/MovementAnalysisSystem.ts";
 import { ChargeAnalysisSystem } from "../logic/intentions/ChargeAnalysisSystem.ts";
 import { InputClassifierSystem } from "../logic/intentions/InputClassifierSystem.ts";
+import { WallHitBoomerangDuplicatorSystem } from "../logic/wall-hit-duplicator/WallHitBoomerangDuplicatorSystem.ts";
+import { GroundedBoomerangCleanupSystem } from "../logic/boomerang/systems/GroundedBoomerangCleanupSystem.ts";
+import { KeyboardInputSystem } from "../logic/intentions/KeyboardInputSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -51,16 +54,26 @@ export class Game extends Scene {
         this.ecs = new ECS();
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
+        // --- Pointer Input ---
         this.ecs.addSystem(new InputSystem());
         this.ecs.addSystem(new InputClassifierSystem());
-        this.ecs.addSystem(new MovementAnalysisSystem());
         this.ecs.addSystem(new ChargeAnalysisSystem());
+        this.ecs.addSystem(new MovementAnalysisSystem());
+
+        // --- Keyboard Input ---
+        // KeyboardInputSystem relies on the analyzers to clear intentions
+        this.ecs.addSystem(new KeyboardInputSystem());
+
+        // --- Player Intention Systems ---
         this.ecs.addSystem(new MoveIntentionSystem());
         this.ecs.addSystem(new ChargeIntentionSystem());
+
+        // --- Player Systems ---
         this.ecs.addSystem(new ChargingSystem());
         this.ecs.addSystem(new MovementSystem());
         this.ecs.addSystem(new ThrowBoomerangSystem());
 
+        // --- Game Logic Systems ---
         this.ecs.addSystem(new BoomerangPhysicsSystem());
         this.ecs.addSystem(new BoundaryCollisionSystem());
         this.ecs.addSystem(new GroundCollisionSystem());
@@ -69,6 +82,8 @@ export class Game extends Scene {
         this.ecs.addSystem(new PlayerBoomerangCollisionSystem());
         this.ecs.addSystem(new ExplosionSystem());
         this.ecs.addSystem(new WallExplosionSystem());
+        this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
+        this.ecs.addSystem(new GroundedBoomerangCleanupSystem());
         this.ecs.addSystem(new FlagCleanupSystem());
 
         this.events.on("destroy", this.destroy.bind(this));

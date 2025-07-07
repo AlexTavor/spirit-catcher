@@ -270,6 +270,12 @@ export class ECS {
         }
 
         const have = this.entities.get(entity);
+        if (!have) {
+            // Entity doesn't exist, so it can't be in the system.
+            this.systems.get(system)!.delete(entity); // no-op if out
+            return;
+        }
+
         const need = system.componentsRequired;
         if (have!.hasAll(need)) {
             // should be in system

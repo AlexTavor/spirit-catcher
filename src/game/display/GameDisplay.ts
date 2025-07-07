@@ -13,7 +13,6 @@ import { Pos } from "../../utils/Math";
 import { EventBus } from "../api/EventBus";
 import { Boomerang } from "../logic/boomerang/components/Boomerang";
 import { BoomerangView } from "./views/BoomerangView";
-import { KeyboardInput } from "./KeyboardInput";
 import { ConfigManager } from "../api/ConfigManager";
 import { Player } from "../logic/player/components/Player";
 import { Explosion } from "../logic/explosion/Explosion";
@@ -30,7 +29,6 @@ export class GameDisplay {
     private ecs: ECS;
     private tapInput: TapInput;
     private backgroundView: NoiseView;
-    private keyboardInput: KeyboardInput;
     private groundView: NoiseView;
     private layers: Layers;
 
@@ -52,8 +50,6 @@ export class GameDisplay {
                 y: ConfigManager.get().GameHeight - groundConfigData.height / 2,
             },
         });
-
-        this.keyboardInput = new KeyboardInput();
 
         this.registerViewClass(Charging, ChargingView);
         this.registerViewClass(Player, PlayerView);
@@ -84,8 +80,6 @@ export class GameDisplay {
 
     public update(delta: number): void {
         const ecs = this.ecs;
-
-        this.keyboardInput.update();
 
         const renderableEntities = new Set(
             ecs.getEntitiesWithComponent(Transform),
@@ -155,6 +149,5 @@ export class GameDisplay {
         this.groundView.destroy();
 
         this.tapInput.destroy();
-        this.keyboardInput.destroy();
     }
 }

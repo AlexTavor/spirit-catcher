@@ -14,6 +14,7 @@ interface ThrowPayload {
     maxChargeLevel: number;
     playerId: Entity;
     target: Pos;
+    from: Pos;
 }
 
 export class ThrowBoomerangSystem extends System {
@@ -39,28 +40,17 @@ export class ThrowBoomerangSystem extends System {
     public update(): void {}
 
     private handleThrow(payload: ThrowPayload): void {
-        const { chargeLevel, maxChargeLevel, playerId, target } = payload;
-        const playerTransform = this.ecs.getComponent(playerId, Transform);
-        if (!playerTransform) return;
+        const { chargeLevel, maxChargeLevel, playerId, target, from } = payload;
 
         const boomerang = this.ecs.addEntity();
 
-        // 1. Set initial position above the player's head.
-        const spawnPos = {
-            x: playerTransform.pos.x,
-            y:
-                playerTransform.pos.y -
-                ConfigManager.get().PlayerHeight -
-                ConfigManager.get().BoomerangSpawnOffsetY,
-        };
-
         const transform = new Transform();
-        transform.pos = spawnPos;
+        transform.pos = from;
         this.ecs.addComponent(boomerang, transform);
 
-        // 2. Calculate throw velocity based on direction and charge level.
+        // Calculate throw velocity based on direction and charge level.
         // Get the direction from the spawn point to the target.
-        const direction = MathUtils.subtract(target, spawnPos);
+        const direction = MathUtils.subtract(target, from);
         const normalizedDirection = MathUtils.normalize(direction);
 
         // Calculate the magnitude of the throw based on charge level.

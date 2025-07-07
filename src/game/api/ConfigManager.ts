@@ -13,7 +13,7 @@ const DEFAULTS = {
     PlayerPickupRadius: 100,
     ChargeMaxLevel: 100, // Maximum charge level
     ChargeRate: 50, // Rate at which the charge level increases
-    WalkSpeed: 500, // Pixels per second
+    WalkSpeed: 1000, // Pixels per second
 
     // --- Boomerang Config ---
     BoomerangGravity: 300,
@@ -36,6 +36,11 @@ const DEFAULTS = {
     ExplosionShockwaveWidth: 4, // pixels
     CamShakeBaseIntensity: 0.01,
     CamShakeDuration: 150, // ms
+
+    // --- Wall Hit Duplicate Boomerang Config ---
+    WallHitDuplicateRangChance: 0.5, // 1 = always duplicate, 0 = never duplicate
+    WallHitDuplicateMinForce: 0.5, // Minimum force to duplicate the boomerang
+    WallHitAngleVariance: 0.3, // Variance in angle when duplicating boomerang
 };
 
 export type ConfigType = typeof DEFAULTS;
