@@ -6,6 +6,7 @@ import { ConfigManager } from "../../api/ConfigManager";
 import { CommandBus } from "../../api/CommandBus";
 import { GameCommands } from "../../consts/GameCommands";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";
+import { Boomerang } from "../boomerang/components/Boomerang";
 
 export class WallHitBoomerangDuplicatorSystem extends System {
     public componentsRequired = new Set<Function>([
@@ -19,6 +20,14 @@ export class WallHitBoomerangDuplicatorSystem extends System {
         const config = ConfigManager.get();
         const player = getPlayerEntity(this.ecs);
         if (player === -1) return;
+
+        if (
+            this.ecs.getEntitiesWithComponent(Boomerang).length >=
+            config.BoomerangMaxActives
+        ) {
+            // If the player already has the maximum number of active boomerangs, do not duplicate.
+            return;
+        }
 
         for (const entity of entities) {
             const velocity = this.ecs.getComponent(entity, Velocity);

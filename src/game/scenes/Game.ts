@@ -17,20 +17,14 @@ import { PlayerBoomerangCollisionSystem } from "../logic/player/systems/PlayerBo
 import { ThrowBoomerangSystem } from "../logic/player/systems/ThrowBoomerangSystem.ts";
 import { ChargingSystem } from "../logic/systems/ChargingSystem.ts";
 import { FlagCleanupSystem } from "../logic/systems/FlagCleanupSystem.ts";
-import { InputSystem } from "../logic/core/input/InputSystem.ts";
 import { ExplosionSystem } from "../logic/explosion/ExplosionSystem.ts";
 import { WallExplosionSystem } from "../logic/explosion/WallExplosionSystem.ts";
 import { MoveIntention } from "../logic/input/MoveIntention.ts";
-import { ChargeIntention } from "../logic/input/ChargeIntention.ts";
 import { MoveIntentionSystem } from "../logic/input/MoveIntentionSystem.ts";
-import { ChargeIntentionSystem } from "../logic/input/ChargeIntentionSystem.ts";
-import { MovementAnalysisSystem } from "../logic/input/MovementAnalysisSystem.ts";
-import { ChargeAnalysisSystem } from "../logic/input/ChargeAnalysisSystem.ts";
-import { InputClassifierSystem } from "../logic/input/InputClassifierSystem.ts";
 import { WallHitBoomerangDuplicatorSystem } from "../logic/wall-hit-duplicator/WallHitBoomerangDuplicatorSystem.ts";
 import { GroundedBoomerangCleanupSystem } from "../logic/boomerang/systems/GroundedBoomerangCleanupSystem.ts";
-import { KeyboardInputSystem } from "../logic/input/KeyboardInputSystem.ts";
 import { ThumbstickInputSystem } from "../logic/input/ThumbstickInputSystem.ts";
+import { KeyboardInputSystem } from "../logic/input/KeyboardInputSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -56,23 +50,13 @@ export class Game extends Scene {
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
         // --- Pointer Input ---
-        /*
-        // This is the old input system that uses multiple pointers, classifying input, and analyzing clasiffied input into action intentions. Way too complex for this game.
-        this.ecs.addSystem(new InputSystem());
-        this.ecs.addSystem(new InputClassifierSystem());
-        this.ecs.addSystem(new ChargeAnalysisSystem());
-        this.ecs.addSystem(new MovementAnalysisSystem());
-        */
-
         this.ecs.addSystem(new ThumbstickInputSystem());
 
         // --- Keyboard Input ---
-        // KeyboardInputSystem relies on the analyzers to clear intentions
-        // this.ecs.addSystem(new KeyboardInputSystem());
+        this.ecs.addSystem(new KeyboardInputSystem());
 
         // --- Player Intention Systems ---
         this.ecs.addSystem(new MoveIntentionSystem());
-        this.ecs.addSystem(new ChargeIntentionSystem());
 
         // --- Player Systems ---
         this.ecs.addSystem(new ChargingSystem());
@@ -87,8 +71,12 @@ export class Game extends Scene {
         this.ecs.addSystem(new CeilingCollisionBounceSystem());
         this.ecs.addSystem(new PlayerBoomerangCollisionSystem());
         this.ecs.addSystem(new ExplosionSystem());
+
+        // --- Special Abilities and Effects ---
         this.ecs.addSystem(new WallExplosionSystem());
         this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
+
+        // --- Cleanup Systems ---
         this.ecs.addSystem(new GroundedBoomerangCleanupSystem());
         this.ecs.addSystem(new FlagCleanupSystem());
 
@@ -109,7 +97,6 @@ export class Game extends Scene {
         this.ecs.addComponent(player, new Player());
         this.ecs.addComponent(player, new HasBoomerang());
         this.ecs.addComponent(player, new MoveIntention());
-        this.ecs.addComponent(player, new ChargeIntention());
     }
 
     private destroy() {

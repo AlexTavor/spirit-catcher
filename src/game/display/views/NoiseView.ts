@@ -29,7 +29,8 @@ export class NoiseView {
         container.add(this.image);
 
         // Make it interactive to capture click.
-        this.image.setInteractive();
+        this.image.disableInteractive();
+
         // Set a low depth to ensure it renders behind all other game objects.
         this.image.setDepth(data.depth ?? 0);
 

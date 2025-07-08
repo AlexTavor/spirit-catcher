@@ -5,8 +5,8 @@ import { Pos } from "../../../utils/Math";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";
 import { System } from "../core/ECS";
 import { MoveIntention } from "./MoveIntention";
-import { ChargeIntention } from "./ChargeIntention";
-import { HasBoomerang } from "../player/components/HasBoomerang";
+import { IsInputDown } from "./IsInputDown";
+import { throwPlayerBoomerang } from "../player/utils/throwPlayerBoomerang";
 
 interface GameInputPayload {
     pos: Pos;
@@ -19,7 +19,7 @@ export class ThumbstickInputSystem extends System {
     private activePointerId: number | null = null;
     private downPos: Pos | null = null;
 
-    private readonly deadzone = 20; // Pixels
+    private readonly deadzone: number; // Pixels
     private readonly leftEdgePos: Pos;
     private readonly rightEdgePos: Pos;
 
@@ -30,6 +30,7 @@ export class ThumbstickInputSystem extends System {
         const targetY = config.GameHeight;
         this.leftEdgePos = { x: 0, y: targetY };
         this.rightEdgePos = { x: config.GameWidth, y: targetY };
+        this.deadzone = config.ThumbstickDeadzone;
 
         EventBus.on(GameInputEvent.DOWN, this.onDown, this);
         EventBus.on(GameInputEvent.UP, this.onUp, this);
@@ -49,17 +50,9 @@ export class ThumbstickInputSystem extends System {
         this.downPos = payload.pos;
 
         const player = getPlayerEntity(this.ecs);
-        if (player === -1) return;
 
-        // If the player has a boomerang, touching down begins the 'intent' to throw.
-        if (this.ecs.hasComponent(player, HasBoomerang)) {
-            const chargeIntention = this.ecs.getComponent(
-                player,
-                ChargeIntention,
-            );
-            if (chargeIntention) {
-                chargeIntention.active = true;
-            }
+        if (!this.ecs.hasComponent(player, IsInputDown)) {
+            this.ecs.addComponent(player, new IsInputDown());
         }
     }
 
@@ -90,22 +83,17 @@ export class ThumbstickInputSystem extends System {
         if (payload.pointerId !== this.activePointerId) return;
 
         const player = getPlayerEntity(this.ecs);
-        if (player !== -1) {
-            // Deactivate movement
-            const moveIntention = this.ecs.getComponent(player, MoveIntention);
-            if (moveIntention) {
-                moveIntention.active = false;
-            }
 
-            // Deactivate charge intention, which signals ChargeIntentionSystem to throw.
-            const chargeIntention = this.ecs.getComponent(
-                player,
-                ChargeIntention,
-            );
-            if (chargeIntention) {
-                chargeIntention.active = false;
-            }
+        // Deactivate movement
+        const moveIntention = this.ecs.getComponent(player, MoveIntention);
+        if (moveIntention) {
+            moveIntention.active = false;
         }
+
+        // Remove InInputDown component to reset state
+        this.ecs.removeComponent(player, IsInputDown);
+
+        throwPlayerBoomerang(player, this.ecs);
 
         // Reset state to allow another pointer to take control
         this.activePointerId = null;

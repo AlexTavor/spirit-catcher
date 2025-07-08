@@ -27,6 +27,7 @@ const DEFAULTS = {
     BoomerangWidth: 32,
     BoomerangHeight: 8,
     BoomerangImpactMaxVelocity: 800, // Max horizontal velocity for impact force calculation
+    BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms
@@ -41,6 +42,9 @@ const DEFAULTS = {
     WallHitDuplicateRangChance: 0.5, // 1 = always duplicate, 0 = never duplicate
     WallHitDuplicateMinForce: 0.5, // Minimum force to duplicate the boomerang
     WallHitAngleVariance: 0.3, // Variance in angle when duplicating boomerang
+
+    // --- Input Config --- //
+    ThumbstickDeadzone: 40, // Pixels
 };
 
 export type ConfigType = typeof DEFAULTS;

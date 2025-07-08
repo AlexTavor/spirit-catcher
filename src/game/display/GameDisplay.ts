@@ -19,6 +19,7 @@ import { Explosion } from "../logic/explosion/Explosion";
 import { ExplosionView } from "./views/ExplosionView";
 import { GameInputEvent } from "../logic/api/GameInputEvent";
 import { DynamicGraphics } from "./core/DynamicGraphics";
+import { ThumbstickUIView } from "./views/ThumbstickUIView";
 
 // Define a type for a constructable class that extends View
 type ConstructableView = new (context: ViewContext, entity: Entity) => View;
@@ -34,6 +35,7 @@ export class GameDisplay {
     private layers: Layers;
     private dynamicGraphics: DynamicGraphics;
     private readonly viewContext: ViewContext;
+    private readonly thumbstickView: ThumbstickUIView;
 
     constructor(scene: Scene, ecs: ECS) {
         this.ecs = ecs;
@@ -63,6 +65,8 @@ export class GameDisplay {
                 y: ConfigManager.get().GameHeight - groundConfigData.height / 2,
             },
         });
+
+        this.thumbstickView = new ThumbstickUIView(this.viewContext);
 
         this.registerViewClass(Charging, ChargingView);
         this.registerViewClass(Player, PlayerView);
@@ -95,6 +99,8 @@ export class GameDisplay {
         const ecs = this.ecs;
 
         this.dynamicGraphics.clear();
+
+        this.thumbstickView.update();
 
         const renderableEntities = new Set(
             ecs.getEntitiesWithComponent(Transform),

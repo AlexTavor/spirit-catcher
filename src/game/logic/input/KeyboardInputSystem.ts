@@ -1,17 +1,16 @@
 import { System } from "../core/ECS";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";
 import { MoveIntention } from "./MoveIntention";
-import { ChargeIntention } from "./ChargeIntention";
 import { ConfigManager } from "../../api/ConfigManager";
-import { HasBoomerang } from "../player/components/HasBoomerang";
 import { Pos } from "../../../utils/Math";
+import { throwPlayerBoomerang } from "../player/utils/throwPlayerBoomerang";
+import { IsInputDown } from "./IsInputDown";
 
 export class KeyboardInputSystem extends System {
     public componentsRequired = new Set<Function>();
 
     private leftKeyDown = false;
     private rightKeyDown = false;
-    private spaceKeyDown = false;
     private readonly leftEdgePos: Pos;
     private readonly rightEdgePos: Pos;
 
@@ -42,7 +41,7 @@ export class KeyboardInputSystem extends System {
                 this.rightKeyDown = true;
                 break;
             case "Space":
-                this.spaceKeyDown = true;
+                // this.spaceKeyDown = true;
                 break;
         }
     }
@@ -56,7 +55,7 @@ export class KeyboardInputSystem extends System {
                 this.rightKeyDown = false;
                 break;
             case "Space":
-                this.spaceKeyDown = false;
+                throwPlayerBoomerang(getPlayerEntity(this.ecs), this.ecs);
                 break;
         }
     }
@@ -76,14 +75,11 @@ export class KeyboardInputSystem extends System {
             moveIntention.targetPos = this.leftEdgePos;
             isMoving = true;
         }
-        moveIntention.active = moveIntention.active || isMoving;
 
-        // --- Handle Charge Intention ---
-        const chargeIntention = this.ecs.getComponent(player, ChargeIntention);
-        const playerHasBoomerang = this.ecs.hasComponent(player, HasBoomerang);
+        const isInputDown = this.ecs.hasComponent(player, IsInputDown);
 
-        // Continuously set charge intention based on space key state
-        chargeIntention.active =
-            chargeIntention.active || (this.spaceKeyDown && playerHasBoomerang);
+        moveIntention.active = isInputDown
+            ? moveIntention.active || isMoving
+            : isMoving;
     }
 }
