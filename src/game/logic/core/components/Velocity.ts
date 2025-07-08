@@ -1,4 +1,4 @@
-import { Component } from "../core/ECS";
+import { Component } from "../ECS";
 
 export class Velocity extends Component {
     public x: number = 0; // Horizontal velocity in pixels per second

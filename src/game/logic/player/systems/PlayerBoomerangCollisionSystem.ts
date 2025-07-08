@@ -1,5 +1,5 @@
 import { System } from "../../core/ECS";
-import { Transform } from "../../components/Transform";
+import { Transform } from "../../core/components/Transform";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { Boomerang } from "../../boomerang/components/Boomerang";
 import { ConfigManager } from "../../../api/ConfigManager";

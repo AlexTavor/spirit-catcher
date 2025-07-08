@@ -1,18 +1,23 @@
-import { GameObjects, Scene } from "phaser";
+import { GameObjects } from "phaser";
 import { ECS, Entity } from "../../logic/core/ECS";
-import { Transform } from "../../logic/components/Transform";
+import { Transform } from "../../logic/core/components/Transform";
+import { DynamicGraphics } from "./DynamicGraphics";
+
+export interface ViewContext {
+    scene: Phaser.Scene;
+    ecs: ECS;
+    dynamicGraphics: DynamicGraphics;
+}
 
 export abstract class View {
     public readonly entity: Entity;
     public readonly viewContainer: GameObjects.Container;
-    protected readonly scene: Scene;
-    protected readonly ecs: ECS;
+    protected readonly context: ViewContext;
 
-    constructor(scene: Scene, ecs: ECS, entity: Entity) {
-        this.scene = scene;
-        this.ecs = ecs;
+    constructor(context: ViewContext, entity: Entity) {
+        this.context = context;
         this.entity = entity;
-        this.viewContainer = scene.add.container(0, 0);
+        this.viewContainer = context.scene.add.container(0, 0);
 
         // Immediately update position upon creation
         this.update(0);
@@ -24,7 +29,7 @@ export abstract class View {
      * @param delta Time in milliseconds since the last frame.
      */
     public update(delta: number): void {
-        const transform = this.ecs.getComponent(this.entity, Transform);
+        const transform = this.context.ecs.getComponent(this.entity, Transform);
         if (transform) {
             this.viewContainer.setPosition(transform.pos.x, transform.pos.y);
         }

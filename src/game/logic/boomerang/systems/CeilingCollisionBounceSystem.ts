@@ -1,5 +1,5 @@
-import { Transform } from "../../components/Transform";
-import { Velocity } from "../../components/Velocity";
+import { Transform } from "../../core/components/Transform";
+import { Velocity } from "../../core/components/Velocity";
 import { System, Entity } from "../../core/ECS";
 import { HitCeilingFlag } from "../components/HitCeilingFlag";
 

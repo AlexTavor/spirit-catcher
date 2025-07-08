@@ -3,7 +3,7 @@ import { ConfigManager } from "../../api/ConfigManager";
 import { GameCommands } from "../../consts/GameCommands";
 import { Charging } from "../components/Charging";
 import { TargetIndicator } from "../components/TargetIndicator";
-import { Transform } from "../components/Transform";
+import { Transform } from "../core/components/Transform";
 import { System, Entity } from "../core/ECS";
 import { IsCharging } from "../player/components/IsCharging";
 import { Player } from "../player/components/Player";

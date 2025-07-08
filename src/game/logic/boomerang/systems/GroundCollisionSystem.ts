@@ -1,8 +1,8 @@
 import { ConfigManager } from "../../../api/ConfigManager";
 import { groundConfig } from "../../../consts/backgrounds";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
-import { Transform } from "../../components/Transform";
-import { Velocity } from "../../components/Velocity";
+import { Transform } from "../../core/components/Transform";
+import { Velocity } from "../../core/components/Velocity";
 import { System, Entity } from "../../core/ECS";
 import { HasBoomerang } from "../../player/components/HasBoomerang";
 import { Airborne } from "../components/Airborne";

@@ -1,5 +1,5 @@
 import { System, Entity } from "../../core/ECS";
-import { Transform } from "../../components/Transform";
+import { Transform } from "../../core/components/Transform";
 import { IsWalking } from "../components/IsWalking";
 import { WalkTarget } from "../components/WalkTarget";
 import { ConfigManager } from "../../../api/ConfigManager";

@@ -1,6 +1,6 @@
 import { System, Entity } from "../core/ECS";
-import { Velocity } from "../components/Velocity";
-import { Transform } from "../components/Transform";
+import { Velocity } from "../core/components/Velocity";
+import { Transform } from "../core/components/Transform";
 import { ConfigManager } from "../../api/ConfigManager";
 import { Pos } from "../../../utils/Math";
 import { HitWallFlag } from "../boomerang/components/HitWallFlag";

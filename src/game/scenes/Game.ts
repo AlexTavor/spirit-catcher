@@ -9,7 +9,7 @@ import { BoundaryCollisionSystem } from "../logic/boomerang/systems/BoundaryColl
 import { CeilingCollisionBounceSystem } from "../logic/boomerang/systems/CeilingCollisionBounceSystem.ts";
 import { GroundCollisionSystem } from "../logic/boomerang/systems/GroundCollisionSystem.ts";
 import { WallCollisionBounceSystem } from "../logic/boomerang/systems/WallCollisionBounceSystem.ts";
-import { Transform } from "../logic/components/Transform.ts";
+import { Transform } from "../logic/core/components/Transform.ts";
 import { HasBoomerang } from "../logic/player/components/HasBoomerang.ts";
 import { Player } from "../logic/player/components/Player.ts";
 import { MovementSystem } from "../logic/player/systems/MovementSystem.ts";
@@ -20,16 +20,17 @@ import { FlagCleanupSystem } from "../logic/systems/FlagCleanupSystem.ts";
 import { InputSystem } from "../logic/core/input/InputSystem.ts";
 import { ExplosionSystem } from "../logic/explosion/ExplosionSystem.ts";
 import { WallExplosionSystem } from "../logic/explosion/WallExplosionSystem.ts";
-import { MoveIntention } from "../logic/intentions/MoveIntention.ts";
-import { ChargeIntention } from "../logic/intentions/ChargeIntention.ts";
-import { MoveIntentionSystem } from "../logic/intentions/MoveIntentionSystem.ts";
-import { ChargeIntentionSystem } from "../logic/intentions/ChargeIntentionSystem.ts";
-import { MovementAnalysisSystem } from "../logic/intentions/MovementAnalysisSystem.ts";
-import { ChargeAnalysisSystem } from "../logic/intentions/ChargeAnalysisSystem.ts";
-import { InputClassifierSystem } from "../logic/intentions/InputClassifierSystem.ts";
+import { MoveIntention } from "../logic/input/MoveIntention.ts";
+import { ChargeIntention } from "../logic/input/ChargeIntention.ts";
+import { MoveIntentionSystem } from "../logic/input/MoveIntentionSystem.ts";
+import { ChargeIntentionSystem } from "../logic/input/ChargeIntentionSystem.ts";
+import { MovementAnalysisSystem } from "../logic/input/MovementAnalysisSystem.ts";
+import { ChargeAnalysisSystem } from "../logic/input/ChargeAnalysisSystem.ts";
+import { InputClassifierSystem } from "../logic/input/InputClassifierSystem.ts";
 import { WallHitBoomerangDuplicatorSystem } from "../logic/wall-hit-duplicator/WallHitBoomerangDuplicatorSystem.ts";
 import { GroundedBoomerangCleanupSystem } from "../logic/boomerang/systems/GroundedBoomerangCleanupSystem.ts";
-import { KeyboardInputSystem } from "../logic/intentions/KeyboardInputSystem.ts";
+import { KeyboardInputSystem } from "../logic/input/KeyboardInputSystem.ts";
+import { ThumbstickInputSystem } from "../logic/input/ThumbstickInputSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -55,14 +56,19 @@ export class Game extends Scene {
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
         // --- Pointer Input ---
+        /*
+        // This is the old input system that uses multiple pointers, classifying input, and analyzing clasiffied input into action intentions. Way too complex for this game.
         this.ecs.addSystem(new InputSystem());
         this.ecs.addSystem(new InputClassifierSystem());
         this.ecs.addSystem(new ChargeAnalysisSystem());
         this.ecs.addSystem(new MovementAnalysisSystem());
+        */
+
+        this.ecs.addSystem(new ThumbstickInputSystem());
 
         // --- Keyboard Input ---
         // KeyboardInputSystem relies on the analyzers to clear intentions
-        this.ecs.addSystem(new KeyboardInputSystem());
+        // this.ecs.addSystem(new KeyboardInputSystem());
 
         // --- Player Intention Systems ---
         this.ecs.addSystem(new MoveIntentionSystem());

@@ -1,64 +1,51 @@
-import { GameObjects, Scene } from "phaser";
 import { ConfigManager } from "../../api/ConfigManager";
-import { ECS, Entity } from "../../logic/core/ECS";
+import { Entity } from "../../logic/core/ECS";
 import { HasBoomerang } from "../../logic/player/components/HasBoomerang";
 import { IsWalking } from "../../logic/player/components/IsWalking";
+import { View, ViewContext } from "../core/View";
 import { BoomerangDisplay } from "./BoomerangDisplay";
-import { View } from "./View";
 
 export class PlayerView extends View {
-    private body: GameObjects.Graphics;
     private heldBoomerangDisplay: BoomerangDisplay;
 
     private readonly IDLE_COLOR = 0xffa500; // Orange
     private readonly WALKING_COLOR = 0xffde7a; // Lighter Orange
 
-    constructor(scene: Scene, ecs: ECS, entity: Entity) {
-        super(scene, ecs, entity);
-
-        // --- Player Body ---
-        this.body = this.scene.add.graphics();
-        this.viewContainer.add(this.body);
-
-        // --- Held Boomerang ---
-        this.heldBoomerangDisplay = new BoomerangDisplay(
-            this.scene,
-            this.viewContainer,
-        );
-        this.heldBoomerangDisplay.setPosition(
-            ConfigManager.get().PlayerWidth / 2,
-            -20,
-        );
+    constructor(context: ViewContext, entity: Entity) {
+        super(context, entity);
+        // Instantiate the BoomerangDisplay, passing the required context
+        this.heldBoomerangDisplay = new BoomerangDisplay(this.context);
     }
 
     public internalUpdate(delta: number): void {
-        if (!this.body) {
-            return; // Ensure body is initialized
+        if (!this.heldBoomerangDisplay) {
+            return; // If the display is not initialized, exit early
         }
-
-        // --- Update Player Body Color ---
-        const isWalking = this.ecs.hasComponent(this.entity, IsWalking);
-        const color = isWalking ? this.WALKING_COLOR : this.IDLE_COLOR;
-        this.body.clear();
-        this.body.fillStyle(color);
-        this.body.fillRect(
-            0,
-            0,
-            ConfigManager.get().PlayerWidth,
-            ConfigManager.get().PlayerHeight,
+        const config = ConfigManager.get();
+        const playerX = this.viewContainer.x;
+        const playerY = this.viewContainer.y;
+        const isWalking = this.context.ecs.hasComponent(this.entity, IsWalking);
+        const hasBoomerang = this.context.ecs.hasComponent(
+            this.entity,
+            HasBoomerang,
         );
 
-        // --- Update Held Boomerang Visibility and Rotation ---
-        const hasBoomerang = this.ecs.hasComponent(this.entity, HasBoomerang);
+        // --- Draw Player Body ---
+        this.context.dynamicGraphics.draw(playerX, playerY, (graphics) => {
+            const color = isWalking ? this.WALKING_COLOR : this.IDLE_COLOR;
+            graphics.fillStyle(color);
+            graphics.fillRect(0, 0, config.PlayerWidth, config.PlayerHeight);
+        });
+
+        // --- Update Held Boomerang ---
+        // Set visibility so the display knows whether to draw
         this.heldBoomerangDisplay.setVisible(hasBoomerang);
 
-        if (hasBoomerang) {
-            this.heldBoomerangDisplay.update(delta);
-        }
-    }
+        // Calculate the absolute position for the held boomerang
+        const boomerangX = playerX + config.PlayerWidth / 2;
+        const boomerangY = playerY - 20; // Original hardcoded offset
 
-    public destroy(): void {
-        this.heldBoomerangDisplay.destroy();
-        super.destroy();
+        // Call update, which will handle rotation and drawing
+        this.heldBoomerangDisplay.update(delta, boomerangX, boomerangY);
     }
 }

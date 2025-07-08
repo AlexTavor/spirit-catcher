@@ -1,41 +1,50 @@
-import { GameObjects, Scene } from "phaser";
 import { ConfigManager } from "../../api/ConfigManager";
+import { ViewContext } from "../core/View";
+import { GameObjects } from "phaser";
 
 export class BoomerangDisplay {
-    private graphic: GameObjects.Graphics;
+    protected readonly context: ViewContext;
+    private rotation = 0;
+    private visible = true;
 
-    constructor(scene: Scene, container: GameObjects.Container) {
-        this.graphic = scene.add.graphics();
-        container.add(this.graphic);
+    constructor(context: ViewContext) {
+        this.context = context;
+    }
+
+    public setVisible(isVisible: boolean): void {
+        this.visible = isVisible;
+    }
+
+    public getRotation(): number {
+        return this.rotation;
+    }
+
+    public update(delta: number, x: number, y: number): void {
+        if (!this.visible) {
+            return;
+        }
+
+        const dt = delta / 1000;
+        this.rotation += ConfigManager.get().BoomerangRotationSpeed * dt;
 
         const config = ConfigManager.get();
         const width = config.BoomerangWidth;
         const height = config.BoomerangHeight;
 
-        // Draw the boomerang shape using values from ConfigManager
-        this.graphic.fillStyle(0xffff00); // Yellow
-        this.graphic.fillRect(-width / 2, -height / 2, width, height);
-    }
+        this.context.dynamicGraphics.draw(
+            x,
+            y,
+            (graphics: GameObjects.Graphics) => {
+                graphics.save();
 
-    /**
-     * Updates the boomerang's rotation.
-     * @param delta Time in milliseconds since the last frame.
-     */
-    public update(delta: number): void {
-        const dt = delta / 1000; // Convert to seconds
-        this.graphic.rotation +=
-            ConfigManager.get().BoomerangRotationSpeed * dt;
-    }
+                // This is the fix: calling the .rotate() method.
+                graphics.rotateCanvas(this.rotation);
 
-    public setPosition(x: number, y: number): void {
-        this.graphic.setPosition(x, y);
-    }
+                graphics.fillStyle(0xffff00);
+                graphics.fillRect(-width / 2, -height / 2, width, height);
 
-    public setVisible(isVisible: boolean): void {
-        this.graphic.setVisible(isVisible);
-    }
-
-    public destroy(): void {
-        this.graphic.destroy();
+                graphics.restore();
+            },
+        );
     }
 }

@@ -1,5 +1,5 @@
 import { ConfigManager } from "../../../api/ConfigManager";
-import { Velocity } from "../../components/Velocity";
+import { Velocity } from "../../core/components/Velocity";
 import { System, Entity } from "../../core/ECS";
 import { HitWallFlag } from "../components/HitWallFlag";
 

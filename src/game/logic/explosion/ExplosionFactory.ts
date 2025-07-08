@@ -1,6 +1,6 @@
 import { Pos } from "../../../utils/Math";
 import { ConfigManager } from "../../api/ConfigManager";
-import { Transform } from "../components/Transform";
+import { Transform } from "../core/components/Transform";
 import { ECS, Entity } from "../core/ECS";
 import { Explosion } from "../explosion/Explosion";
 

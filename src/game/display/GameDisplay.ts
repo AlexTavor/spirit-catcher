@@ -1,9 +1,9 @@
 import { Scene } from "phaser";
 import { ECS, Entity } from "../logic/core/ECS";
-import { View } from "./views/View";
+import { View, ViewContext } from "./core/View";
 import { Charging } from "../logic/components/Charging";
 import { ChargingView } from "./views/ChargingView";
-import { Transform } from "../logic/components/Transform";
+import { Transform } from "../logic/core/components/Transform";
 import { NoiseView } from "./views/NoiseView";
 import { Layers } from "./core/Layers";
 import { backgroundConfig, groundConfig } from "../consts/backgrounds";
@@ -18,9 +18,10 @@ import { Player } from "../logic/player/components/Player";
 import { Explosion } from "../logic/explosion/Explosion";
 import { ExplosionView } from "./views/ExplosionView";
 import { GameInputEvent } from "../logic/api/GameInputEvent";
+import { DynamicGraphics } from "./core/DynamicGraphics";
 
 // Define a type for a constructable class that extends View
-type ConstructableView = new (scene: Scene, ecs: ECS, entity: Entity) => View;
+type ConstructableView = new (context: ViewContext, entity: Entity) => View;
 
 export class GameDisplay {
     private scene: Scene;
@@ -31,11 +32,23 @@ export class GameDisplay {
     private backgroundView: NoiseView;
     private groundView: NoiseView;
     private layers: Layers;
+    private dynamicGraphics: DynamicGraphics;
+    private readonly viewContext: ViewContext;
 
     constructor(scene: Scene, ecs: ECS) {
         this.ecs = ecs;
         this.scene = scene;
         this.layers = new Layers(scene);
+        this.dynamicGraphics = new DynamicGraphics(
+            scene,
+            this.layers.Foreground,
+        );
+
+        this.viewContext = {
+            scene: this.scene,
+            ecs: this.ecs,
+            dynamicGraphics: this.dynamicGraphics,
+        };
 
         this.backgroundView = new NoiseView(scene, this.layers.Background, {
             ...backgroundConfig(),
@@ -81,6 +94,8 @@ export class GameDisplay {
     public update(delta: number): void {
         const ecs = this.ecs;
 
+        this.dynamicGraphics.clear();
+
         const renderableEntities = new Set(
             ecs.getEntitiesWithComponent(Transform),
         );
@@ -101,7 +116,7 @@ export class GameDisplay {
                         this.views.set(entity, entityViews);
                     }
                     if (!entityViews.has(componentClass)) {
-                        const newView = new ViewClass(this.scene, ecs, entity);
+                        const newView = new ViewClass(this.viewContext, entity);
                         entityViews.set(componentClass, newView);
                     }
                 }
@@ -149,5 +164,7 @@ export class GameDisplay {
         this.groundView.destroy();
 
         this.tapInput.destroy();
+
+        this.dynamicGraphics.destroy();
     }
 }

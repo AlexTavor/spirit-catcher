@@ -1,7 +1,7 @@
 import { ConfigManager } from "../../../api/ConfigManager";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
-import { Transform } from "../../components/Transform";
-import { Velocity } from "../../components/Velocity";
+import { Transform } from "../../core/components/Transform";
+import { Velocity } from "../../core/components/Velocity";
 import { System, Entity } from "../../core/ECS";
 import { Airborne } from "../components/Airborne";
 
