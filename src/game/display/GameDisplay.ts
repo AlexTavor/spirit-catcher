@@ -20,6 +20,8 @@ import { ExplosionView } from "./views/ExplosionView";
 import { GameInputEvent } from "../logic/api/GameInputEvent";
 import { DynamicGraphics } from "./core/DynamicGraphics";
 import { ThumbstickUIView } from "./views/ThumbstickUIView";
+import { Mob } from "../logic/mobs/components/Mob";
+import { MobView } from "./views/MobView";
 
 // Define a type for a constructable class that extends View
 type ConstructableView = new (context: ViewContext, entity: Entity) => View;
@@ -72,6 +74,7 @@ export class GameDisplay {
         this.registerViewClass(Player, PlayerView);
         this.registerViewClass(Boomerang, BoomerangView);
         this.registerViewClass(Explosion, ExplosionView);
+        this.registerViewClass(Mob, MobView);
 
         this.addInputs();
     }

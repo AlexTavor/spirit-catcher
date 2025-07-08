@@ -16,7 +16,7 @@ const DEFAULTS = {
     WalkSpeed: 1000, // Pixels per second
 
     // --- Boomerang Config ---
-    BoomerangGravity: 300,
+    BoomerangGravity: 500,
     BoomerangHomingForce: 12,
     BoomerangAirDrag: 0.5,
     BoomerangThrowMinForce: 200,
@@ -45,6 +45,19 @@ const DEFAULTS = {
 
     // --- Input Config --- //
     ThumbstickDeadzone: 40, // Pixels
+
+    // --- Mobs Config --- //
+    MobDescentSpeed: 100, // Pixels per second
+    OverkillMinForce: 0.5, // Minimum force to trigger overkill
+    MobWidth: 80,
+    MobHeight: 80,
+
+    // --- Mob Collision Config --- //
+    MobCollisionDamageFactor: 100, // Multiplies normalized force to get damage
+    MobCollisionMobLift: 2, // How many pixels a mob is knocked up on hit
+    MobCollisionRangUpKick: 0, // Upward velocity applied to boomerang on hit
+    MobCollisionReflectFactor: 0.8, // How much velocity is preserved on reflection (e.g., 0.8 = 80%)
+    MobCollisionMaxImpactForce: 2000, // The velocity magnitude used to normalize impact force to 0-1
 };
 
 export type ConfigType = typeof DEFAULTS;

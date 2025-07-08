@@ -25,6 +25,10 @@ import { WallHitBoomerangDuplicatorSystem } from "../logic/wall-hit-duplicator/W
 import { GroundedBoomerangCleanupSystem } from "../logic/boomerang/systems/GroundedBoomerangCleanupSystem.ts";
 import { ThumbstickInputSystem } from "../logic/input/ThumbstickInputSystem.ts";
 import { KeyboardInputSystem } from "../logic/input/KeyboardInputSystem.ts";
+import { LevelDirectorSystem } from "../logic/level/LevelDirectorSystem.ts";
+import { BoomerangMobCollisionSystem } from "../logic/mobs/systems/BoomerangMobCollisionSystem.ts";
+import { MobDeathHandlerSystem } from "../logic/mobs/systems/MobDeathHandlerSystem.ts";
+import { MobDescentSystem } from "../logic/mobs/systems/MobDescentSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -75,6 +79,12 @@ export class Game extends Scene {
         // --- Special Abilities and Effects ---
         this.ecs.addSystem(new WallExplosionSystem());
         this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
+
+        // --- Level and Mob Systems ---
+        this.ecs.addSystem(new LevelDirectorSystem());
+        this.ecs.addSystem(new BoomerangMobCollisionSystem());
+        this.ecs.addSystem(new MobDeathHandlerSystem());
+        this.ecs.addSystem(new MobDescentSystem());
 
         // --- Cleanup Systems ---
         this.ecs.addSystem(new GroundedBoomerangCleanupSystem());
