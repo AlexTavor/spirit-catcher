@@ -29,6 +29,7 @@ import { LevelDirectorSystem } from "../logic/level/LevelDirectorSystem.ts";
 import { BoomerangMobCollisionSystem } from "../logic/mobs/systems/BoomerangMobCollisionSystem.ts";
 import { MobDeathHandlerSystem } from "../logic/mobs/systems/MobDeathHandlerSystem.ts";
 import { MobDescentSystem } from "../logic/mobs/systems/MobDescentSystem.ts";
+import { DragMoveSystem } from "../logic/input/DragMoveSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -54,17 +55,18 @@ export class Game extends Scene {
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
         // --- Pointer Input ---
-        this.ecs.addSystem(new ThumbstickInputSystem());
+        //this.ecs.addSystem(new ThumbstickInputSystem());
+        this.ecs.addSystem(new DragMoveSystem());
 
         // --- Keyboard Input ---
         this.ecs.addSystem(new KeyboardInputSystem());
 
         // --- Player Intention Systems ---
-        this.ecs.addSystem(new MoveIntentionSystem());
+        //this.ecs.addSystem(new MoveIntentionSystem());
 
         // --- Player Systems ---
         this.ecs.addSystem(new ChargingSystem());
-        this.ecs.addSystem(new MovementSystem());
+        //this.ecs.addSystem(new MovementSystem());
         this.ecs.addSystem(new ThrowBoomerangSystem());
 
         // --- Game Logic Systems ---
