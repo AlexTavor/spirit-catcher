@@ -15,30 +15,33 @@ export class BoomerangPhysicsSystem extends System {
     public update(entities: Set<Entity>, delta: number): void {
         const dt = delta / 1000; // Convert delta from ms to seconds
 
+        const config = ConfigManager.get();
+
         // Get player position for homing calculation.
         const player = getPlayerEntity(this.ecs);
         const playerTransform = this.ecs.getComponent(player, Transform);
+        const playerCenter = playerTransform.pos.x + config.PlayerWidth / 2;
 
         for (const entity of entities) {
             const transform = this.ecs.getComponent(entity, Transform);
             const velocity = this.ecs.getComponent(entity, Velocity);
 
-            // 1. Apply Gravity
-            velocity.y += ConfigManager.get().BoomerangGravity * dt;
+            // Apply Gravity
+            velocity.y += config.BoomerangGravity * dt;
 
-            // 2. Apply Homing Force
+            // Apply Homing Force
             // The force is proportional to the horizontal distance from the player.
             if (playerTransform) {
-                const distanceX = playerTransform.pos.x - transform.pos.x;
+                const distanceX = playerCenter - transform.pos.x;
                 const homingAdjustment =
-                    distanceX * ConfigManager.get().BoomerangHomingForce;
+                    distanceX * config.BoomerangHomingForce;
                 velocity.x += homingAdjustment * dt;
             }
 
-            // 3. Apply Air Drag
+            // Apply Air Drag
             // This slows the boomerang over time for a more natural feel.
-            velocity.x *= 1 - ConfigManager.get().BoomerangAirDrag * dt;
-            velocity.y *= 1 - ConfigManager.get().BoomerangAirDrag * dt;
+            velocity.x *= 1 - config.BoomerangAirDrag * dt;
+            velocity.y *= 1 - config.BoomerangAirDrag * dt;
 
             // 4. Update Position
             transform.pos.x += velocity.x * dt;

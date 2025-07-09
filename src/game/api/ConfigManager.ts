@@ -18,8 +18,8 @@ const DEFAULTS = {
 
     // --- Boomerang Config ---
     BoomerangGravity: 500,
-    BoomerangHomingForce: 12,
-    BoomerangAirDrag: 0.5,
+    BoomerangHomingForce: 32,
+    BoomerangAirDrag: 0.95,
     BoomerangThrowMinForce: 200,
     BoomerangThrowMaxForce: 2000,
     BoomerangSpawnOffsetY: 10,
