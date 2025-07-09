@@ -1,11 +1,11 @@
-// src/display/views/ThumbstickUIView.ts
 import { ConfigManager } from "../../api/ConfigManager";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";
 import { ViewContext } from "../core/View";
-import { MoveIntention } from "../../logic/input/MoveIntention";
+import { DragState } from "../../logic/input/DragState";
 import { Pos } from "../../../utils/Math";
 import { GameObjects } from "phaser";
-import { IsInputDown as IsInputDown } from "../../logic/input/IsInputDown";
+import { IsInputDown } from "../../logic/input/IsInputDown";
+import { Transform } from "../../logic/core/components/Transform";
 
 export class ThumbstickUIView {
     private context: ViewContext;
@@ -37,33 +37,26 @@ export class ThumbstickUIView {
         if (player === -1) return;
 
         const isInputDown = this.context.ecs.hasComponent(player, IsInputDown);
+        const dragState = this.context.ecs.getComponent(player, DragState);
+        const transform = this.context.ecs.getComponent(player, Transform);
 
-        const moveIntention = this.context.ecs.getComponent(
-            player,
-            MoveIntention,
-        );
-        if (!moveIntention || !isInputDown) {
-            return;
-        }
+        if (!isInputDown || !dragState || !transform) return;
 
-        const isMovingRight =
-            moveIntention.active && moveIntention.targetPos.x > this.position.x;
-        const isMovingLeft =
-            moveIntention.active && moveIntention.targetPos.x < this.position.x;
+        const delta = dragState.targetX - transform.pos.x;
 
+        const isMovingRight = delta > 2;
+        const isMovingLeft = delta < -2;
         const isMoving = isMovingLeft || isMovingRight;
 
         this.context.dynamicGraphics.draw(
             this.position.x,
             this.position.y,
             (g) => {
-                if (isInputDown) {
-                    g.fillStyle(
-                        isMoving ? this.INACTIVE_COLOR : this.ACTIVE_COLOR,
-                        isMoving ? this.INACTIVE_ALPHA : this.ACTIVE_ALPHA,
-                    );
-                    g.fillCircle(0, 0, this.DEAD_ZONE_RADIUS);
-                }
+                g.fillStyle(
+                    isMoving ? this.INACTIVE_COLOR : this.ACTIVE_COLOR,
+                    isMoving ? this.INACTIVE_ALPHA : this.ACTIVE_ALPHA,
+                );
+                g.fillCircle(0, 0, this.DEAD_ZONE_RADIUS);
 
                 // Left Arrow
                 const leftColor = isMovingLeft
