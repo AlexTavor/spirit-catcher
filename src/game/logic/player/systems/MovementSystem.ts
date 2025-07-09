@@ -11,32 +11,25 @@ export class MovementSystem extends System {
         WalkTarget,
     ]);
 
-    public update(entities: Set<Entity>, delta: number): void {
-        const dt = delta / 1000; // Convert to seconds
+    public update(entities: Set<Entity>, _delta: number): void {
         const config = ConfigManager.get();
+        const ease = config.PlayerMovementEaseValue; // e.g. 0.1 for smoothing
 
         for (const entity of entities) {
             const transform = this.ecs.getComponent(entity, Transform);
             const walkTarget = this.ecs.getComponent(entity, WalkTarget);
 
-            const horizontalDistance = Math.abs(
-                transform.pos.x - walkTarget.pos.x,
-            );
+            const prevX = transform.pos.x;
+            transform.pos.x = Phaser.Math.Linear(prevX, walkTarget.pos.x, ease);
 
-            // Stop if close enough to the target
-            if (horizontalDistance < 5) {
+            const dx = Math.abs(transform.pos.x - walkTarget.pos.x);
+            if (dx < 1) {
+                transform.pos.x = walkTarget.pos.x;
                 this.ecs.removeComponent(entity, IsWalking);
                 this.ecs.removeComponent(entity, WalkTarget);
-                continue;
             }
 
-            // Move towards target using only horizontal direction for constant speed
-            const step = walkTarget.pos.x - transform.pos.x;
-            const directionX = Math.sign(step);
-            transform.pos.x +=
-                directionX * Math.min(config.WalkSpeed * dt, Math.abs(step));
-
-            // Prevent moving out of bounds
+            // Clamp bounds
             if (transform.pos.x < 0) {
                 transform.pos.x = 0;
             } else if (

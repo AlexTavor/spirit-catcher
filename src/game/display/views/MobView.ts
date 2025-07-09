@@ -42,7 +42,7 @@ export class MobView extends View {
     }
 
     // This is called every frame by the GameDisplay
-    public internalUpdate(delta: number): void {
+    public internalUpdate(_delta: number): void {
         this.updateHealthDisplay();
     }
 

@@ -74,14 +74,14 @@ export const patternDefinitions: Record<string, PatternData> = {
 export const mobDefinitions: Record<string, MobDefinition> = {
     "mob-1": {
         id: "mob-1",
-        minHp: 100,
-        maxHp: 150,
+        minHp: 500,
+        maxHp: 750,
         drops: [],
     },
     "mob-2": {
         id: "mob-2",
-        minHp: 80,
-        maxHp: 120,
+        minHp: 400,
+        maxHp: 600,
         drops: [],
     },
 };

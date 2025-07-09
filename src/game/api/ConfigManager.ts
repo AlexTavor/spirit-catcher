@@ -14,6 +14,7 @@ const DEFAULTS = {
     ChargeMaxLevel: 100, // Maximum charge level
     ChargeRate: 50, // Rate at which the charge level increases
     WalkSpeed: 1000, // Pixels per second
+    PlayerMovementEaseValue: 0.05, // Smoothing factor for player movement (0 = instant, 1 = no movement)
 
     // --- Boomerang Config ---
     BoomerangGravity: 500,
