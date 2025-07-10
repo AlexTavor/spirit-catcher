@@ -8,63 +8,51 @@ import { Health } from "../components/Health";
 import { Mob } from "../components/Mob";
 
 export class BoomerangMobCollisionSystem extends System {
-    /**
-     * This system will run on all boomerangs.
-     * It will then fetch all mobs to check for collisions against.
-     */
     public componentsRequired = new Set<Function>([
         Boomerang,
         Transform,
         Velocity,
     ]);
 
+    // Cache all mobs once per frame to avoid repeatedly querying the ECS
+    private allMobs: Entity[] = [];
+
     public update(boomerangs: Set<Entity>, _delta: number): void {
-        const mobs = this.ecs.getEntitiesWithComponents([
+        this.allMobs = this.ecs.getEntitiesWithComponents([
             Mob,
             Transform,
             Health,
         ]);
-        if (boomerangs.size === 0 || mobs.length === 0) {
+        if (boomerangs.size === 0 || this.allMobs.length === 0) {
             return;
         }
 
         for (const boomerang of boomerangs) {
-            for (const mob of mobs) {
+            for (const mob of this.allMobs) {
                 if (this.checkForCollision(boomerang, mob)) {
                     this.handleCollision(boomerang, mob);
-                    // A single boomerang can only hit one mob per frame.
-                    // Break the inner loop to prevent multi-hits.
                     break;
                 }
             }
         }
     }
 
-    /**
-     * Checks for an AABB collision between a boomerang and a mob.
-     * @param boomerang The boomerang entity.
-     * @param mob The mob entity.
-     * @returns True if a collision is detected, false otherwise.
-     */
     private checkForCollision(boomerang: Entity, mob: Entity): boolean {
         const mobHealth = this.ecs.getComponent(mob, Health);
         if (!mobHealth.isAlive) {
-            return false; // Skip mobs that are already dead
+            return false;
         }
 
         const config = ConfigManager.get();
         const rangTransform = this.ecs.getComponent(boomerang, Transform);
         const mobTransform = this.ecs.getComponent(mob, Transform);
 
-        // Boomerang bounds (origin is center)
         const rangRect = {
             x: rangTransform.pos.x - config.BoomerangWidth / 2,
             y: rangTransform.pos.y - config.BoomerangHeight / 2,
             width: config.BoomerangWidth,
             height: config.BoomerangHeight,
         };
-
-        // Mob bounds (assuming origin is top-left)
         const mobRect = {
             x: mobTransform.pos.x,
             y: mobTransform.pos.y,
@@ -72,7 +60,6 @@ export class BoomerangMobCollisionSystem extends System {
             height: config.MobHeight,
         };
 
-        // AABB collision check
         return (
             rangRect.x < mobRect.x + mobRect.width &&
             rangRect.x + rangRect.width > mobRect.x &&
@@ -81,15 +68,8 @@ export class BoomerangMobCollisionSystem extends System {
         );
     }
 
-    /**
-     * Handles the consequences of a collision between a boomerang and a mob.
-     * @param boomerang The boomerang entity.
-     * @param mob The mob entity.
-     */
     private handleCollision(boomerang: Entity, mob: Entity): void {
         const rangVelocity = this.ecs.getComponent(boomerang, Velocity);
-
-        // Calculate Impact Force & Damage
         const impactVelocity = Math.sqrt(
             rangVelocity.x ** 2 + rangVelocity.y ** 2,
         );
@@ -100,14 +80,10 @@ export class BoomerangMobCollisionSystem extends System {
         );
 
         this.applyDamage(mob, normalizedForce);
-        this.applyForces(boomerang, mob, impactVelocity);
+        this.applyLift(mob);
+        this.applyBoomerangBounce(boomerang, mob, impactVelocity);
     }
 
-    /**
-     * Applies damage to the mob and records the hit force.
-     * @param mob The mob entity.
-     * @param normalizedForce The normalized impact force (0-1).
-     */
     private applyDamage(mob: Entity, normalizedForce: number): void {
         const config = ConfigManager.get();
         const mobHealth = this.ecs.getComponent(mob, Health);
@@ -117,12 +93,25 @@ export class BoomerangMobCollisionSystem extends System {
     }
 
     /**
-     * Applies physical forces to the mob and the boomerang after a collision.
-     * @param boomerang The boomerang entity.
-     * @param mob The mob entity.
-     * @param impactSpeed The original speed of the boomerang on impact.
+     * Identifies the contiguous stack of mobs and applies the upward lift to all of them.
+     * @param hitMob The initial mob that was struck by the boomerang.
      */
-    private applyForces(
+    private applyLift(hitMob: Entity): void {
+        const config = ConfigManager.get();
+        const stack = this.getContiguousStack(hitMob);
+        for (const mobInStack of stack) {
+            const mobTransform = this.ecs.getComponent(mobInStack, Transform);
+            mobTransform.pos.y -= config.MobCollisionMobLift;
+        }
+    }
+
+    /**
+     * Calculates and applies the reflected velocity and upward kick to the boomerang.
+     * @param boomerang The boomerang entity.
+     * @param mob The mob entity it collided with.
+     * @param impactSpeed The original speed of the boomerang.
+     */
+    private applyBoomerangBounce(
         boomerang: Entity,
         mob: Entity,
         impactSpeed: number,
@@ -132,32 +121,67 @@ export class BoomerangMobCollisionSystem extends System {
         const rangVelocity = this.ecs.getComponent(boomerang, Velocity);
         const mobTransform = this.ecs.getComponent(mob, Transform);
 
-        // 1. Apply knock-up to mob
-        mobTransform.pos.y -= config.MobCollisionMobLift;
-
-        // 2. Reflect Boomerang Velocity
-        // Get mob center position
         const mobCenterPos: Pos = {
             x: mobTransform.pos.x + config.MobWidth / 2,
             y: mobTransform.pos.y + config.MobHeight / 2,
         };
-
-        // Get the direction from the mob's center to the boomerang's position
         const reflectionNormal = MathUtils.normalize(
             MathUtils.subtract(rangTransform.pos, mobCenterPos),
         );
-
-        // Calculate the new velocity by reflecting and applying the reflect factor
         const reflectedVel = MathUtils.multiply(
             reflectionNormal,
             impactSpeed * config.MobCollisionReflectFactor,
         );
-
         rangVelocity.x = reflectedVel.x;
         rangVelocity.y = reflectedVel.y;
-
-        // 3. Apply additional upward kick to boomerang
         rangVelocity.y -= config.MobCollisionRangUpKick;
+    }
+
+    /**
+     * Finds all mobs connected vertically in a single column, starting from a given mob.
+     * @param startMob The mob to begin the search from.
+     * @returns An array of entities representing the vertical stack.
+     */
+    private getContiguousStack(startMob: Entity): Entity[] {
+        const stack: Entity[] = [startMob];
+        const config = ConfigManager.get();
+        let currentMob = startMob;
+
+        while (currentMob) {
+            const currentTransform = this.ecs.getComponent(
+                currentMob,
+                Transform,
+            );
+            if (!currentTransform) break;
+            let foundNext = false;
+            for (const otherMob of this.allMobs) {
+                if (otherMob === currentMob) continue;
+
+                const otherTransform = this.ecs.getComponent(
+                    otherMob,
+                    Transform,
+                );
+                if (!otherTransform) continue;
+
+                const cpos = currentTransform.pos;
+                const opos = otherTransform.pos;
+
+                const isSameColumn = Math.abs(cpos.x - opos.x) < 5;
+                const isDirectlyAbove =
+                    Math.abs(opos.y - (cpos.y - config.MobHeight)) < 5;
+
+                if (isSameColumn && isDirectlyAbove) {
+                    stack.push(otherMob);
+                    currentMob = otherMob;
+                    foundNext = true;
+                    break;
+                }
+            }
+            if (!foundNext) {
+                currentMob = -1; // End the loop
+            }
+        }
+        return stack;
     }
 
     public destroy(): void {}

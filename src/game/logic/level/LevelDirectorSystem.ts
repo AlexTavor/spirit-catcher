@@ -53,7 +53,7 @@ export class LevelDirectorSystem extends System {
 
                 const transform = new Transform();
                 transform.pos.x = startX + x * config.MobWidth;
-                // CORRECTED: The y-position is now the offset PLUS the row depth.
+
                 transform.pos.y = yOffset + y * config.MobHeight;
                 this.ecs.addComponent(entity, transform);
 
@@ -61,8 +61,8 @@ export class LevelDirectorSystem extends System {
                     Math.random() * (mobDef.maxHp - mobDef.minHp) +
                     mobDef.minHp;
                 const finalHp = Math.round(baseHp * waveDef.hpMultiplier);
-                this.ecs.addComponent(entity, new Health(finalHp));
 
+                this.ecs.addComponent(entity, new Health(finalHp));
                 this.ecs.addComponent(entity, new Mob());
 
                 if (mobDef.drops.length > 0) {

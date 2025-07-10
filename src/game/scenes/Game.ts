@@ -30,6 +30,7 @@ import { BoomerangMobCollisionSystem } from "../logic/mobs/systems/BoomerangMobC
 import { MobDeathHandlerSystem } from "../logic/mobs/systems/MobDeathHandlerSystem.ts";
 import { MobDescentSystem } from "../logic/mobs/systems/MobDescentSystem.ts";
 import { DragMoveSystem } from "../logic/input/DragMoveSystem.ts";
+import { MobSteppedDescentSystem } from "../logic/mobs/systems/MobSteppedDescentSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -86,7 +87,8 @@ export class Game extends Scene {
         this.ecs.addSystem(new LevelDirectorSystem());
         this.ecs.addSystem(new BoomerangMobCollisionSystem());
         this.ecs.addSystem(new MobDeathHandlerSystem());
-        this.ecs.addSystem(new MobDescentSystem());
+        //this.ecs.addSystem(new MobDescentSystem());
+        this.ecs.addSystem(new MobSteppedDescentSystem());
 
         // --- Cleanup Systems ---
         this.ecs.addSystem(new GroundedBoomerangCleanupSystem());

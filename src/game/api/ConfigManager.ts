@@ -59,6 +59,9 @@ const DEFAULTS = {
     MobCollisionRangUpKick: 0, // Upward velocity applied to boomerang on hit
     MobCollisionReflectFactor: 0.8, // How much velocity is preserved on reflection (e.g., 0.8 = 80%)
     MobCollisionMaxImpactForce: 2000, // The velocity magnitude used to normalize impact force to 0-1
+    MobStepInterval: 5000, // Time between steps in milliseconds
+    MobStepDuration: 250, // Duration of each step animation in milliseconds
+    MobStepHeight: 20, // Height of each step in pixels
 };
 
 export type ConfigType = typeof DEFAULTS;
