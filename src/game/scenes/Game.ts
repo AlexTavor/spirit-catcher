@@ -20,17 +20,15 @@ import { FlagCleanupSystem } from "../logic/systems/FlagCleanupSystem.ts";
 import { ExplosionSystem } from "../logic/explosion/ExplosionSystem.ts";
 import { WallExplosionSystem } from "../logic/explosion/WallExplosionSystem.ts";
 import { MoveIntention } from "../logic/input/MoveIntention.ts";
-import { MoveIntentionSystem } from "../logic/input/MoveIntentionSystem.ts";
 import { WallHitBoomerangDuplicatorSystem } from "../logic/wall-hit-duplicator/WallHitBoomerangDuplicatorSystem.ts";
 import { GroundedBoomerangCleanupSystem } from "../logic/boomerang/systems/GroundedBoomerangCleanupSystem.ts";
-import { ThumbstickInputSystem } from "../logic/input/ThumbstickInputSystem.ts";
 import { KeyboardInputSystem } from "../logic/input/KeyboardInputSystem.ts";
 import { LevelDirectorSystem } from "../logic/level/LevelDirectorSystem.ts";
 import { BoomerangMobCollisionSystem } from "../logic/mobs/systems/BoomerangMobCollisionSystem.ts";
 import { MobDeathHandlerSystem } from "../logic/mobs/systems/MobDeathHandlerSystem.ts";
-import { MobDescentSystem } from "../logic/mobs/systems/MobDescentSystem.ts";
 import { DragMoveSystem } from "../logic/input/DragMoveSystem.ts";
 import { MobSteppedDescentSystem } from "../logic/mobs/systems/MobSteppedDescentSystem.ts";
+import { TimeManager } from "../logic/core/time/TimeManager.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -43,10 +41,10 @@ export class Game extends Scene {
     }
 
     update(time: number, delta: number) {
-        super.update(time, delta);
-
-        this.ecs?.update(delta);
-        this.gameDisplay?.update(delta);
+        const d = TimeManager.get() * delta;
+        super.update(time, d);
+        this.ecs?.update(d);
+        this.gameDisplay?.update(d);
     }
 
     create() {

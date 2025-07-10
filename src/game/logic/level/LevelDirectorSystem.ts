@@ -2,6 +2,7 @@ import { ConfigManager } from "../../api/ConfigManager";
 import { Transform } from "../core/components/Transform";
 import { System, Entity } from "../core/ECS";
 import { Health } from "../mobs/components/Health";
+import { HitCooldowns } from "../mobs/components/HitCooldowns";
 import { Mob } from "../mobs/components/Mob";
 import {
     WaveDefinition,
@@ -64,6 +65,7 @@ export class LevelDirectorSystem extends System {
 
                 this.ecs.addComponent(entity, new Health(finalHp));
                 this.ecs.addComponent(entity, new Mob());
+                this.ecs.addComponent(entity, new HitCooldowns());
 
                 if (mobDef.drops.length > 0) {
                 }
@@ -85,7 +87,7 @@ export class LevelDirectorSystem extends System {
             this.currentWaveDef.mobDescentSpeed;
 
         // --- PRESPAWN LOGIC ---
-        const prespawnPatternIds = ["pattern-1", "pattern-1", "pattern-1"];
+        const prespawnPatternIds = ["pattern-1", "pattern-1", "pattern-2"];
         // The total height of the prespawned block is used to correctly
         // time the start of the next procedurally spawned pattern.
         this.lastPatternHeight = this.prespawnPatterns(prespawnPatternIds);

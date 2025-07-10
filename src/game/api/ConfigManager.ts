@@ -62,6 +62,15 @@ const DEFAULTS = {
     MobStepInterval: 5000, // Time between steps in milliseconds
     MobStepDuration: 250, // Duration of each step animation in milliseconds
     MobStepHeight: 20, // Height of each step in pixels
+
+    // --- Boomerang Mob Interaction ---
+    BoomerangDamageThreshold: 400, // The velocity a boomerang must exceed to be considered a "hard hit" for damage.
+    BoomerangDpsDamage: 30, // Damage per second applied by a boomerang in sustained, low-velocity contact.
+    BoomerangContinuousLiftForce: 450, // Upward force (pixels/sec) applied by a boomerang in sustained, low-velocity contact. Must be > BoomerangGravity to have a net upward effect.
+    BoomerangMaxImpulseLift: 15, // The maximum one-time lift impulse (in pixels) from a hard hit. This is applied when impact force is at its lowest; a max-force hit gives 0 lift.
+    BoomerangHitCooldownMs: 60, // The cooldown in milliseconds after a hard hit before the same mob can take impact damage again.
+    BoomerangBounceThreshold: 200, // The velocity a boomerang must exceed to bounce off a mob. Set lower than the damage threshold to allow for non-damaging, strategic bounces.
+    BoomerangMobBounceFactor: 0.9, // A multiplier for the boomerang's velocity after bouncing off a mob. A value less than 1.0 represents some energy loss on impact.
 };
 
 export type ConfigType = typeof DEFAULTS;
