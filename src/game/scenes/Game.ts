@@ -12,7 +12,6 @@ import { WallCollisionBounceSystem } from "../logic/boomerang/systems/WallCollis
 import { Transform } from "../logic/core/components/Transform.ts";
 import { HasBoomerang } from "../logic/player/components/HasBoomerang.ts";
 import { Player } from "../logic/player/components/Player.ts";
-import { MovementSystem } from "../logic/player/systems/MovementSystem.ts";
 import { PlayerBoomerangCollisionSystem } from "../logic/player/systems/PlayerBoomerangCollisionSystem.ts";
 import { ThrowBoomerangSystem } from "../logic/player/systems/ThrowBoomerangSystem.ts";
 import { ChargingSystem } from "../logic/systems/ChargingSystem.ts";
@@ -29,6 +28,10 @@ import { MobDeathHandlerSystem } from "../logic/mobs/systems/MobDeathHandlerSyst
 import { DragMoveSystem } from "../logic/input/DragMoveSystem.ts";
 import { MobSteppedDescentSystem } from "../logic/mobs/systems/MobSteppedDescentSystem.ts";
 import { TimeManager } from "../logic/core/time/TimeManager.ts";
+import { WaveManagerSystem } from "../logic/level/WaveManagerSystem.ts";
+import { UICommandSystem } from "../logic/input/UICommandSystem.ts";
+import { MobsQuickMarchSystem } from "../logic/mobs/systems/MobsQuickmarchSystem.ts";
+import { GameEvent } from "../consts/GameUIEvent.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -68,6 +71,11 @@ export class Game extends Scene {
         //this.ecs.addSystem(new MovementSystem());
         this.ecs.addSystem(new ThrowBoomerangSystem());
 
+        // --- Level Direction ---
+        this.ecs.addSystem(new LevelDirectorSystem());
+        this.ecs.addSystem(new WaveManagerSystem());
+        this.ecs.addSystem(new UICommandSystem());
+
         // --- Game Logic Systems ---
         this.ecs.addSystem(new BoomerangPhysicsSystem());
         this.ecs.addSystem(new BoundaryCollisionSystem());
@@ -81,12 +89,11 @@ export class Game extends Scene {
         this.ecs.addSystem(new WallExplosionSystem());
         this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
 
-        // --- Level and Mob Systems ---
-        this.ecs.addSystem(new LevelDirectorSystem());
+        // --- Mob Systems ---
         this.ecs.addSystem(new BoomerangMobCollisionSystem());
         this.ecs.addSystem(new MobDeathHandlerSystem());
-        //this.ecs.addSystem(new MobDescentSystem());
         this.ecs.addSystem(new MobSteppedDescentSystem());
+        this.ecs.addSystem(new MobsQuickMarchSystem());
 
         // --- Cleanup Systems ---
         this.ecs.addSystem(new GroundedBoomerangCleanupSystem());
@@ -94,6 +101,8 @@ export class Game extends Scene {
 
         this.events.on("destroy", this.destroy.bind(this));
         this.createPlayer();
+
+        EventBus.emit(GameEvent.GAME_READY, this);
     }
 
     private createPlayer() {
