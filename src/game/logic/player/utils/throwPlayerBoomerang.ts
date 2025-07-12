@@ -3,13 +3,8 @@ import { ConfigManager } from "../../../api/ConfigManager";
 import { GameCommands } from "../../../consts/GameCommands";
 import { Transform } from "../../core/components/Transform";
 import { ECS } from "../../core/ECS";
-import { HasBoomerang } from "../components/HasBoomerang";
 
 export function throwPlayerBoomerang(player: number, ecs: ECS) {
-    if (!ecs.hasComponent(player, HasBoomerang)) {
-        return; // Player ain't got no boomerang to throw
-    }
-
     const transform = ecs.getComponent(player, Transform);
     const config = ConfigManager.get();
 

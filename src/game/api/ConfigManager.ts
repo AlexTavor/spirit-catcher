@@ -15,6 +15,8 @@ const DEFAULTS = {
     ChargeRate: 50, // Rate at which the charge level increases
     WalkSpeed: 1000, // Pixels per second
     PlayerMovementEaseValue: 0.15, // Smoothing factor for player movement (0 = instant, 1 = no movement)
+    MaxMana: 80, // Maximum mana for the player
+    ManaRegenPerSecond: 10, // Mana regenerated per second
 
     // --- Boomerang Config ---
     BoomerangGravity: 500,
@@ -71,6 +73,10 @@ const DEFAULTS = {
     BoomerangHitCooldownMs: 60, // The cooldown in milliseconds after a hard hit before the same mob can take impact damage again.
     BoomerangBounceThreshold: 200, // The velocity a boomerang must exceed to bounce off a mob. Set lower than the damage threshold to allow for non-damaging, strategic bounces.
     BoomerangMobBounceFactor: 0.9, // A multiplier for the boomerang's velocity after bouncing off a mob. A value less than 1.0 represents some energy loss on impact.
+
+    // --- Stomp Config --- //
+    StompManaCost: 50, // Mana cost for the stomp action
+    StompForce: 5000, // Downward force applied to all boomerangs when stomped
 };
 
 export type ConfigType = typeof DEFAULTS;

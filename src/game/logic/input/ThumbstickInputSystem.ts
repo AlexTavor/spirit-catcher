@@ -7,6 +7,9 @@ import { System } from "../core/ECS";
 import { MoveIntention } from "./MoveIntention";
 import { IsInputDown } from "./IsInputDown";
 import { throwPlayerBoomerang } from "../player/utils/throwPlayerBoomerang";
+import { HasBoomerang } from "../player/components/HasBoomerang";
+import { CommandBus } from "../../api/CommandBus";
+import { GameCommands } from "../../consts/GameCommands";
 
 interface GameInputPayload {
     pos: Pos;
@@ -93,7 +96,11 @@ export class ThumbstickInputSystem extends System {
         // Remove InInputDown component to reset state
         this.ecs.removeComponent(player, IsInputDown);
 
-        throwPlayerBoomerang(player, this.ecs);
+        if (this.ecs.hasComponent(player, HasBoomerang)) {
+            throwPlayerBoomerang(player, this.ecs);
+        } else {
+            CommandBus.emit(GameCommands.STOMP_COMMAND);
+        }
 
         // Reset state to allow another pointer to take control
         this.activePointerId = null;

@@ -10,6 +10,7 @@ import { IsInputDown } from "./IsInputDown";
 import { DragState } from "./DragState";
 import { Math as PhaserMath } from "phaser";
 import { HasBoomerang } from "../player/components/HasBoomerang";
+import { throwPlayerBoomerang } from "../player/utils/throwPlayerBoomerang";
 
 interface GameInputPayload {
     pos: { x: number; y: number };
@@ -69,23 +70,10 @@ export class DragMoveSystem extends System {
         const state = this.ecs.getComponent(player, DragState);
         if (!state || state.pointerId !== payload.pointerId) return;
 
-        const transform = this.ecs.getComponent(player, Transform);
-        const config = ConfigManager.get();
-
         if (this.ecs.hasComponent(player, HasBoomerang)) {
-            CommandBus.emit(GameCommands.ThrowBoomerangCommand, {
-                chargeLevel: 1,
-                maxChargeLevel: 1,
-                playerId: player,
-                target: { x: transform.pos.x, y: 0 },
-                from: {
-                    x: transform.pos.x,
-                    y:
-                        transform.pos.y -
-                        config.PlayerHeight / 2 -
-                        config.BoomerangSpawnOffsetY,
-                },
-            });
+            throwPlayerBoomerang(player, this.ecs);
+        } else {
+            CommandBus.emit(GameCommands.STOMP_COMMAND);
         }
 
         this.ecs.removeComponent(player, DragState);

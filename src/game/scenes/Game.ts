@@ -33,6 +33,9 @@ import { UICommandSystem } from "../logic/input/UICommandSystem.ts";
 import { MobsQuickMarchSystem } from "../logic/mobs/systems/MobsQuickmarchSystem.ts";
 import { GameEvent } from "../consts/GameUIEvent.ts";
 import { BoomerangCleanupSystem } from "../logic/boomerang/systems/BoomerangCleanupSystem.ts";
+import { Mana } from "../logic/player/components/Mana.ts";
+import { StompEffectSystem } from "../logic/player/systems/StompEffectSystem.ts";
+import { ManaRegenSystem } from "../logic/player/systems/ManaRegenerationSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -89,6 +92,8 @@ export class Game extends Scene {
         // --- Special Abilities and Effects ---
         this.ecs.addSystem(new WallExplosionSystem());
         this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
+        this.ecs.addSystem(new StompEffectSystem());
+        this.ecs.addSystem(new ManaRegenSystem());
 
         // --- Mob Systems ---
         this.ecs.addSystem(new BoomerangMobCollisionSystem());
@@ -108,18 +113,18 @@ export class Game extends Scene {
     }
 
     private createPlayer() {
+        const config = ConfigManager.get();
         const player = this.ecs.addEntity();
         const playerTransform = new Transform();
         playerTransform.pos = {
-            x: ConfigManager.get().GameWidth / 2,
-            y:
-                ConfigManager.get().GameHeight -
-                ConfigManager.get().PlayerHeight * 1.5, // Position the player above the ground
+            x: config.GameWidth / 2,
+            y: config.GameHeight - config.PlayerHeight * 1.5, // Position the player above the ground
         };
         this.ecs.addComponent(player, playerTransform);
         this.ecs.addComponent(player, new Player());
         this.ecs.addComponent(player, new HasBoomerang());
         this.ecs.addComponent(player, new MoveIntention());
+        this.ecs.addComponent(player, new Mana(config.MaxMana));
     }
 
     private destroy() {
