@@ -1,6 +1,8 @@
 import { getMobsState } from "../../../utils/getMobsState";
+import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { System } from "../../core/ECS";
 import { LevelState } from "../../level/LevelState";
+import { HasBoomerang } from "../../player/components/HasBoomerang";
 import { Boomerang } from "../components/Boomerang";
 
 /**
@@ -20,8 +22,8 @@ export class BoomerangCleanupSystem extends System {
         // --- STATE CHANGE CHECK ---
         // We only act on the frame the state *changes* to PRE_WAVE.
         if (
-            currentState === LevelState.PRE_WAVE &&
-            this.lastKnownState !== LevelState.PRE_WAVE
+            currentState === LevelState.WAVE_STARTING &&
+            this.lastKnownState !== LevelState.WAVE_STARTING
         ) {
             this.cleanupBoomeangs();
         }
@@ -34,6 +36,12 @@ export class BoomerangCleanupSystem extends System {
         for (const boomerang of boomerangs) {
             this.ecs.removeEntity(boomerang);
         }
+
+        const player = getPlayerEntity(this.ecs);
+        if (!this.ecs.hasComponent(player, HasBoomerang)) {
+            this.ecs.addComponent(player, new HasBoomerang());
+        }
+
         console.log(`Cleaned up ${boomerangs.length} boomerang(s).`);
     }
 

@@ -15,6 +15,7 @@ export type MobDefinition = {
     minHp: number;
     maxHp: number;
     drops: string[];
+    liftResistance?: number; // Optional lift resistance value
 };
 
 export const waveDefinitions: Record<string, WaveDefinition> = {
@@ -49,6 +50,17 @@ export const patternDefinitions: Record<string, PatternData> = {
                 "mob-1",
                 "",
             ],
+            [
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+            ],
         ],
     },
     "pattern-2": {
@@ -67,6 +79,17 @@ export const patternDefinitions: Record<string, PatternData> = {
                 "mob-2",
                 "mob-2",
             ],
+            [
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+                "lift-blocker",
+            ],
         ],
     },
 };
@@ -82,6 +105,13 @@ export const mobDefinitions: Record<string, MobDefinition> = {
         id: "mob-2",
         minHp: 400,
         maxHp: 600,
+        drops: [],
+    },
+    "lift-blocker": {
+        id: "lift-blocker",
+        minHp: 100,
+        maxHp: 500,
+        liftResistance: 1, // Example resistance value
         drops: [],
     },
 };

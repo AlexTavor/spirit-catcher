@@ -7,6 +7,7 @@ import { Transform } from "../core/components/Transform";
 import { System } from "../core/ECS";
 import { Health } from "../mobs/components/Health";
 import { HitCooldowns } from "../mobs/components/HitCooldowns";
+import { LiftResistance } from "../mobs/components/LiftResistance";
 import { Mob } from "../mobs/components/Mob";
 import { LevelState } from "./LevelState";
 import {
@@ -60,7 +61,7 @@ export class WaveManagerSystem extends System {
             return;
         }
 
-        // 1. Assemble a list of patterns until the wave's total HP is met.
+        // Assemble a list of patterns until the wave's total HP is met.
         const selectedPatterns: PatternData[] = [];
         let currentWaveHp = 0;
         while (currentWaveHp < waveDef.totalHp) {
@@ -79,7 +80,7 @@ export class WaveManagerSystem extends System {
             currentWaveHp += this.getPatternHp(patternData);
         }
 
-        // 2. Spawn the selected patterns in sequence, stacking them vertically.
+        // Spawn the selected patterns in sequence, stacking them vertically.
         const config = ConfigManager.get();
         let ySpawnCursor = -config.GameHeight / 2; // Start high off-screen.
 
@@ -174,6 +175,13 @@ export class WaveManagerSystem extends System {
 
         this.ecs.addComponent(entity, new Mob());
         this.ecs.addComponent(entity, new HitCooldowns());
+
+        // Optional lift resistance, if defined.
+        if (mobDef.liftResistance) {
+            const liftResistance = new LiftResistance();
+            liftResistance.resistance = mobDef.liftResistance;
+            this.ecs.addComponent(entity, liftResistance);
+        }
     }
 
     public destroy(): void {}

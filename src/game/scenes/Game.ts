@@ -32,6 +32,7 @@ import { WaveManagerSystem } from "../logic/level/WaveManagerSystem.ts";
 import { UICommandSystem } from "../logic/input/UICommandSystem.ts";
 import { MobsQuickMarchSystem } from "../logic/mobs/systems/MobsQuickmarchSystem.ts";
 import { GameEvent } from "../consts/GameUIEvent.ts";
+import { BoomerangCleanupSystem } from "../logic/boomerang/systems/BoomerangCleanupSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -98,6 +99,7 @@ export class Game extends Scene {
         // --- Cleanup Systems ---
         this.ecs.addSystem(new GroundedBoomerangCleanupSystem());
         this.ecs.addSystem(new FlagCleanupSystem());
+        this.ecs.addSystem(new BoomerangCleanupSystem());
 
         this.events.on("destroy", this.destroy.bind(this));
         this.createPlayer();
