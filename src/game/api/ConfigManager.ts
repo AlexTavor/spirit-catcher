@@ -31,6 +31,7 @@ const DEFAULTS = {
     BoomerangHeight: 8,
     BoomerangImpactMaxVelocity: 800, // Max horizontal velocity for impact force calculation
     BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
+    BoomerangNudgeForce: 10, // Force applied when nudging the boomerang with a drag gesture
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms
@@ -68,7 +69,7 @@ const DEFAULTS = {
     // --- Boomerang Mob Interaction ---
     BoomerangDamageThreshold: 400, // The velocity a boomerang must exceed to be considered a "hard hit" for damage.
     BoomerangDpsDamage: 30, // Damage per second applied by a boomerang in sustained, low-velocity contact.
-    BoomerangContinuousLiftForce: 450, // Upward force (pixels/sec) applied by a boomerang in sustained, low-velocity contact. Must be > BoomerangGravity to have a net upward effect.
+    BoomerangContinuousLiftForce: 150, // Upward force (pixels/sec) applied by a boomerang in sustained, low-velocity contact. Must be > BoomerangGravity to have a net upward effect.
     BoomerangMaxImpulseLift: 15, // The maximum one-time lift impulse (in pixels) from a hard hit. This is applied when impact force is at its lowest; a max-force hit gives 0 lift.
     BoomerangHitCooldownMs: 60, // The cooldown in milliseconds after a hard hit before the same mob can take impact damage again.
     BoomerangBounceThreshold: 200, // The velocity a boomerang must exceed to bounce off a mob. Set lower than the damage threshold to allow for non-damaging, strategic bounces.

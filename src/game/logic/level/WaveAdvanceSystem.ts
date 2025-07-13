@@ -34,7 +34,7 @@ export class WaveAdvanceSystem extends System {
         // Check if any mob has a positive y-coordinate (is on-screen).
         const isAnyMobOnScreen = mobs.some((mobEntity) => {
             const transform = this.ecs.getComponent(mobEntity, Transform);
-            return transform.pos.y >= config.MobHeight;
+            return transform.pos.y >= config.MobHeight * 3;
         });
 
         // If mobs exist, but none are on-screen, command the wave to advance.

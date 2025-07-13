@@ -107,7 +107,8 @@ export class WaveManagerSystem extends System {
         transform.pos = position;
         this.ecs.addComponent(entity, transform);
 
-        const finalHp = Math.round(mobDef.minHp * hpMultiplier);
+        const hp = Math.random() * (mobDef.maxHp - mobDef.minHp) + mobDef.minHp;
+        const finalHp = Math.round(hp * hpMultiplier);
         this.ecs.addComponent(entity, new Health(finalHp));
         this.ecs.addComponent(entity, new Mob());
         this.ecs.addComponent(entity, new HitCooldowns());

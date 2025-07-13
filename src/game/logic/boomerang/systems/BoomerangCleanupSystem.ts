@@ -22,8 +22,9 @@ export class BoomerangCleanupSystem extends System {
         // --- STATE CHANGE CHECK ---
         // We only act on the frame the state *changes* to PRE_WAVE.
         if (
-            currentState === LevelState.WAVE_STARTING &&
-            this.lastKnownState !== LevelState.WAVE_STARTING
+            (currentState === LevelState.WAVE_STARTING ||
+                currentState === LevelState.WAVE_CLEARED) &&
+            this.lastKnownState !== currentState
         ) {
             this.cleanupBoomeangs();
         }

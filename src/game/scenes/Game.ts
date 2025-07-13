@@ -18,10 +18,8 @@ import { ChargingSystem } from "../logic/systems/ChargingSystem.ts";
 import { FlagCleanupSystem } from "../logic/systems/FlagCleanupSystem.ts";
 import { ExplosionSystem } from "../logic/explosion/ExplosionSystem.ts";
 import { WallExplosionSystem } from "../logic/explosion/WallExplosionSystem.ts";
-import { MoveIntention } from "../logic/input/MoveIntention.ts";
 import { WallHitBoomerangDuplicatorSystem } from "../logic/wall-hit-duplicator/WallHitBoomerangDuplicatorSystem.ts";
 import { GroundedBoomerangCleanupSystem } from "../logic/boomerang/systems/GroundedBoomerangCleanupSystem.ts";
-import { KeyboardInputSystem } from "../logic/input/KeyboardInputSystem.ts";
 import { LevelDirectorSystem } from "../logic/level/LevelDirectorSystem.ts";
 import { BoomerangMobCollisionSystem } from "../logic/mobs/systems/BoomerangMobCollisionSystem.ts";
 import { MobDeathHandlerSystem } from "../logic/mobs/systems/MobDeathHandlerSystem.ts";
@@ -38,6 +36,7 @@ import { StompEffectSystem } from "../logic/player/systems/StompEffectSystem.ts"
 import { ManaRegenSystem } from "../logic/player/systems/ManaRegenerationSystem.ts";
 import { GameDataManager } from "../api/GameDataManager.ts";
 import { WaveAdvanceSystem } from "../logic/level/WaveAdvanceSystem.ts";
+import { BoomerangNudgeSystem } from "../logic/boomerang/systems/BoomerangNudgeSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -72,9 +71,6 @@ export class Game extends Scene {
         //this.ecs.addSystem(new ThumbstickInputSystem());
         this.ecs.addSystem(new DragMoveSystem());
 
-        // --- Keyboard Input ---
-        this.ecs.addSystem(new KeyboardInputSystem());
-
         // --- Player Intention Systems ---
         //this.ecs.addSystem(new MoveIntentionSystem());
 
@@ -90,6 +86,7 @@ export class Game extends Scene {
         this.ecs.addSystem(new UICommandSystem());
 
         // --- Game Logic Systems ---
+        this.ecs.addSystem(new BoomerangNudgeSystem());
         this.ecs.addSystem(new BoomerangPhysicsSystem());
         this.ecs.addSystem(new BoundaryCollisionSystem());
         this.ecs.addSystem(new GroundCollisionSystem());
@@ -132,7 +129,6 @@ export class Game extends Scene {
         this.ecs.addComponent(player, playerTransform);
         this.ecs.addComponent(player, new Player());
         this.ecs.addComponent(player, new HasBoomerang());
-        this.ecs.addComponent(player, new MoveIntention());
         this.ecs.addComponent(player, new Mana(config.MaxMana));
     }
 

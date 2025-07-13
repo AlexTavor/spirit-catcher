@@ -11,6 +11,8 @@ import { DragState } from "./DragState";
 import { Math as PhaserMath } from "phaser";
 import { HasBoomerang } from "../player/components/HasBoomerang";
 import { throwPlayerBoomerang } from "../player/utils/throwPlayerBoomerang";
+import { MobsState } from "../level/MobsState";
+import { LevelState } from "../level/LevelState";
 
 interface GameInputPayload {
     pos: { x: number; y: number };
@@ -34,6 +36,8 @@ export class DragMoveSystem extends System {
     }
 
     onDown(payload: GameInputPayload): void {
+        if (DragMoveSystem.isDisabled(this.ecs)) return;
+
         const player = getPlayerEntity(this.ecs);
         if (player === -1 || this.ecs.hasComponent(player, DragState)) return;
 
@@ -50,6 +54,8 @@ export class DragMoveSystem extends System {
     }
 
     onMove(payload: GameInputPayload): void {
+        if (DragMoveSystem.isDisabled(this.ecs)) return;
+
         const player = getPlayerEntity(this.ecs);
         if (player === -1) return;
         const state = this.ecs.getComponent(player, DragState);
@@ -65,6 +71,8 @@ export class DragMoveSystem extends System {
     }
 
     onUp(payload: GameInputPayload): void {
+        if (DragMoveSystem.isDisabled(this.ecs)) return;
+
         const player = getPlayerEntity(this.ecs);
         if (player === -1) return;
         const state = this.ecs.getComponent(player, DragState);
@@ -81,6 +89,8 @@ export class DragMoveSystem extends System {
     }
 
     update(): void {
+        if (DragMoveSystem.isDisabled(this.ecs)) return;
+
         const player = getPlayerEntity(this.ecs);
         if (player === -1) return;
         if (!this.ecs.hasComponent(player, DragState)) return;
@@ -94,5 +104,18 @@ export class DragMoveSystem extends System {
             state.targetX,
             ease,
         );
+    }
+
+    public static isDisabled(ecs: any): boolean {
+        const mobsState = ecs.getComponent(ecs.world, MobsState);
+        if (
+            !mobsState ||
+            mobsState.state == LevelState.WAVE_CLEARED ||
+            mobsState.state == LevelState.ADVANCE_WAVE ||
+            mobsState.state == LevelState.WAVE_STARTING
+        )
+            return true;
+
+        return false;
     }
 }
