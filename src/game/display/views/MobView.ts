@@ -3,7 +3,8 @@ import { Health } from "../../logic/mobs/components/Health";
 import { lerpColor } from "../../../utils/Color";
 import { Entity } from "../../logic/core/ECS";
 import { View, ViewContext } from "../core/View";
-import { LiftResistance } from "../../logic/mobs/components/LiftResistance";
+import { MobDisplayType } from "../../logic/level/types";
+import { MobDefinitionComponent } from "../../logic/mobs/components/MobDefinitionComponent";
 
 export class MobView extends View {
     private background: Phaser.GameObjects.Rectangle;
@@ -11,13 +12,14 @@ export class MobView extends View {
     private lastKnownHp = -1;
 
     // --- Color Definitions ---
-    // Standard Mobs (Purple/Red)
-    private readonly FULL_HEALTH_COLOR = 0x8e5a9a;
-    private readonly LOW_HEALTH_COLOR = 0x4a012d;
+    private readonly FULL_HEALTH_STANDARD_COLOR = 0x8e5a9a;
+    private readonly LOW_HEALTH_STANDARD_COLOR = 0x4a012d;
 
-    // Resistant Mobs (Blue)
-    private readonly FULL_HEALTH_BLUE_COLOR = 0x5b9bd5;
-    private readonly LOW_HEALTH_BLUE_COLOR = 0x1f3852;
+    private readonly FULL_HEALTH_RESISTANT_COLOR = 0x5b9bd5;
+    private readonly LOW_HEALTH_RESISTANT_COLOR = 0x1f3852;
+
+    private readonly FULL_HEALTH_STRONG_COLOR = 0xbd5b5b;
+    private readonly LOW_HEALTH_STRONG_COLOR = 0x521f1f;
 
     constructor(context: ViewContext, entity: Entity) {
         super(context, entity);
@@ -29,7 +31,7 @@ export class MobView extends View {
             size / 2,
             size,
             size,
-            this.FULL_HEALTH_COLOR,
+            this.FULL_HEALTH_STANDARD_COLOR,
         );
         this.viewContainer.add(this.background);
 
@@ -53,39 +55,42 @@ export class MobView extends View {
         }
 
         const health = this.context.ecs.getComponent(this.entity, Health);
-        if (!health) return;
+        const definition = this.context.ecs.getComponent(
+            this.entity,
+            MobDefinitionComponent,
+        );
+
+        if (!health || !definition) return;
 
         // Optimize: Only update if HP has changed
         if (health.hp === this.lastKnownHp) return;
-
         this.lastKnownHp = health.hp;
+
         const hpAsInt = Math.ceil(health.hp);
         this.hpText.setText(hpAsInt.toString());
 
-        // Determine background color based on resistance and health
-        const liftResistance = this.context.ecs.getComponent(
-            this.entity,
-            LiftResistance,
-        );
+        // Determine background color based on DisplayType and health
         const healthPercent = Math.max(0, health.hp / health.maxHp);
-        let newColor: number;
+        let highColor: number;
+        let lowColor: number;
 
-        if (liftResistance && liftResistance.resistance > 0) {
-            // Mob has resistance, use the blue color scale.
-            newColor = lerpColor(
-                this.LOW_HEALTH_BLUE_COLOR,
-                this.FULL_HEALTH_BLUE_COLOR,
-                healthPercent,
-            );
-        } else {
-            // No resistance, use the standard purple/red color scale.
-            newColor = lerpColor(
-                this.LOW_HEALTH_COLOR,
-                this.FULL_HEALTH_COLOR,
-                healthPercent,
-            );
+        switch (definition.displayType) {
+            case MobDisplayType.Resistant:
+                highColor = this.FULL_HEALTH_RESISTANT_COLOR;
+                lowColor = this.LOW_HEALTH_RESISTANT_COLOR;
+                break;
+            case MobDisplayType.Strong:
+                highColor = this.FULL_HEALTH_STRONG_COLOR;
+                lowColor = this.LOW_HEALTH_STRONG_COLOR;
+                break;
+            case MobDisplayType.Standard:
+            default:
+                highColor = this.FULL_HEALTH_STANDARD_COLOR;
+                lowColor = this.LOW_HEALTH_STANDARD_COLOR;
+                break;
         }
 
+        const newColor = lerpColor(lowColor, highColor, healthPercent);
         this.background.setFillStyle(newColor);
     }
 }

@@ -13,6 +13,7 @@ import { Mob } from "../mobs/components/Mob";
 import { LevelState } from "./LevelState";
 import { PatternDefinition } from "./types";
 import { GameDataManager } from "../../api/GameDataManager";
+import { MobDefinitionComponent } from "../mobs/components/MobDefinitionComponent";
 
 export class WaveManagerSystem extends System {
     public componentsRequired = new Set<Function>();
@@ -110,6 +111,10 @@ export class WaveManagerSystem extends System {
         this.ecs.addComponent(entity, new Health(finalHp));
         this.ecs.addComponent(entity, new Mob());
         this.ecs.addComponent(entity, new HitCooldowns());
+
+        const mobDefComponent = new MobDefinitionComponent();
+        mobDefComponent.displayType = mobDef.displayType;
+        this.ecs.addComponent(entity, mobDefComponent);
 
         if (mobDef.liftResistance) {
             const liftResistance = new LiftResistance();
