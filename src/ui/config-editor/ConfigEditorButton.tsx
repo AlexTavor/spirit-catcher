@@ -3,10 +3,7 @@ import { ConfigEditor } from "./ConfigEditor";
 import styled from "@emotion/styled";
 
 const StyledButton = styled.div`
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 9999; /* Ensure it's on top of other UI */
+    position: relative;
     padding: 10px 15px;
     background-color: #333;
     color: white;
@@ -25,7 +22,7 @@ const StyledButton = styled.div`
     }
 `;
 
-export const EditorButton: React.FC = () => {
+export const ConfigEditorButton: React.FC = () => {
     const [isEditorOpen, setEditorOpen] = useState(false);
 
     const openEditor = () => setEditorOpen(true);

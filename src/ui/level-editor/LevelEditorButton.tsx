@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { LogDisplay } from "./LogDisplay";
+import { LevelEditorTool } from "./LevelEditorTool";
 
 const StyledButton = styled.div`
     position: relative;
@@ -22,21 +22,21 @@ const StyledButton = styled.div`
     }
 `;
 
-export const LogButton: React.FC = () => {
-    const [isLogOpen, setLogOpen] = useState(false);
+export const LevelEditorButton: React.FC = () => {
+    const [isEditorOpen, setEditorOpen] = useState(false);
 
-    const toggleLog = () => {
-        setLogOpen((prev) => !prev);
+    const toggleEditor = () => {
+        setEditorOpen((prev) => !prev);
     };
 
     return (
         <>
-            <StyledButton onClick={toggleLog}>
-                <span>📜</span>
-                <span>Logs</span>
+            <StyledButton onClick={toggleEditor}>
+                <span>🌊</span>
+                <span>Levels</span>
             </StyledButton>
 
-            <LogDisplay isOpen={isLogOpen} />
+            {isEditorOpen && <LevelEditorTool toggleEditor={toggleEditor} />}
         </>
     );
 };

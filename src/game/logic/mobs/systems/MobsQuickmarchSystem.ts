@@ -12,7 +12,7 @@ import { getMobsState } from "../../../utils/getMobsState";
 
 /**
  * Handles the fast, downward "march" of mobs into their starting
- * positions. The entire formation moves as one rigid unit.
+ * positions. This now runs for both the start of a wave and for subsequent advances.
  */
 export class MobsQuickMarchSystem extends System {
     public componentsRequired = new Set<Function>([Mob, Transform]);
@@ -29,7 +29,12 @@ export class MobsQuickMarchSystem extends System {
     public override update(entities: Set<Entity>, delta: number): void {
         const mobsState = getMobsState(this.ecs);
 
-        if (!mobsState || mobsState.state !== LevelState.WAVE_STARTING) {
+        // Activate for both the initial wave start and subsequent advances.
+        if (
+            !mobsState ||
+            (mobsState.state !== LevelState.WAVE_STARTING &&
+                mobsState.state !== LevelState.ADVANCE_WAVE)
+        ) {
             return;
         }
 
@@ -40,13 +45,13 @@ export class MobsQuickMarchSystem extends System {
             return;
         }
 
-        // Move all mobs down by the potential displacement for this frame.
+        // Move all mobs down by the displacement for this frame.
         const frameMovement = this.quickMarchSpeed * (delta / 1000);
         for (const entity of entities) {
             this.ecs.getComponent(entity, Transform).pos.y += frameMovement;
         }
 
-        // After moving, find the new bottom edge of the formation.
+        // Find the bottom edge of the formation after moving.
         let newBottomEdgeY = -Infinity;
         for (const entity of entities) {
             const transform = this.ecs.getComponent(entity, Transform);
@@ -57,12 +62,8 @@ export class MobsQuickMarchSystem extends System {
 
         // If the bottom edge has passed the target, the march is over.
         if (newBottomEdgeY >= this.targetY) {
-            // Calculate how far the formation overshot the target line.
+            // Correct the formation's position by the overshoot amount.
             const overshoot = newBottomEdgeY - this.targetY;
-
-            // Apply a correction to every mob, pulling the entire formation
-            // back up by the overshoot amount. This snaps the bottom edge
-            // perfectly to the target line while preserving the formation's shape.
             for (const entity of entities) {
                 this.ecs.getComponent(entity, Transform).pos.y -= overshoot;
             }

@@ -12,9 +12,8 @@ import { GameEvent, MobsStateChangeEvent } from "../../consts/GameUIEvent";
 import { getMobsState } from "../../utils/getMobsState";
 
 /**
- * The single source of truth for level state. It listens for commands to change
- * state and broadcasts those changes. It also directs state changes based on
- * game events (e.g., all mobs defeated).
+ * The single source of truth for level state. It listens for commands
+ * and directs state changes based on game events.
  */
 export class LevelDirectorSystem extends System {
     public componentsRequired = new Set<Function>();
@@ -24,18 +23,23 @@ export class LevelDirectorSystem extends System {
     constructor() {
         super();
         EventBus.on(GameEvent.GAME_READY, this.start, this);
-        // Start listening for state transition commands.
     }
 
     private start(): void {
+        // Listen for commands to change state.
         CommandBus.on(
             GameCommands.TRANSITION_TO_STATE,
             this.handleTransitionTo,
             this,
         );
+        // Listen for the command from WaveAdvanceSystem.
+        CommandBus.on(
+            GameCommands.ADVANCE_WAVE_COMMAND,
+            this.handleAdvanceWave,
+            this,
+        );
 
-        // Command the initial state. This ensures all state changes,
-        // including the first, are handled by the same logic path.
+        // Command the initial state.
         this.handleTransitionTo({
             newState: LevelState.PRE_GAME,
         });
@@ -45,18 +49,18 @@ export class LevelDirectorSystem extends System {
         const mobsState = getMobsState(this.ecs);
         if (!mobsState) return;
 
-        // --- State-based progression logic ---
         switch (mobsState.state) {
             case LevelState.WAVE_ACTIVE:
-                // If there are no more mobs, command the state to change.
+                // If there are no more mobs, the wave is fully cleared.
                 if (this.ecs.getEntitiesWithComponent(Mob).length === 0) {
                     this.handleTransitionTo({
                         newState: LevelState.WAVE_CLEARED,
                     });
                 }
                 break;
+
             case LevelState.WAVE_CLEARED:
-                // Wait for a delay, then command a transition to the next wave.
+                // After a delay, command a transition to the next wave.
                 mobsState.stateTimer -= delta;
                 if (mobsState.stateTimer <= 0) {
                     this.handleTransitionTo({
@@ -67,18 +71,14 @@ export class LevelDirectorSystem extends System {
         }
     }
 
-    /**
-     * Handles the command to change the level's state and executes all
-     * side-effects associated with entering the new state.
-     * @param payload The command payload with the new state.
-     */
+    private handleAdvanceWave(): void {
+        this.handleTransitionTo({ newState: LevelState.ADVANCE_WAVE });
+    }
+
     private handleTransitionTo(payload: TransitionToStatePayload): void {
         const { newState } = payload;
         const mobsState = getMobsState(this.ecs);
-        if (!mobsState) return;
-
-        // Prevent redundant state changes.
-        if (mobsState.state === newState) return;
+        if (!mobsState || mobsState.state === newState) return;
 
         mobsState.state = newState;
 
@@ -106,12 +106,16 @@ export class LevelDirectorSystem extends System {
     }
 
     public destroy(): void {
+        EventBus.removeListener(GameEvent.GAME_READY, this.start, this);
         CommandBus.removeListener(
             GameCommands.TRANSITION_TO_STATE,
             this.handleTransitionTo,
             this,
         );
-
-        EventBus.removeListener(GameEvent.GAME_READY, this.start, this);
+        CommandBus.removeListener(
+            GameCommands.ADVANCE_WAVE_COMMAND,
+            this.handleAdvanceWave,
+            this,
+        );
     }
 }

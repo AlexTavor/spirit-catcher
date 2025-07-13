@@ -36,6 +36,8 @@ import { BoomerangCleanupSystem } from "../logic/boomerang/systems/BoomerangClea
 import { Mana } from "../logic/player/components/Mana.ts";
 import { StompEffectSystem } from "../logic/player/systems/StompEffectSystem.ts";
 import { ManaRegenSystem } from "../logic/player/systems/ManaRegenerationSystem.ts";
+import { GameDataManager } from "../api/GameDataManager.ts";
+import { WaveAdvanceSystem } from "../logic/level/WaveAdvanceSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -60,6 +62,12 @@ export class Game extends Scene {
         this.ecs = new ECS();
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
+        GameDataManager.init({
+            mobs: this.cache.json.get("mobs"),
+            patterns: this.cache.json.get("patterns"),
+            levels: this.cache.json.get("levels"),
+        });
+
         // --- Pointer Input ---
         //this.ecs.addSystem(new ThumbstickInputSystem());
         this.ecs.addSystem(new DragMoveSystem());
@@ -78,6 +86,7 @@ export class Game extends Scene {
         // --- Level Direction ---
         this.ecs.addSystem(new LevelDirectorSystem());
         this.ecs.addSystem(new WaveManagerSystem());
+        this.ecs.addSystem(new WaveAdvanceSystem());
         this.ecs.addSystem(new UICommandSystem());
 
         // --- Game Logic Systems ---

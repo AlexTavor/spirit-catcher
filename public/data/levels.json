@@ -1,0 +1,65 @@
+[
+  {
+    "id": "level_1752413354317",
+    "name": "Level 1",
+    "startHpMultiplier": 1,
+    "endHpMultiplier": 1.5,
+    "startSpeed": 50,
+    "endSpeed": 75,
+    "waves": [
+      {
+        "id": "wave_1752413373191",
+        "name": "Wave 1",
+        "patternIds": [
+          "pattern_6_simple"
+        ]
+      },
+      {
+        "id": "wave_1752413399080",
+        "name": "Wave 2",
+        "patternIds": [
+          "pattern_2_smiley",
+          "pattern_1_tentacles",
+          "pattern_8_helmet"
+        ]
+      },
+      {
+        "id": "wave_1752413413328",
+        "name": "Wave 3",
+        "patternIds": [
+          "pattern_1_tentacles",
+          "pattern_4_teeth",
+          "pattern_8_helmet"
+        ]
+      },
+      {
+        "id": "wave_1752413429885",
+        "name": "Wave 4",
+        "patternIds": [
+          "pattern_5_magnet",
+          "pattern_8_helmet",
+          "pattern_2_smiley"
+        ]
+      },
+      {
+        "id": "wave_1752413445984",
+        "name": "Wave 5",
+        "patternIds": [
+          "pattern_3_flower",
+          "pattern_5_magnet",
+          "pattern_8_helmet",
+          "pattern_6_simple"
+        ]
+      },
+      {
+        "id": "wave_1752413469278",
+        "name": "Wave 6",
+        "patternIds": [
+          "pattern_7_thors_hammer",
+          "pattern_7_thors_hammer",
+          "pattern_7_thors_hammer"
+        ]
+      }
+    ]
+  }
+]

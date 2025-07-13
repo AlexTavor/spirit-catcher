@@ -1,0 +1,26 @@
+[
+  {
+    "id": "mob_1752367940392",
+    "name": "Basic",
+    "minHp": 200,
+    "maxHp": 250,
+    "liftResistance": 0,
+    "displayType": "standard"
+  },
+  {
+    "id": "mob_1752367968215",
+    "name": "Strong",
+    "minHp": 400,
+    "maxHp": 500,
+    "liftResistance": 0,
+    "displayType": "strong"
+  },
+  {
+    "id": "mob_1752368000361",
+    "name": "Lift Resistor",
+    "minHp": 100,
+    "maxHp": 125,
+    "liftResistance": 1,
+    "displayType": "resistant"
+  }
+]

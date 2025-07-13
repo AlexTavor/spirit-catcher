@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { LogDisplay } from "./LogDisplay";
+import { PatternEditorTool } from "./PatternEditorTool";
 
 const StyledButton = styled.div`
     position: relative;
@@ -16,27 +16,26 @@ const StyledButton = styled.div`
     align-items: center;
     gap: 8px;
     user-select: none;
-
     &:hover {
         background-color: #555;
     }
 `;
 
-export const LogButton: React.FC = () => {
-    const [isLogOpen, setLogOpen] = useState(false);
+export const PatternEditorButton: React.FC = () => {
+    const [isEditorOpen, setEditorOpen] = useState(false);
 
-    const toggleLog = () => {
-        setLogOpen((prev) => !prev);
+    const toggleEditor = () => {
+        setEditorOpen((prev) => !prev);
     };
 
     return (
         <>
-            <StyledButton onClick={toggleLog}>
-                <span>📜</span>
-                <span>Logs</span>
+            <StyledButton onClick={toggleEditor}>
+                <span>🎨</span>
+                <span>Patterns</span>
             </StyledButton>
 
-            <LogDisplay isOpen={isLogOpen} />
+            {isEditorOpen && <PatternEditorTool toggleEditor={toggleEditor} />}
         </>
     );
 };

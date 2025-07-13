@@ -21,8 +21,11 @@ export class Preloader extends Scene {
     }
 
     preload() {
+        this.load.json("patterns", "data/patterns.json");
+        this.load.json("mobs", "data/mobs.json");
+        this.load.json("levels", "data/levels.json");
+
         /*
-        this.load.json("panelRegistry", "assets/data/panels.json");
 
         this.load.atlas(
             "plants",
