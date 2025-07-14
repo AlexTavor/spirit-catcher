@@ -17,9 +17,9 @@ export class ModifierSystem extends System {
      * The ECS's update loop should be modified to pass this from the main scene.
      *
      * @param entities The set of entities with an ActiveModifiersComponent.
-     * @param time The current game time in milliseconds, provided by the scene's update loop.
+     * @param delta The time elapsed since the last update, in milliseconds.
      */
-    public update(entities: Set<Entity>, time: number): void {
+    public update(entities: Set<Entity>, delta: number): void {
         for (const entity of entities) {
             const component = this.ecs.getComponent(
                 entity,
@@ -30,7 +30,8 @@ export class ModifierSystem extends System {
             // This is more efficient than creating a new array if no modifiers are removed.
             let i = component.modifiers.length;
             while (i--) {
-                if (component.modifiers[i].expirationTime <= time) {
+                component.modifiers[i].timeRemaining -= delta;
+                if (component.modifiers[i].timeRemaining <= 0) {
                     component.modifiers.splice(i, 1);
                 }
             }

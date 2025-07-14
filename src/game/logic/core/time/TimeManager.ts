@@ -21,7 +21,7 @@ export class TimeManager {
      * Gets the current time scale.
      * @returns The current time scale (1.0 is normal speed, 0.0 is paused).
      */
-    public static get(): number {
+    public static timescale(): number {
         return this.timeScale;
     }
 

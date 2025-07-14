@@ -67,7 +67,7 @@ const DEFAULTS = {
     MobStepHeight: 20, // Height of each step in pixels
 
     // --- Boomerang Mob Interaction ---
-    BoomerangDamageThreshold: 400, // The velocity a boomerang must exceed to be considered a "hard hit" for damage.
+    BoomerangDamageThreshold: 1000, // The velocity a boomerang must exceed to be considered a "hard hit" for damage.
     BoomerangDpsDamage: 30, // Damage per second applied by a boomerang in sustained, low-velocity contact.
     BoomerangContinuousLiftForce: 150, // Upward force (pixels/sec) applied by a boomerang in sustained, low-velocity contact. Must be > BoomerangGravity to have a net upward effect.
     BoomerangMaxImpulseLift: 15, // The maximum one-time lift impulse (in pixels) from a hard hit. This is applied when impact force is at its lowest; a max-force hit gives 0 lift.

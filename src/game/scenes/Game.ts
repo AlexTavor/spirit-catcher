@@ -49,7 +49,7 @@ export class Game extends Scene {
     }
 
     update(time: number, delta: number) {
-        const d = TimeManager.get() * delta;
+        const d = TimeManager.timescale() * delta;
         super.update(time, d);
         this.ecs?.update(d);
         this.gameDisplay?.update(d);

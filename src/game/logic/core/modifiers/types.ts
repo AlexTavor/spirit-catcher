@@ -61,14 +61,11 @@ export interface ModifierDefinition {
  * Represents an instance of a modifier that is currently active on an entity.
  */
 export interface ActiveModifier {
-    /** The type of the modifier, linking back to its definition. */
     type: string;
-    /** The timestamp (in milliseconds) when this modifier will expire. */
-    expirationTime: number;
+    timeRemaining: number; // Time left in milliseconds
+
     /** A copy of the effects from the definition. */
     effects: ModifierEffect[];
     /** The stacking behavior, copied from the definition. */
     stackingBehavior: ModifierStackingBehavior;
-    /** The source of the modifier, for debugging or UI. */
-    source?: string;
 }

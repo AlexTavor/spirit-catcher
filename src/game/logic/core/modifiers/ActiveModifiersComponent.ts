@@ -15,13 +15,8 @@ export class ActiveModifiersComponent extends Component {
     /**
      * Adds a new modifier to the entity or updates an existing one based on stacking rules.
      * @param definition The static definition of the modifier to add.
-     * @param currentTime The current game time in milliseconds, used to calculate expiration.
      */
-    public addModifier(
-        definition: ModifierDefinition,
-        currentTime: number,
-    ): void {
-        const newExpirationTime = currentTime + definition.defaultDurationMs;
+    public addModifier(definition: ModifierDefinition): void {
         const existingModifierIndex = this.modifiers.findIndex(
             (m) => m.type === definition.type,
         );
@@ -32,21 +27,13 @@ export class ActiveModifiersComponent extends Component {
 
             switch (definition.stackingBehavior) {
                 case ModifierStackingBehavior.REFRESH_DURATION:
-                    // Update the expiration time to the later of the two.
-                    existingModifier.expirationTime = Math.max(
-                        existingModifier.expirationTime,
-                        newExpirationTime,
-                    );
+                    existingModifier.timeRemaining =
+                        definition.defaultDurationMs;
                     break;
 
                 case ModifierStackingBehavior.INDEPENDENT_STACKING:
                     // Add a completely new instance.
-                    this.modifiers.push(
-                        this.createActiveModifier(
-                            definition,
-                            newExpirationTime,
-                        ),
-                    );
+                    this.modifiers.push(this.createActiveModifier(definition));
                     break;
 
                 case ModifierStackingBehavior.NO_STACK:
@@ -55,9 +42,7 @@ export class ActiveModifiersComponent extends Component {
             }
         } else {
             // No existing modifier of this type; add a new one.
-            this.modifiers.push(
-                this.createActiveModifier(definition, newExpirationTime),
-            );
+            this.modifiers.push(this.createActiveModifier(definition));
         }
     }
 
@@ -86,15 +71,12 @@ export class ActiveModifiersComponent extends Component {
      */
     private createActiveModifier(
         definition: ModifierDefinition,
-        expirationTime: number,
     ): ActiveModifier {
         return {
             type: definition.type,
-            expirationTime: expirationTime,
-            // Create a new copy of the effects array to prevent shared state issues.
+            timeRemaining: definition.defaultDurationMs,
             effects: [...definition.effects],
             stackingBehavior: definition.stackingBehavior,
-            source: definition.displayName,
         };
     }
 }
