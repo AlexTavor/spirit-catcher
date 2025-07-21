@@ -1,1 +1,1 @@
-Collect Spirits With A Magic Boomerang
+Trying out a boomerang mechanic with various gameplays
