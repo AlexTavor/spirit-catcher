@@ -29,8 +29,8 @@ const DEFAULTS = {
     BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
     BoomerangNudgeMaxDelta: 200, // The drag distance that produces the max nudge.
     BoomerangNudgeImpulse: 1600, // The impulse force applied at the max nudge delta, per second
-    BoomerangMaxNudgeVelocity: 4000, // Maximum horizontal velocity applied by nudging
-    BoomerangeNudgeReverseMultiplier: 6, // Multiplier for nudge force when reversing boomerang direction
+    BoomerangMaxNudgeVelocity: 1600, // Maximum horizontal velocity applied by nudging
+    BoomerangeNudgeReverseMultiplier: 16, // Multiplier for nudge force when reversing boomerang direction
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms

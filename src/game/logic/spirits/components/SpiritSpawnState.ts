@@ -12,8 +12,8 @@ export class SpiritSpawnState extends Component {
     private readonly SPAWN_INTERVAL_MS = 50;
     private readonly SPAWN_X_VARIATION = 50; // Horizontal variation for spawn position.
     private readonly SPAWN_Y_OFFSET = 50; // Distance from the bottom of the screen.
-    private readonly INITIAL_VELOCITY_Y = 100; // Upward speed of the spirit.
-    private readonly NOISE_TIME_INCREMENT = 0.01; // How fast to move through the noise space.
+    private readonly INITIAL_VELOCITY_Y = 75; // Upward speed of the spirit.
+    private readonly NOISE_TIME_INCREMENT = 0.005; // How fast to move through the noise space.
 
     // --- State ---
     private spawnTimer: number = 0;

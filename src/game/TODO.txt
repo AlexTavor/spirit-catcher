@@ -1,11 +1,28 @@
 TODO:
 - Better level logic
-    - SpiritSpawnStatesSystem 
-        - Needs to detect wave change
+    - SpiritSpawnStatesSystem needs to 
+        - detect wave change
+        - Have a wave duration value
+        - When wave is over, and no spirits remain on screen, fire wave end
         - Have a definition of SpawnStates per wave
             - Delay before start
             - Frequency
             - Duration
             - X logic
-        - Has a target # of spirits to spawn
-        - When all spirits were spawned, and none of them remain on screen, fire wave end
+- Select abilities between waves
+    - Pop 1-out-of-3 selection
+    - Abilities
+        - heal
+        - up max HP
+        - bigger 'rang
+    - More abilities
+        - Magnet zone around 'rang
+        - Horizontally moving poppables
+            - Pops, shoots a projectile at topmost spirit
+            - Explodes, popping all spirits in radius
+            - Pops, producing vertical shot (up and down)
+        - On 'rang collect by player
+            - explosion around player, popping spirits in radius
+            - vertical shot from player
+            - spirits slomo
+            - heal a bit

@@ -3,6 +3,43 @@ import { LevelState } from "../../level/LevelState";
 import { WaveState } from "../../level/WaveState";
 import { SpiritSpawnState } from "../components/SpiritSpawnState";
 
+const spawnerConfig0 = {
+    spawnInterval: 100, // ms
+    spawnXVariance: 100, // pixels
+    duration: 15000, // ms
+    startDelay: 0, // ms
+    initialYVelocity: 100, // pixels/ms
+    noiseTimeIncrement: 0.01, // step size for noise function
+};
+
+const spawnerConfig1 = {
+    spawnInterval: 300, // ms
+    spawnXVariance: 100, // pixels
+    duration: 10000, // ms
+    startDelay: 5000, // ms
+    initialYVelocity: 150, // pixels/ms
+    noiseTimeIncrement: 0.03, // step size for noise function
+};
+
+const spawnerConfig2 = {
+    ...spawnerConfig0,
+    duration: 5000,
+    initialYVelocity: 75,
+    noiseTimeIncrement: 0.005,
+};
+
+const waveData0 = {
+    spawners: [spawnerConfig2],
+};
+
+const waveData1 = {
+    spawners: [spawnerConfig0, spawnerConfig1],
+};
+
+const levelData = {
+    waves: [waveData0, waveData1],
+};
+
 /**
  * Looks at LevelState, adds/removes SpiritSpawnState components based on the current level state.
  */
