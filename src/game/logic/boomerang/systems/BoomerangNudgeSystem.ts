@@ -42,17 +42,28 @@ export class BoomerangNudgeSystem extends System {
 
         const dt = delta / 1000; // Convert delta from ms to seconds
 
-        // Calculate the impulse to apply based on the normalized delta.
+        // Calculate the player's intended impulse.
+
         const impulseX = normalizedDelta * config.BoomerangNudgeImpulse * dt;
         const maxVelocity = config.BoomerangMaxNudgeVelocity;
 
-        // Apply the impulse to all boomerangs.
         for (const boomerang of entities) {
             const velocity = this.ecs.getComponent(boomerang, Velocity);
             const currentVelocityX = velocity.x;
 
+            let totalImpulse = impulseX;
+
+            // Check if the nudge force is opposing the current velocity
+            const isReversing =
+                Math.sign(impulseX) !== Math.sign(currentVelocityX) &&
+                currentVelocityX !== 0;
+
+            if (isReversing) {
+                totalImpulse *= config.BoomerangeNudgeReverseMultiplier;
+            }
+
             velocity.x = PhaserMath.Clamp(
-                currentVelocityX + impulseX,
+                currentVelocityX + totalImpulse,
                 -maxVelocity,
                 maxVelocity,
             );

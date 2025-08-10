@@ -60,7 +60,7 @@ export class BoomerangPhysicsSystem extends System {
 
         // Clamp position to game boundaries
         const config = ConfigManager.get();
-        const size = config.BoomerangHeight / 2;
+        const size = config.BoomerangWidth / 2;
 
         transform.pos.x = Math.max(
             size,

@@ -24,10 +24,10 @@ export class BoomerangBoundaryCollisionSystem extends System {
 
             // Check for wall collision
             const hitLeftWall =
-                transform.pos.x <= config.BoomerangHeight / 2 && velocity.x < 0;
+                transform.pos.x <= config.BoomerangWidth / 2 && velocity.x < 0;
             const hitRightWall =
                 transform.pos.x >=
-                    config.GameWidth - config.BoomerangHeight / 2 &&
+                    config.GameWidth - config.BoomerangWidth / 2 &&
                 velocity.x > 0;
 
             if (hitLeftWall || hitRightWall) {

@@ -23,9 +23,9 @@ export class WallCollisionBounceSystem extends System {
             const transform = this.ecs.getComponent(entity, Transform);
 
             if (flag.hitLeft) {
-                transform.pos.x = config.BoomerangHeight / 2;
+                transform.pos.x = config.BoomerangWidth / 2;
             } else {
-                transform.pos.x = config.GameWidth - config.BoomerangHeight / 2;
+                transform.pos.x = config.GameWidth - config.BoomerangWidth / 2;
             }
         }
     }
