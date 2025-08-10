@@ -14,47 +14,48 @@ export class BoomerangNudgeSystem extends System {
         Velocity,
     ]);
 
-    public update(entities: Set<Entity>): void {
+    public update(entities: Set<Entity>, delta: number): void {
         const player = getPlayerEntity(this.ecs);
+
         if (player === -1) return;
 
         const config = ConfigManager.get();
         const dragState = this.ecs.getComponent(player, DragState);
 
-        if (dragState) {
-            const dragDeltaX = dragState.currentX - dragState.previousX;
+        if (!dragState || dragState.pointerId === -1) {
+            return;
+        }
 
-            if (dragDeltaX !== 0) {
-                // Normalize the input based on a max expected delta.
-                const normalizedDelta = PhaserMath.Clamp(
-                    dragDeltaX / config.BoomerangNudgeMaxDelta,
-                    -1,
-                    1,
-                );
+        const dragDeltaX = dragState.currentX - dragState.startX;
 
-                // Apply the ease-in curve (x^2).
-                // This makes the output grow exponentially with the input.
-                const easedMultiplier =
-                    Math.sign(normalizedDelta) *
-                    Math.pow(Math.abs(normalizedDelta), 1.2);
+        if (dragDeltaX === 0) {
+            return;
+        }
 
-                // Calculate the final impulse.
-                const impulseX = easedMultiplier * config.BoomerangNudgeImpulse;
+        // Normalize the input based on a max expected delta.
 
-                for (const boomerang of entities) {
-                    const velocity = this.ecs.getComponent(boomerang, Velocity);
-                    velocity.x += impulseX;
+        const normalizedDelta = PhaserMath.Clamp(
+            dragDeltaX / config.BoomerangNudgeMaxDelta,
+            -1,
+            1,
+        );
 
-                    velocity.x = PhaserMath.Clamp(
-                        velocity.x,
-                        -config.BoomerangMaxNudgeVelocity,
-                        config.BoomerangMaxNudgeVelocity,
-                    );
-                }
-            }
+        const dt = delta / 1000; // Convert delta from ms to seconds
 
-            // Consume the delta for the next frame.
-            dragState.previousX = dragState.currentX;
+        // Calculate the impulse to apply based on the normalized delta.
+        const impulseX = normalizedDelta * config.BoomerangNudgeImpulse * dt;
+        const maxVelocity = config.BoomerangMaxNudgeVelocity;
+
+        // Apply the impulse to all boomerangs.
+        for (const boomerang of entities) {
+            const velocity = this.ecs.getComponent(boomerang, Velocity);
+            const currentVelocityX = velocity.x;
+
+            velocity.x = PhaserMath.Clamp(
+                currentVelocityX + impulseX,
+                -maxVelocity,
+                maxVelocity,
+            );
         }
     }
 

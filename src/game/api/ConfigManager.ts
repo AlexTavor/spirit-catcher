@@ -15,9 +15,9 @@ const DEFAULTS = {
     PlayerMovementEaseValue: 0.15, // Smoothing factor for player movement (0 = instant, 1 = no movement)
 
     // --- Boomerang Config ---
-    BoomerangGravity: 150,
-    BoomerangGravityScaleByVelocity: 3, // Multiplier for gravity at near-zero X velocity
-    BoomerangGravityMaxVel: 800, // The X velocity at which the gravity bonus diminishes to zero
+    BoomerangGravity: 50,
+    BoomerangGravityScaleByVelocity: 9, // Multiplier for gravity at near-zero X velocity
+    BoomerangGravityMaxVel: 200, // The X velocity at which the gravity bonus diminishes to zero
     BoomerangAirDrag: 0.95,
     BoomerangThrowMinForce: 1800,
     BoomerangSpawnOffsetY: 10,
@@ -27,10 +27,9 @@ const DEFAULTS = {
     BoomerangHeight: 8,
     BoomerangImpactMaxVelocity: 800, // Max horizontal velocity for impact force calculation
     BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
-    BoomerangNudgeMaxDelta: 40, // The per-frame drag distance that produces the max nudge.
-    BoomerangNudgeImpulse: 100, // The impulse force applied at the max nudge delta.
-    BoomerangMaxNudgeVelocity: 800, // Maximum horizontal velocity applied by nudging
-    BoomerangNudgeLerpFactor: 0.2,
+    BoomerangNudgeMaxDelta: 200, // The drag distance that produces the max nudge.
+    BoomerangNudgeImpulse: 1000, // The impulse force applied at the max nudge delta, per second
+    BoomerangMaxNudgeVelocity: 1600, // Maximum horizontal velocity applied by nudging
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms
@@ -47,7 +46,7 @@ const DEFAULTS = {
     WallHitAngleVariance: 0.3, // Variance in angle when duplicating boomerang
 
     // --- Input Config --- //
-    ThumbstickDeadzone: 40, // Pixels
+    ThumbstickDeadzone: 10, // Pixels
 
     // --- Mobs Config --- //
     MobWidth: 80,

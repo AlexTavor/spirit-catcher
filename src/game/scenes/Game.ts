@@ -5,7 +5,7 @@ import { setSceneType } from "../../ui/hooks/useActiveSceneType.ts";
 import { ConfigManager } from "../api/ConfigManager.ts";
 import { GameDisplay } from "../display/GameDisplay.ts";
 import { BoomerangPhysicsSystem } from "../logic/boomerang/systems/BoomerangPhysicsSystem.ts";
-import { BoundaryCollisionSystem } from "../logic/boomerang/systems/BoundaryCollisionSystem.ts";
+import { BoomerangBoundaryCollisionSystem } from "../logic/boomerang/systems/BoomerangBoundaryCollisionSystem.ts";
 import { CeilingCollisionBounceSystem } from "../logic/boomerang/systems/CeilingCollisionBounceSystem.ts";
 import { GroundCollisionSystem } from "../logic/boomerang/systems/GroundCollisionSystem.ts";
 import { WallCollisionBounceSystem } from "../logic/boomerang/systems/WallCollisionBounceSystem.ts";
@@ -91,7 +91,7 @@ export class Game extends Scene {
         // --- Game Logic Systems ---
         this.ecs.addSystem(new BoomerangNudgeSystem());
         this.ecs.addSystem(new BoomerangPhysicsSystem());
-        this.ecs.addSystem(new BoundaryCollisionSystem());
+        this.ecs.addSystem(new BoomerangBoundaryCollisionSystem());
         this.ecs.addSystem(new GroundCollisionSystem());
         this.ecs.addSystem(new WallCollisionBounceSystem());
         this.ecs.addSystem(new CeilingCollisionBounceSystem());
@@ -102,8 +102,6 @@ export class Game extends Scene {
         // --- Special Abilities and Effects ---
         // this.ecs.addSystem(new WallExplosionSystem());
         // this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
-        // this.ecs.addSystem(new StompEffectSystem());
-        // this.ecs.addSystem(new ManaRegenSystem());
 
         // --- Spirit Systems ---
         this.ecs.addSystem(new SpiritSpawnUpdateSystem());

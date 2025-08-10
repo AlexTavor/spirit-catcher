@@ -35,7 +35,7 @@ export class DragInput {
         const state = new DragState();
         state.pointerId = payload.pointerId;
         state.startX = payload.pos.x;
-        state.previousX = payload.pos.x; // Initialize previousX
+        state.previousX = payload.pos.x;
         state.currentX = payload.pos.x;
 
         this.ecs.addComponent(player, state);
@@ -49,7 +49,8 @@ export class DragInput {
         const state = this.ecs.getComponent(player, DragState);
         if (!state || state.pointerId !== payload.pointerId) return;
 
-        // Update current position
+        // Update previous and current positions
+        state.previousX = state.currentX;
         state.currentX = payload.pos.x;
     }
 
