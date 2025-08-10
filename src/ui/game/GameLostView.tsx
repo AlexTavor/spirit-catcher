@@ -43,14 +43,14 @@ const GameOverText = styled.h1`
 
 const ScoreText = styled.p`
     color: white;
-    font-size: 3vw;
+    font-size: 3em;
     font-family: sans-serif;
     margin-top: 20px;
 `;
 
 const RestartText = styled.p`
     color: #ccc;
-    font-size: 2vw;
+    font-size: 2em;
     font-family: sans-serif;
     margin-top: 40px;
     animation: ${keyframes`

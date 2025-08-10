@@ -8,7 +8,7 @@ const ScoreContainer = styled.div`
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    font-size: 2.5vw;
+    font-size: 2.5em;
     font-family: sans-serif;
     font-weight: bold;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
