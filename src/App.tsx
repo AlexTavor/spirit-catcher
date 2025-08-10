@@ -15,7 +15,7 @@ export function App() {
         <div id="app">
             <div id="game-wrapper">
                 <PhaserGame ref={phaserRef} />
-                <ToolsContainer/>
+                {/*<ToolsContainer/>*/}
                 <VersionDisplay/>
                 <WaveMessageOverlay/>
                 <PreGameView/>

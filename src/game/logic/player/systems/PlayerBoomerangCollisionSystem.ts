@@ -20,7 +20,7 @@ export class PlayerBoomerangCollisionSystem extends System {
         const boomerangs = this.ecs.getEntitiesWithComponent(Boomerang);
         const config = ConfigManager.get();
 
-        // Player bounds (origin is top-left)
+        // Player bounds (origin is center)
         const playerRect = {
             x: playerTransform.pos.x - config.PlayerWidth / 2,
             y: playerTransform.pos.y,

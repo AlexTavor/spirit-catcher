@@ -30,7 +30,7 @@ export const ScoreDisplay: React.FC = () => {
 
     return (
         <ScoreContainer>
-            Spirits: {levelState.spiritsCollected}
+            {levelState.spiritsCollected}
         </ScoreContainer>
     );
 };

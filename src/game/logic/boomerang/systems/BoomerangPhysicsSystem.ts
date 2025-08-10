@@ -44,8 +44,6 @@ export class BoomerangPhysicsSystem extends System {
             config.BoomerangGravityScaleByVelocity *
             gravityMultiplier;
 
-        console.log("Additional Gravity:", additionalGravity);
-
         const finalGravity = config.BoomerangGravity + additionalGravity;
 
         // Apply final gravity.

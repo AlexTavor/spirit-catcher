@@ -29,13 +29,13 @@ export class DragInput {
 
     onDown(payload: GameInputPayload): void {
         if (DragInput.isDisabled(this.ecs)) return;
-
         const player = getPlayerEntity(this.ecs);
         if (player === -1 || this.ecs.hasComponent(player, DragState)) return;
 
         const state = new DragState();
         state.pointerId = payload.pointerId;
         state.startX = payload.pos.x;
+        state.previousX = payload.pos.x; // Initialize previousX
         state.currentX = payload.pos.x;
 
         this.ecs.addComponent(player, state);
@@ -44,18 +44,17 @@ export class DragInput {
 
     onMove(payload: GameInputPayload): void {
         if (DragInput.isDisabled(this.ecs)) return;
-
         const player = getPlayerEntity(this.ecs);
         if (player === -1) return;
         const state = this.ecs.getComponent(player, DragState);
         if (!state || state.pointerId !== payload.pointerId) return;
 
+        // Update current position
         state.currentX = payload.pos.x;
     }
 
     onUp(payload: GameInputPayload): void {
         if (DragInput.isDisabled(this.ecs)) return;
-
         const player = getPlayerEntity(this.ecs);
         if (player === -1) return;
         const state = this.ecs.getComponent(player, DragState);

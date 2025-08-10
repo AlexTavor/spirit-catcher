@@ -27,11 +27,10 @@ const DEFAULTS = {
     BoomerangHeight: 8,
     BoomerangImpactMaxVelocity: 800, // Max horizontal velocity for impact force calculation
     BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
-    BoomerangNudgeForce: 1200, // Force applied when nudging the boomerang with a drag gesture
-    BoomerangMaxNudgeDistance: 150, // Maximum distance for nudge calculation
-
+    BoomerangNudgeMaxDelta: 40, // The per-frame drag distance that produces the max nudge.
+    BoomerangNudgeImpulse: 100, // The impulse force applied at the max nudge delta.
     BoomerangMaxNudgeVelocity: 800, // Maximum horizontal velocity applied by nudging
-    BoomerangNudgeLerpFactor: 0.2, // Smoothing factor for nudge velocity changes (0 = instant, 1 = no change)
+    BoomerangNudgeLerpFactor: 0.2,
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms

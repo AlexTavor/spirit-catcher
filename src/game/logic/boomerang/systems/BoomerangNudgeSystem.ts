@@ -1,4 +1,4 @@
-import { ConfigManager, ConfigType } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../api/ConfigManager";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { DragState } from "../../input/DragState";
 import { Velocity } from "../../core/components/Velocity";
@@ -21,40 +21,41 @@ export class BoomerangNudgeSystem extends System {
         const config = ConfigManager.get();
         const dragState = this.ecs.getComponent(player, DragState);
 
-        // If there's a drag, calculate the target velocity based on drag distance.
-        // Otherwise, the target velocity is 0, so the boomerang will ease to a stop (horizontally).
-        let targetVelocityX = 0;
         if (dragState) {
-            const nudgeIntent = this.getNudgeIntent(dragState, config);
-            targetVelocityX = nudgeIntent * config.BoomerangMaxNudgeVelocity;
+            const dragDeltaX = dragState.currentX - dragState.previousX;
+
+            if (dragDeltaX !== 0) {
+                // Normalize the input based on a max expected delta.
+                const normalizedDelta = PhaserMath.Clamp(
+                    dragDeltaX / config.BoomerangNudgeMaxDelta,
+                    -1,
+                    1,
+                );
+
+                // Apply the ease-in curve (x^2).
+                // This makes the output grow exponentially with the input.
+                const easedMultiplier =
+                    Math.sign(normalizedDelta) *
+                    Math.pow(Math.abs(normalizedDelta), 1.2);
+
+                // Calculate the final impulse.
+                const impulseX = easedMultiplier * config.BoomerangNudgeImpulse;
+
+                for (const boomerang of entities) {
+                    const velocity = this.ecs.getComponent(boomerang, Velocity);
+                    velocity.x += impulseX;
+
+                    velocity.x = PhaserMath.Clamp(
+                        velocity.x,
+                        -config.BoomerangMaxNudgeVelocity,
+                        config.BoomerangMaxNudgeVelocity,
+                    );
+                }
+            }
+
+            // Consume the delta for the next frame.
+            dragState.previousX = dragState.currentX;
         }
-
-        const lerpFactor = config.BoomerangNudgeLerpFactor;
-
-        for (const boomerang of entities) {
-            const velocity = this.ecs.getComponent(boomerang, Velocity);
-
-            // Linearly interpolate the boomerang's current x-velocity towards the target.
-            velocity.x = PhaserMath.Linear(
-                velocity.x,
-                targetVelocityX,
-                lerpFactor,
-            );
-        }
-    }
-
-    private getNudgeIntent(dragState: DragState, config: ConfigType): number {
-        const maxNudgeDistance = config.BoomerangMaxNudgeDistance;
-        // The distance and direction of the drag from its starting point.
-        const dragDistance = dragState.startX - dragState.currentX;
-
-        // Clamp the drag distance to the max nudge distance and normalize to a [-1, 1] range.
-        const nudgeIntent = -Math.min(
-            Math.max(dragDistance / maxNudgeDistance, -1),
-            1,
-        );
-
-        return nudgeIntent;
     }
 
     public destroy(): void {}
