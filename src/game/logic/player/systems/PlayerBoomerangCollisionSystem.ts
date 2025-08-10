@@ -22,7 +22,7 @@ export class PlayerBoomerangCollisionSystem extends System {
 
         // Player bounds (origin is top-left)
         const playerRect = {
-            x: playerTransform.pos.x,
+            x: playerTransform.pos.x - config.PlayerWidth / 2,
             y: playerTransform.pos.y,
             width: config.PlayerWidth,
             height: config.PlayerHeight,

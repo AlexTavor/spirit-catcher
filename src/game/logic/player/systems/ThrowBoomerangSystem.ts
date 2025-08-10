@@ -40,7 +40,7 @@ export class ThrowBoomerangSystem extends System {
     public update(): void {}
 
     private handleThrow(payload: ThrowPayload): void {
-        const { chargeLevel, maxChargeLevel, playerId, target, from } = payload;
+        const { playerId, target, from } = payload;
 
         const boomerang = this.ecs.addEntity();
 
