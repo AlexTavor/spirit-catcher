@@ -53,13 +53,7 @@ export class ThrowBoomerangSystem extends System {
         const direction = MathUtils.subtract(target, from);
         const normalizedDirection = MathUtils.normalize(direction);
 
-        // Calculate the magnitude of the throw based on charge level.
-        const chargeRatio = Math.min(1, chargeLevel / maxChargeLevel);
-        const throwSpeed =
-            ConfigManager.get().BoomerangThrowMinForce +
-            (ConfigManager.get().BoomerangThrowMaxForce -
-                ConfigManager.get().BoomerangThrowMinForce) *
-                chargeRatio;
+        const throwSpeed = ConfigManager.get().BoomerangThrowMinForce;
 
         // Combine direction and speed to get the final velocity vector.
         const velocityVector = MathUtils.multiply(

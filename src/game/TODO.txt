@@ -1,6 +1,5 @@
 TODO:
 - Better level logic
-    - SpiritSpawnState needs to use simplex noise to determine the next spawn X
     - SpiritSpawnStatesSystem 
         - Needs to detect wave change
         - Have a definition of SpawnStates per wave

@@ -5,6 +5,7 @@ import { Velocity } from "../../core/components/Velocity";
 import { System, Entity } from "../../core/ECS";
 import { Airborne } from "../components/Airborne";
 import { Boomerang } from "../components/Boomerang";
+import { Math as PhaserMath } from "phaser";
 
 export class BoomerangNudgeSystem extends System {
     public componentsRequired = new Set<Function>([
@@ -13,37 +14,41 @@ export class BoomerangNudgeSystem extends System {
         Velocity,
     ]);
 
-    public update(entities: Set<Entity>, delta: number): void {
+    public update(entities: Set<Entity>): void {
         const player = getPlayerEntity(this.ecs);
         if (player === -1) return;
 
+        const config = ConfigManager.get();
         const dragState = this.ecs.getComponent(player, DragState);
 
-        if (!dragState) {
-            return;
+        // If there's a drag, calculate the target velocity based on drag distance.
+        // Otherwise, the target velocity is 0, so the boomerang will ease to a stop (horizontally).
+        let targetVelocityX = 0;
+        if (dragState) {
+            const nudgeIntent = this.getNudgeIntent(dragState, config);
+            targetVelocityX = nudgeIntent * config.BoomerangMaxNudgeVelocity;
         }
 
-        const dt = delta / 1000;
-        const config = ConfigManager.get();
-
-        // Calculate the nudge intent based on the drag state, normalizing by config.BoomerangMaxNudgeDistance
-        const nudgeIntent = this.getNudgeIntent(dragState, config);
-
-        const nudgeForce = nudgeIntent * config.BoomerangNudgeForce;
-
-        // Apply no force if the drag is negligible.
-        if (Math.abs(nudgeForce) < 0.1) return;
+        const lerpFactor = config.BoomerangNudgeLerpFactor;
 
         for (const boomerang of entities) {
             const velocity = this.ecs.getComponent(boomerang, Velocity);
-            velocity.x += nudgeForce * dt;
+
+            // Linearly interpolate the boomerang's current x-velocity towards the target.
+            velocity.x = PhaserMath.Linear(
+                velocity.x,
+                targetVelocityX,
+                lerpFactor,
+            );
         }
     }
 
-    getNudgeIntent(dragState: DragState, config: ConfigType) {
+    private getNudgeIntent(dragState: DragState, config: ConfigType): number {
         const maxNudgeDistance = config.BoomerangMaxNudgeDistance;
+        // The distance and direction of the drag from its starting point.
         const dragDistance = dragState.startX - dragState.currentX;
 
+        // Clamp the drag distance to the max nudge distance and normalize to a [-1, 1] range.
         const nudgeIntent = -Math.min(
             Math.max(dragDistance / maxNudgeDistance, -1),
             1,
