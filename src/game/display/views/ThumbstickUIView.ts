@@ -5,13 +5,12 @@ import { DragState } from "../../logic/input/DragState";
 import { Pos } from "../../../utils/Math";
 import { GameObjects } from "phaser";
 import { IsInputDown } from "../../logic/input/IsInputDown";
-import { Transform } from "../../logic/core/components/Transform";
 
 export class ThumbstickUIView {
     private context: ViewContext;
 
     // --- Style & Layout ---
-    private readonly BASE_Y_OFFSET = -150;
+    private readonly BASE_Y_OFFSET = -50;
     private readonly DEAD_ZONE_RADIUS = 30;
     private readonly ARROW_SIZE = 25;
     private readonly ARROW_OFFSET_X = 50;
@@ -38,15 +37,16 @@ export class ThumbstickUIView {
 
         const isInputDown = this.context.ecs.hasComponent(player, IsInputDown);
         const dragState = this.context.ecs.getComponent(player, DragState);
-        const transform = this.context.ecs.getComponent(player, Transform);
 
-        if (!isInputDown || !dragState || !transform) return;
+        if (!isInputDown || !dragState) return;
 
-        const delta = dragState.targetX - transform.pos.x;
+        const delta = dragState.currentX - dragState.startX;
 
         const isMovingRight = delta > 2;
         const isMovingLeft = delta < -2;
         const isMoving = isMovingLeft || isMovingRight;
+
+        this.position.x = dragState.startX;
 
         this.context.dynamicGraphics.draw(
             this.position.x,

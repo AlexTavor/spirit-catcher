@@ -1,13 +1,18 @@
+import { Component } from "../core/ECS";
+import { WaveState } from "./WaveState";
+
 /**
- * Defines the possible phases of a wave.
+ * A component attached to the world entity that holds the single
+ * source of truth for the current state of mob progression.
  */
 
-export enum LevelState {
-    PRE_GAME, // Game is paused, waiting for first input.
-    PRE_WAVE, // The brief moment before a wave's mobs start marching.
-    WAVE_STARTING, // Mobs are quick-marching into position.
-    ADVANCE_WAVE, // A subsequent group of mobs is quick-marching.
-    WAVE_ACTIVE, // Mobs are descending normally; player can act.
-    WAVE_CLEARED, // All mobs from the wave are defeated.
-    GAME_WON,
+export class LevelState extends Component {
+    public waveState: WaveState = WaveState.PRE_GAME;
+    public waveNumber = 0;
+    /** Timer for state-based delays, like time between waves. */
+    public stateTimer = 0;
+
+    public spiritsCollected = 0;
+    public spiritsMissed = 0;
+    public maxSpiritMisses = 100;
 }

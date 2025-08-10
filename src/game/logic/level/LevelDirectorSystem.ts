@@ -1,15 +1,15 @@
 import { System, Entity } from "../core/ECS";
 import { TimeManager } from "../core/time/TimeManager";
-import { Mob } from "../mobs/components/Mob";
-import { LevelState } from "./LevelState";
+import { WaveState } from "./WaveState";
 import { CommandBus } from "../../api/CommandBus";
 import {
     GameCommands,
     TransitionToStatePayload,
 } from "../../consts/GameCommands";
 import { EventBus } from "../../api/EventBus";
-import { GameEvent, MobsStateChangeEvent } from "../../consts/GameUIEvent";
-import { getMobsState } from "../../utils/getMobsState";
+import { GameEvents, WaveStateChangeEvent } from "../../consts/GameEvents";
+import { getLevelState } from "../../utils/getLevelState";
+import { LevelState } from "./LevelState";
 
 /**
  * The single source of truth for level state. It listens for commands
@@ -22,7 +22,7 @@ export class LevelDirectorSystem extends System {
 
     constructor() {
         super();
-        EventBus.on(GameEvent.GAME_READY, this.start, this);
+        EventBus.on(GameEvents.GAME_READY, this.start, this);
     }
 
     private start(): void {
@@ -32,89 +32,97 @@ export class LevelDirectorSystem extends System {
             this.handleTransitionTo,
             this,
         );
-        // Listen for the command from WaveAdvanceSystem.
-        CommandBus.on(
-            GameCommands.ADVANCE_WAVE_COMMAND,
-            this.handleAdvanceWave,
-            this,
-        );
 
         // Command the initial state.
         this.handleTransitionTo({
-            newState: LevelState.PRE_GAME,
+            newState: WaveState.PRE_GAME,
         });
     }
 
     public update(_entities: Set<Entity>, delta: number): void {
-        const mobsState = getMobsState(this.ecs);
-        if (!mobsState) return;
+        const lvl = getLevelState(this.ecs);
+        if (!lvl) return;
 
-        switch (mobsState.state) {
-            case LevelState.WAVE_ACTIVE:
-                // If there are no more mobs, the wave is fully cleared.
-                if (this.ecs.getEntitiesWithComponent(Mob).length === 0) {
-                    this.handleTransitionTo({
-                        newState: LevelState.WAVE_CLEARED,
-                    });
-                }
-                break;
-
-            case LevelState.WAVE_CLEARED:
+        switch (lvl.waveState) {
+            case WaveState.WAVE_CLEARED:
                 // After a delay, command a transition to the next wave.
-                mobsState.stateTimer -= delta;
-                if (mobsState.stateTimer <= 0) {
-                    this.handleTransitionTo({
-                        newState: LevelState.PRE_WAVE,
-                    });
-                }
+                this.updateWaveCleared(lvl, delta);
+                break;
+            case WaveState.WAVE_STARTING:
+                // Handle the pre-wave state, which is a transition state.
+                this.updateWaveStarting(lvl, delta);
+                break;
+            case WaveState.WAVE_ACTIVE:
+                // In the active wave state, we can check for win conditions or other game logic.
+                this.updateWaveActive(lvl, delta);
                 break;
         }
     }
 
-    private handleAdvanceWave(): void {
-        this.handleTransitionTo({ newState: LevelState.ADVANCE_WAVE });
+    updateWaveActive(lvl: LevelState, _: number) {
+        if (lvl.spiritsMissed >= lvl.maxSpiritMisses) {
+            this.handleTransitionTo({
+                newState: WaveState.GAME_LOST,
+            });
+        }
+    }
+
+    private updateWaveStarting(lvl: LevelState, delta: number) {
+        lvl.stateTimer -= delta;
+        if (lvl.stateTimer <= 0) {
+            this.handleTransitionTo({
+                newState: WaveState.WAVE_ACTIVE,
+            });
+        }
+    }
+
+    private updateWaveCleared(lvl: LevelState, delta: number) {
+        lvl.stateTimer -= delta;
+        if (lvl.stateTimer <= 0) {
+            this.handleTransitionTo({
+                newState: WaveState.PRE_WAVE,
+            });
+        }
     }
 
     private handleTransitionTo(payload: TransitionToStatePayload): void {
         const { newState } = payload;
-        const mobsState = getMobsState(this.ecs);
-        if (!mobsState || mobsState.state === newState) return;
+        const lvl = getLevelState(this.ecs);
+        if (!lvl || lvl.waveState === newState) return;
 
-        mobsState.state = newState;
+        lvl.waveState = newState;
 
         // Handle side-effects of entering the new state.
         switch (newState) {
-            case LevelState.PRE_GAME:
+            case WaveState.PRE_GAME:
                 TimeManager.pause();
-                mobsState.waveNumber = 0;
+                lvl.waveNumber = 0;
                 break;
 
-            case LevelState.PRE_WAVE:
-                mobsState.waveNumber++;
+            case WaveState.PRE_WAVE:
+                lvl.waveNumber++;
+
+                // Switch to next wave immediately
+                lvl.waveState = WaveState.WAVE_STARTING;
                 break;
 
-            case LevelState.WAVE_CLEARED:
-                mobsState.stateTimer = this.WAVE_CLEAR_DELAY;
+            case WaveState.WAVE_CLEARED:
+                lvl.stateTimer = this.WAVE_CLEAR_DELAY;
                 break;
         }
 
         // Broadcast the state change to any interested listeners (like the UI).
-        EventBus.emit(GameEvent.MOBS_STATE_CHANGE_EVENT, {
-            newState: mobsState.state,
-            waveNumber: mobsState.waveNumber,
-        } as MobsStateChangeEvent);
+        EventBus.emit(GameEvents.WAVE_STATE_CHANGE, {
+            newState: lvl.waveState,
+            waveNumber: lvl.waveNumber,
+        } as WaveStateChangeEvent);
     }
 
     public destroy(): void {
-        EventBus.removeListener(GameEvent.GAME_READY, this.start, this);
+        EventBus.removeListener(GameEvents.GAME_READY, this.start, this);
         CommandBus.removeListener(
             GameCommands.TRANSITION_TO_STATE,
             this.handleTransitionTo,
-            this,
-        );
-        CommandBus.removeListener(
-            GameCommands.ADVANCE_WAVE_COMMAND,
-            this.handleAdvanceWave,
             this,
         );
     }

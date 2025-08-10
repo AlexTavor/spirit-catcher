@@ -4,6 +4,10 @@ export interface Pos {
 }
 
 export class MathUtils {
+    static random(min: number, max: number): number {
+        return Math.random() * (max - min) + min;
+    }
+
     static weightedRand(weightedValues: { [key: number]: number }): number {
         // Calculate the total weight
         let totalWeight = 0;

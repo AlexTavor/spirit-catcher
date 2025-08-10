@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { GameEvent } from "../consts/GameUIEvent";
+import { GameEvents } from "../consts/GameEvents";
 import { EventBus } from "../api/EventBus";
 
 export function registerForResize(scene: Scene): () => void {
@@ -10,7 +10,7 @@ export function registerForResize(scene: Scene): () => void {
         const bounds = scene.scale.canvasBounds;
         if (bounds) {
             // Emit a plain object to avoid potential issues with Phaser's Rectangle object
-            EventBus.emit(GameEvent.CANVAS_RESIZED_EVENT, {
+            EventBus.emit(GameEvents.CANVAS_RESIZED, {
                 x: bounds.x,
                 y: bounds.y,
                 width: bounds.width,

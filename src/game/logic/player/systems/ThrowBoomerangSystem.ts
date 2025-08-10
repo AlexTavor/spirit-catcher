@@ -66,10 +66,7 @@ export class ThrowBoomerangSystem extends System {
             normalizedDirection,
             throwSpeed,
         );
-        this.ecs.addComponent(
-            boomerang,
-            new Velocity(velocityVector.x, velocityVector.y),
-        );
+        this.ecs.addComponent(boomerang, new Velocity(velocityVector));
 
         // Add tag components.
         this.ecs.addComponent(boomerang, new Boomerang());

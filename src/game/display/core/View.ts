@@ -2,11 +2,13 @@ import { GameObjects } from "phaser";
 import { ECS, Entity } from "../../logic/core/ECS";
 import { Transform } from "../../logic/core/components/Transform";
 import { DynamicGraphics } from "./DynamicGraphics";
+import { Layers } from "./Layers";
 
 export interface ViewContext {
     scene: Phaser.Scene;
     ecs: ECS;
     dynamicGraphics: DynamicGraphics;
+    layers: Layers;
 }
 
 export abstract class View {

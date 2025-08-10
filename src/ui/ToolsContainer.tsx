@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { ConfigEditorButton } from "./config-editor/ConfigEditorButton";
 import { LogButton } from "./log/LogButton";
-import { MobsEditorButton } from "./mob-editor/MobsEditorButton";
-import { PatternEditorButton } from "./pattern-editor/PatternEditorButton";
-import { LevelEditorButton } from "./level-editor/LevelEditorButton";
 
 // --- The Main Tools Container ---
 
@@ -72,9 +69,6 @@ export const ToolsContainer: React.FC = () => {
             <Content isExpanded={isExpanded}>
                 <ConfigEditorButton />
                 <LogButton />
-                <MobsEditorButton />
-                <PatternEditorButton/>
-                <LevelEditorButton/>
             </Content>
         </Container>
     );

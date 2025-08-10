@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { CommandBus } from "../../game/api/CommandBus";
 import { GameCommands } from "../../game/consts/GameCommands";
-import { LevelState } from "../../game/logic/level/LevelState";
+import { WaveState } from "../../game/logic/level/WaveState";
 
 const Overlay = styled.div<{ isVisible: boolean }>`
     position: fixed;
@@ -34,7 +34,7 @@ export const PreGameView: React.FC = () => {
     const [isVisible, setIsVisible] = useState(true);
 
     const handleStartClick = () => {
-        CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {newState:LevelState.PRE_WAVE});
+        CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {newState:WaveState.PRE_WAVE});
         setIsVisible(false); // Hide the view immediately on click
     };
 

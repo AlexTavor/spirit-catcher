@@ -1,9 +1,9 @@
 import { CommandBus } from "../../api/CommandBus";
 import { GameCommands } from "../../consts/GameCommands";
+import { getLevelState } from "../../utils/getLevelState";
 import { System } from "../core/ECS";
 import { TimeManager } from "../core/time/TimeManager";
-import { LevelState } from "../level/LevelState";
-import { MobsState } from "../level/MobsState";
+import { WaveState } from "../level/WaveState";
 
 /**
  * Listens for high-level commands issued from the UI layer and
@@ -30,8 +30,8 @@ export class UICommandSystem extends System {
     }
 
     private handleStartGame(): void {
-        const mobsState = this.ecs.getComponent(this.ecs.world, MobsState);
-        if (!mobsState || mobsState.state !== LevelState.PRE_GAME) {
+        const lvl = getLevelState(this.ecs);
+        if (!lvl || lvl.waveState !== WaveState.PRE_GAME) {
             // Do nothing if the game is already started.
             return;
         }
@@ -40,7 +40,7 @@ export class UICommandSystem extends System {
         TimeManager.resume();
 
         CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {
-            newState: LevelState.PRE_WAVE,
+            newState: WaveState.PRE_WAVE,
         });
     }
 

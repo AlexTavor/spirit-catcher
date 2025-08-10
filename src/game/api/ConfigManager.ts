@@ -6,21 +6,16 @@ const DEFAULTS = {
     GameWidth: 720,
     GameHeight: 1280,
     EntryScene: "Game",
+    LevelTransitionDuration: 2000, // ms
 
     // --- Player Config --- //
     PlayerHeight: 128,
     PlayerWidth: 64,
     PlayerPickupRadius: 100,
-    ChargeMaxLevel: 100, // Maximum charge level
-    ChargeRate: 50, // Rate at which the charge level increases
-    WalkSpeed: 1000, // Pixels per second
     PlayerMovementEaseValue: 0.15, // Smoothing factor for player movement (0 = instant, 1 = no movement)
-    MaxMana: 80, // Maximum mana for the player
-    ManaRegenPerSecond: 10, // Mana regenerated per second
 
     // --- Boomerang Config ---
-    BoomerangGravity: 500,
-    BoomerangHomingForce: 32,
+    BoomerangGravity: 150,
     BoomerangAirDrag: 0.95,
     BoomerangThrowMinForce: 200,
     BoomerangThrowMaxForce: 2000,
@@ -31,7 +26,8 @@ const DEFAULTS = {
     BoomerangHeight: 8,
     BoomerangImpactMaxVelocity: 800, // Max horizontal velocity for impact force calculation
     BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
-    BoomerangNudgeForce: 10, // Force applied when nudging the boomerang with a drag gesture
+    BoomerangNudgeForce: 1200, // Force applied when nudging the boomerang with a drag gesture
+    BoomerangMaxNudgeDistance: 100, // Maximum distance for nudge calculation
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms
@@ -51,33 +47,8 @@ const DEFAULTS = {
     ThumbstickDeadzone: 40, // Pixels
 
     // --- Mobs Config --- //
-    MobDescentSpeed: 100, // Pixels per second
-    OverkillMinForce: 0.5, // Minimum force to trigger overkill
     MobWidth: 80,
     MobHeight: 80,
-
-    // --- Mob Collision Config --- //
-    MobCollisionDamageFactor: 100, // Multiplies normalized force to get damage
-    MobCollisionMobLift: 2, // How many pixels a mob is knocked up on hit
-    MobCollisionRangUpKick: 0, // Upward velocity applied to boomerang on hit
-    MobCollisionReflectFactor: 0.8, // How much velocity is preserved on reflection (e.g., 0.8 = 80%)
-    MobCollisionMaxImpactForce: 2000, // The velocity magnitude used to normalize impact force to 0-1
-    MobStepInterval: 5000, // Time between steps in milliseconds
-    MobStepDuration: 250, // Duration of each step animation in milliseconds
-    MobStepHeight: 20, // Height of each step in pixels
-
-    // --- Boomerang Mob Interaction ---
-    BoomerangDamageThreshold: 1000, // The velocity a boomerang must exceed to be considered a "hard hit" for damage.
-    BoomerangDpsDamage: 30, // Damage per second applied by a boomerang in sustained, low-velocity contact.
-    BoomerangContinuousLiftForce: 150, // Upward force (pixels/sec) applied by a boomerang in sustained, low-velocity contact. Must be > BoomerangGravity to have a net upward effect.
-    BoomerangMaxImpulseLift: 15, // The maximum one-time lift impulse (in pixels) from a hard hit. This is applied when impact force is at its lowest; a max-force hit gives 0 lift.
-    BoomerangHitCooldownMs: 60, // The cooldown in milliseconds after a hard hit before the same mob can take impact damage again.
-    BoomerangBounceThreshold: 200, // The velocity a boomerang must exceed to bounce off a mob. Set lower than the damage threshold to allow for non-damaging, strategic bounces.
-    BoomerangMobBounceFactor: 0.9, // A multiplier for the boomerang's velocity after bouncing off a mob. A value less than 1.0 represents some energy loss on impact.
-
-    // --- Stomp Config --- //
-    StompManaCost: 50, // Mana cost for the stomp action
-    StompForce: 5000, // Downward force applied to all boomerangs when stomped
 };
 
 export type ConfigType = typeof DEFAULTS;
@@ -142,3 +113,4 @@ export class ConfigManager {
         this.load(); // Load defaults again
     }
 }
+

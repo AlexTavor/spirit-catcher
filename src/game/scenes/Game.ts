@@ -17,26 +17,26 @@ import { ThrowBoomerangSystem } from "../logic/player/systems/ThrowBoomerangSyst
 import { ChargingSystem } from "../logic/systems/ChargingSystem.ts";
 import { FlagCleanupSystem } from "../logic/systems/FlagCleanupSystem.ts";
 import { ExplosionSystem } from "../logic/explosion/ExplosionSystem.ts";
-import { WallExplosionSystem } from "../logic/explosion/WallExplosionSystem.ts";
-import { WallHitBoomerangDuplicatorSystem } from "../logic/wall-hit-duplicator/WallHitBoomerangDuplicatorSystem.ts";
 import { GroundedBoomerangCleanupSystem } from "../logic/boomerang/systems/GroundedBoomerangCleanupSystem.ts";
-import { LevelDirectorSystem } from "../logic/level/LevelDirectorSystem.ts";
-import { BoomerangMobCollisionSystem } from "../logic/mobs/systems/BoomerangMobCollisionSystem.ts";
-import { MobDeathHandlerSystem } from "../logic/mobs/systems/MobDeathHandlerSystem.ts";
-import { DragMoveSystem } from "../logic/input/DragMoveSystem.ts";
-import { MobSteppedDescentSystem } from "../logic/mobs/systems/MobSteppedDescentSystem.ts";
+import { DragInput } from "../logic/input/DragInput.ts";
 import { TimeManager } from "../logic/core/time/TimeManager.ts";
-import { WaveManagerSystem } from "../logic/level/WaveManagerSystem.ts";
 import { UICommandSystem } from "../logic/input/UICommandSystem.ts";
-import { MobsQuickMarchSystem } from "../logic/mobs/systems/MobsQuickmarchSystem.ts";
-import { GameEvent } from "../consts/GameUIEvent.ts";
+import { GameEvents } from "../consts/GameEvents.ts";
 import { BoomerangCleanupSystem } from "../logic/boomerang/systems/BoomerangCleanupSystem.ts";
-import { Mana } from "../logic/player/components/Mana.ts";
-import { StompEffectSystem } from "../logic/player/systems/StompEffectSystem.ts";
-import { ManaRegenSystem } from "../logic/player/systems/ManaRegenerationSystem.ts";
 import { GameDataManager } from "../api/GameDataManager.ts";
-import { WaveAdvanceSystem } from "../logic/level/WaveAdvanceSystem.ts";
 import { BoomerangNudgeSystem } from "../logic/boomerang/systems/BoomerangNudgeSystem.ts";
+import { PlayerPositionUpdateSystem } from "../logic/player/systems/PlayerPositionUpdateSystem.ts";
+import { LevelDirectorSystem } from "../logic/level/LevelDirectorSystem.ts";
+import { SpiritSpawnStatesSystem } from "../logic/spirits/systems/SpiritSpawnStatesSystem.ts";
+import { SpiritInstantiationSystem } from "../logic/spirits/systems/SpiritInstantiationSystem.ts";
+import { SpiritLiftSystem } from "../logic/spirits/systems/SpiritLiftSystem.ts";
+import { SpiritSpawnUpdateSystem } from "../logic/spirits/systems/SpiritSpawnUpdateSystem.ts";
+import { SpiritCeilingCollisionSystem } from "../logic/spirits/systems/SpiritCeilingCollisionSystem.ts";
+import { SpiritBoomerangCollisionSystem } from "../logic/spirits/systems/SpiritBoomerangCollisionSystem.ts";
+import { LevelUiUpdateSystem } from "../logic/level/LevelUiUpdateSystem.ts";
+import { LevelStateUpdateSystem } from "../logic/level/LevelStateUpdateSystem.ts";
+import { LevelTransitionSystem } from "../logic/level/LevelTransitionSystem.ts";
+import { registerForResize } from "../utils/registerForResize.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -58,6 +58,10 @@ export class Game extends Scene {
     create() {
         EventBus.emit("current-scene-ready", this);
         setSceneType("game");
+
+        const cleanupResize = registerForResize(this);
+        this.destroyQueue.push(cleanupResize);
+
         this.ecs = new ECS();
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
@@ -67,10 +71,6 @@ export class Game extends Scene {
             levels: this.cache.json.get("levels"),
         });
 
-        // --- Pointer Input ---
-        //this.ecs.addSystem(new ThumbstickInputSystem());
-        this.ecs.addSystem(new DragMoveSystem());
-
         // --- Player Intention Systems ---
         //this.ecs.addSystem(new MoveIntentionSystem());
 
@@ -78,12 +78,15 @@ export class Game extends Scene {
         this.ecs.addSystem(new ChargingSystem());
         //this.ecs.addSystem(new MovementSystem());
         this.ecs.addSystem(new ThrowBoomerangSystem());
+        this.ecs.addSystem(new PlayerPositionUpdateSystem());
 
         // --- Level Direction ---
         this.ecs.addSystem(new LevelDirectorSystem());
-        this.ecs.addSystem(new WaveManagerSystem());
-        this.ecs.addSystem(new WaveAdvanceSystem());
+        // this.ecs.addSystem(new WaveManagerSystem());
+        // this.ecs.addSystem(new WaveAdvanceSystem());
         this.ecs.addSystem(new UICommandSystem());
+        this.ecs.addSystem(new LevelUiUpdateSystem());
+        this.ecs.addSystem(new LevelTransitionSystem());
 
         // --- Game Logic Systems ---
         this.ecs.addSystem(new BoomerangNudgeSystem());
@@ -94,18 +97,21 @@ export class Game extends Scene {
         this.ecs.addSystem(new CeilingCollisionBounceSystem());
         this.ecs.addSystem(new PlayerBoomerangCollisionSystem());
         this.ecs.addSystem(new ExplosionSystem());
+        this.ecs.addSystem(new LevelStateUpdateSystem());
 
         // --- Special Abilities and Effects ---
-        this.ecs.addSystem(new WallExplosionSystem());
-        this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
-        this.ecs.addSystem(new StompEffectSystem());
-        this.ecs.addSystem(new ManaRegenSystem());
+        // this.ecs.addSystem(new WallExplosionSystem());
+        // this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
+        // this.ecs.addSystem(new StompEffectSystem());
+        // this.ecs.addSystem(new ManaRegenSystem());
 
-        // --- Mob Systems ---
-        this.ecs.addSystem(new BoomerangMobCollisionSystem());
-        this.ecs.addSystem(new MobDeathHandlerSystem());
-        this.ecs.addSystem(new MobSteppedDescentSystem());
-        this.ecs.addSystem(new MobsQuickMarchSystem());
+        // --- Spirit Systems ---
+        this.ecs.addSystem(new SpiritSpawnUpdateSystem());
+        this.ecs.addSystem(new SpiritSpawnStatesSystem());
+        this.ecs.addSystem(new SpiritInstantiationSystem());
+        this.ecs.addSystem(new SpiritLiftSystem());
+        this.ecs.addSystem(new SpiritCeilingCollisionSystem());
+        this.ecs.addSystem(new SpiritBoomerangCollisionSystem());
 
         // --- Cleanup Systems ---
         this.ecs.addSystem(new GroundedBoomerangCleanupSystem());
@@ -115,7 +121,11 @@ export class Game extends Scene {
         this.events.on("destroy", this.destroy.bind(this));
         this.createPlayer();
 
-        EventBus.emit(GameEvent.GAME_READY, this);
+        // --- Input Systems ---
+        const dragInput = new DragInput(this.ecs);
+        this.destroyQueue.push(() => dragInput.destroy());
+
+        EventBus.emit(GameEvents.GAME_READY, this);
     }
 
     private createPlayer() {
@@ -129,7 +139,6 @@ export class Game extends Scene {
         this.ecs.addComponent(player, playerTransform);
         this.ecs.addComponent(player, new Player());
         this.ecs.addComponent(player, new HasBoomerang());
-        this.ecs.addComponent(player, new Mana(config.MaxMana));
     }
 
     private destroy() {

@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { EventBus } from "../../game/api/EventBus";
-import { GameEvent, MobsStateChangeEvent } from "../../game/consts/GameUIEvent";
-import { LevelState } from "../../game/logic/level/LevelState";
+import { GameEvents, WaveStateChangeEvent } from "../../game/consts/GameEvents";
+import { WaveState } from "../../game/logic/level/WaveState";
 import { AnimatedMessage } from "./AnimatedMessage";
+import { ConfigManager } from "../../game/api/ConfigManager";
 
 /**
  * Acts as a controller that listens for game state changes and renders the
  * appropriate UI message component for the current state.
  */
 export const WaveMessageOverlay: React.FC = () => {
-    const [activeMessage, setActiveMessage] = useState<{ id: number; state: LevelState; wave: number } | null>(null);
+    const [activeMessage, setActiveMessage] = useState<{ id: number; state: WaveState; wave: number } | null>(null);
 
     useEffect(() => {
-        const handleStateChange = (data: MobsStateChangeEvent) => {
+        const handleStateChange = (data: WaveStateChangeEvent) => {
             // Only show messages for these specific states
-            if (data.newState === LevelState.WAVE_STARTING || data.newState === LevelState.WAVE_CLEARED) {
+            if (data.newState === WaveState.WAVE_STARTING || data.newState === WaveState.WAVE_CLEARED) {
                 setActiveMessage({
                     id: Date.now(), // Unique ID to force re-render
                     state: data.newState,
@@ -23,10 +24,10 @@ export const WaveMessageOverlay: React.FC = () => {
             }
         };
 
-        EventBus.on(GameEvent.MOBS_STATE_CHANGE_EVENT, handleStateChange);
+        EventBus.on(GameEvents.WAVE_STATE_CHANGE, handleStateChange);
 
         return () => {
-            EventBus.removeListener(GameEvent.MOBS_STATE_CHANGE_EVENT, handleStateChange);
+            EventBus.removeListener(GameEvents.WAVE_STATE_CHANGE, handleStateChange);
         };
     }, []);
 
@@ -39,18 +40,20 @@ export const WaveMessageOverlay: React.FC = () => {
     };
 
     switch (activeMessage.state) {
-        case LevelState.WAVE_STARTING:
+        case WaveState.WAVE_STARTING:
             return (
                 <AnimatedMessage
                     key={activeMessage.id}
+                    duration={ConfigManager.get().LevelTransitionDuration}
                     text={`Wave ${activeMessage.wave}`}
                     onComplete={onMessageComplete}
                 />
             );
-        case LevelState.WAVE_CLEARED:
+        case WaveState.WAVE_CLEARED:
             return (
                 <AnimatedMessage
                     key={activeMessage.id}
+                    duration={ConfigManager.get().LevelTransitionDuration}
                     text="Wave Cleared!"
                     onComplete={onMessageComplete}
                 />

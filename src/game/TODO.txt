@@ -1,1 +1,12 @@
 TODO:
+- Better level logic
+    - SpiritSpawnState needs to use simplex noise to determine the next spawn X
+    - SpiritSpawnStatesSystem 
+        - Needs to detect wave change
+        - Have a definition of SpawnStates per wave
+            - Delay before start
+            - Frequency
+            - Duration
+            - X logic
+        - Has a target # of spirits to spawn
+        - When all spirits were spawned, and none of them remain on screen, fire wave end
