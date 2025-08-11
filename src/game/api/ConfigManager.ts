@@ -16,7 +16,7 @@ const DEFAULTS = {
 
     // --- Boomerang Config ---
     BoomerangGravity: 50,
-    BoomerangGravityScaleByVelocity: 9, // Multiplier for gravity at near-zero X velocity
+    BoomerangGravityScaleByVelocity: 12, // Multiplier for gravity at near-zero X velocity
     BoomerangGravityMaxVel: 100, // The X velocity at which the gravity bonus diminishes to zero
     BoomerangAirDrag: 0.95,
     BoomerangThrowMinForce: 1800,

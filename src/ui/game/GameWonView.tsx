@@ -7,13 +7,13 @@ import { EventBus } from "../../game/api/EventBus";
 import { GameEvents, WaveStateChangeEvent } from "../../game/consts/GameEvents";
 import { Overlay, TitleText, ScoreText, RestartText } from "./gameScreen.styles";
 
-export const GameLostView: React.FC = () => {
+export const GameWonView: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
     const levelState = useLevelState();
 
     useEffect(() => {
         const handleStateChange = (data: WaveStateChangeEvent) => {
-            if (data.newState === WaveState.GAME_LOST) {
+            if (data.newState === WaveState.GAME_WON) {
                 setIsVisible(true);
             }
         };
@@ -41,11 +41,11 @@ export const GameLostView: React.FC = () => {
 
     return (
         <Overlay isVisible={isVisible} onClick={handleRestartClick}>
-            <TitleText>GAME OVER</TitleText>
+            <TitleText flash={true}>GLORIOUS VICTORY!</TitleText>
             <ScoreText>
                 Total Spirits Collected: {levelState?.spiritsCollected ?? 0}
             </ScoreText>
-            <RestartText>Tap to restart</RestartText>
+            <RestartText>Tap to play another one</RestartText>
         </Overlay>
     );
 };

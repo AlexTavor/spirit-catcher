@@ -52,18 +52,11 @@ export class LevelDirectorSystem extends System {
                 // Handle the pre-wave state, which is a transition state.
                 this.updateWaveStarting(lvl, delta);
                 break;
-            case WaveState.WAVE_ACTIVE:
-                // In the active wave state, we can check for win conditions or other game logic.
-                this.updateWaveActive(lvl, delta);
+            case WaveState.PRE_WAVE:
+                this.handleTransitionTo({
+                    newState: WaveState.WAVE_STARTING,
+                });
                 break;
-        }
-    }
-
-    updateWaveActive(lvl: LevelState, _: number) {
-        if (lvl.spiritsMissed >= lvl.maxSpiritMisses) {
-            this.handleTransitionTo({
-                newState: WaveState.GAME_LOST,
-            });
         }
     }
 
@@ -101,15 +94,16 @@ export class LevelDirectorSystem extends System {
 
             case WaveState.PRE_WAVE:
                 lvl.waveNumber++;
-
-                // Switch to next wave immediately
-                lvl.waveState = WaveState.WAVE_STARTING;
                 break;
 
             case WaveState.WAVE_CLEARED:
                 lvl.stateTimer = this.WAVE_CLEAR_DELAY;
                 break;
         }
+
+        console.log(
+            `Transitioning to state: ${WaveState[newState]}, wave number: ${lvl.waveNumber}`,
+        );
 
         // Broadcast the state change to any interested listeners (like the UI).
         EventBus.emit(GameEvents.WAVE_STATE_CHANGE, {

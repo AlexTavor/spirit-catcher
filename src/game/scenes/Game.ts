@@ -37,6 +37,7 @@ import { LevelUiUpdateSystem } from "../logic/level/LevelUiUpdateSystem.ts";
 import { LevelStateUpdateSystem } from "../logic/level/LevelStateUpdateSystem.ts";
 import { LevelTransitionSystem } from "../logic/level/LevelTransitionSystem.ts";
 import { registerForResize } from "../utils/registerForResize.ts";
+import { LevelProgressionDetectionSystem } from "../logic/level/LevelProgressionDetectionSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -98,6 +99,7 @@ export class Game extends Scene {
         this.ecs.addSystem(new PlayerBoomerangCollisionSystem());
         this.ecs.addSystem(new ExplosionSystem());
         this.ecs.addSystem(new LevelStateUpdateSystem());
+        this.ecs.addSystem(new LevelProgressionDetectionSystem());
 
         // --- Special Abilities and Effects ---
         // this.ecs.addSystem(new WallExplosionSystem());

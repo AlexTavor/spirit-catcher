@@ -40,9 +40,11 @@ export class BoomerangPhysicsSystem extends System {
 
         // Calculate the additional gravity based on the multiplier.
         const additionalGravity =
-            config.BoomerangGravity *
-            config.BoomerangGravityScaleByVelocity *
-            gravityMultiplier;
+            velocity.y > 0
+                ? config.BoomerangGravity *
+                  config.BoomerangGravityScaleByVelocity *
+                  gravityMultiplier
+                : 0;
 
         const finalGravity = config.BoomerangGravity + additionalGravity;
 

@@ -7,6 +7,7 @@ import { ToolsContainer } from "./ui/ToolsContainer";
 import { ScoreDisplay } from "./ui/game/ScoreDisplay";
 import { GameLostView } from "./ui/game/GameLostView";
 import { HealthBar } from "./ui/game/HealthBar";
+import { GameWonView } from "./ui/game/GameWonView";
 
 export function App() {
     const phaserRef = useRef<IRefPhaserGame | null>(null);
@@ -20,6 +21,7 @@ export function App() {
                 <WaveMessageOverlay/>
                 <PreGameView/>
                 <GameLostView/>
+                <GameWonView/>
                 <HealthBar/>
                 <ScoreDisplay/>
             </div>
