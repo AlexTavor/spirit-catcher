@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { ConfigManager } from "../api/ConfigManager";
+import { ConfigManager } from "../consts/ConfigManager";
 
 export class Preloader extends Scene {
     constructor() {

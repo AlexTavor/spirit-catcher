@@ -3,11 +3,11 @@ import { IRefPhaserGame, PhaserGame } from "./game/PhaserGame";
 import { VersionDisplay } from "./ui/VersionDisplay";
 import { WaveMessageOverlay } from "./ui/game/WaveMessageOverlay";
 import { PreGameView } from "./ui/game/PreGameView";
-import { ToolsContainer } from "./ui/ToolsContainer";
 import { ScoreDisplay } from "./ui/game/ScoreDisplay";
 import { GameLostView } from "./ui/game/GameLostView";
 import { HealthBar } from "./ui/game/HealthBar";
 import { GameWonView } from "./ui/game/GameWonView";
+import { UpgradesView } from "./ui/game/upgrades/UpgradesView";
 
 export function App() {
     const phaserRef = useRef<IRefPhaserGame | null>(null);
@@ -22,6 +22,7 @@ export function App() {
                 <PreGameView/>
                 <GameLostView/>
                 <GameWonView/>
+                <UpgradesView/>
                 <HealthBar/>
                 <ScoreDisplay/>
             </div>

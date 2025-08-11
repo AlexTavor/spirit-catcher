@@ -1,6 +1,6 @@
 import { Component } from "../core/ECS";
-import { LevelData } from "../spirits/systems/levelData";
-import { WaveState } from "./WaveState";
+import { LevelData } from "./levelData";
+import { GameState } from "./GameState";
 
 /**
  * A component attached to the world entity that holds the single
@@ -8,7 +8,7 @@ import { WaveState } from "./WaveState";
  */
 
 export class LevelState extends Component {
-    public waveState: WaveState = WaveState.PRE_GAME;
+    public gameState: GameState = GameState.PRE_GAME;
     public data: LevelData;
     public waveNumber = 0;
     /** Timer for state-based delays, like time between waves. */
@@ -17,15 +17,12 @@ export class LevelState extends Component {
     public spiritsCollected = 0;
     public spiritsMissed = 0;
     public maxSpiritMisses = 100;
+    public isWaveGenerated = false;
 
-    constructor(data: LevelData) {
+    constructor(data: LevelData, maxHealth: number) {
         super();
         this.data = data;
-        this.waveState = WaveState.PRE_GAME;
-        this.waveNumber = 0;
-        this.stateTimer = 0;
-        this.spiritsCollected = 0;
-        this.spiritsMissed = 0;
-        this.maxSpiritMisses = 100;
+        this.gameState = GameState.PRE_GAME;
+        this.maxSpiritMisses = maxHealth;
     }
 }

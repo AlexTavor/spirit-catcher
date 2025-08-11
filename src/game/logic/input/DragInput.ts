@@ -6,7 +6,7 @@ import { IsInputDown } from "./IsInputDown";
 import { DragState } from "./DragState";
 import { HasBoomerang } from "../player/components/HasBoomerang";
 import { throwPlayerBoomerang } from "../player/utils/throwPlayerBoomerang";
-import { WaveState } from "../level/WaveState";
+import { GameState } from "../level/GameState";
 import { getLevelState } from "../../utils/getLevelState";
 
 interface GameInputPayload {
@@ -73,7 +73,7 @@ export class DragInput {
 
     public static isDisabled(ecs: any): boolean {
         const lvl = getLevelState(ecs);
-        if (!lvl || lvl.waveState == WaveState.WAVE_CLEARED) return true;
+        if (!lvl || lvl.gameState == GameState.WAVE_CLEARED) return true;
 
         return false;
     }

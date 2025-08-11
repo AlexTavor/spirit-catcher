@@ -8,15 +8,26 @@ import { Boomerang } from "../boomerang/components/Boomerang";
 import { HasBoomerang } from "../player/components/HasBoomerang";
 import { Spirit } from "../spirits/components/Spirit";
 import { SpiritSpawnState } from "../spirits/components/SpiritSpawnState";
-import { WaveState } from "./WaveState";
+import { GameState } from "./GameState";
 import { CommandBus } from "../../api/CommandBus";
 import { GameCommands } from "../../consts/GameCommands";
 
 /**
- * Handles the side-effects of major level state transitions, such as resetting the game.
+ * Handles the side-effects of game state transitions, such as resetting the game.
  */
 export class LevelTransitionSystem extends System {
     public componentsRequired = new Set<Function>();
+    private readonly WAVE_CLEAR_DELAY = 2000; // 2 seconds
+    private readonly WAVE_STARTING_DELAY = 100; // 100 ms
+
+    private readonly preWaveNotFoundWarning =
+        "LevelTransitionSystem: PRE_WAVE state change received when not in PRE_WAVE state.";
+
+    private readonly waveClearedStateWarning =
+        "LevelTransitionSystem: WAVE_CLEARED state change received when not in WAVE_CLEARED state.";
+
+    private readonly waveStartingStateWarning =
+        "LevelTransitionSystem: WAVE_STARTING state change received when not in WAVE_STARTING state.";
 
     constructor() {
         super();
@@ -33,24 +44,62 @@ export class LevelTransitionSystem extends System {
 
     private handleStateChange(data: WaveStateChangeEvent): void {
         switch (data.newState) {
-            case WaveState.GAME_LOST:
-            case WaveState.GAME_WON:
+            // -- Handle game state transitions
+            case GameState.GAME_LOST:
+            case GameState.GAME_WON:
                 TimeManager.pause();
                 break;
 
-            case WaveState.PRE_GAME:
+            case GameState.PRE_GAME:
                 this.resetGame();
                 TimeManager.resume();
 
                 CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {
-                    newState: WaveState.PRE_WAVE,
+                    newState: GameState.PRE_WAVE,
                 });
 
+                break;
+
+            // -- Handle wave state transitions
+            case GameState.PRE_WAVE:
+                {
+                    const lvl = getLevelState(this.ecs);
+                    if (!lvl || lvl.gameState !== GameState.PRE_WAVE) {
+                        console.warn(this.preWaveNotFoundWarning);
+                        return;
+                    }
+                    lvl.waveNumber++;
+                    lvl.stateTimer = 1; // Set a short timer
+                    lvl.isWaveGenerated = false;
+                }
+                break;
+            case GameState.WAVE_STARTING:
+                {
+                    const lvl = getLevelState(this.ecs);
+                    if (!lvl || lvl.gameState !== GameState.WAVE_STARTING) {
+                        console.warn(this.waveStartingStateWarning);
+                        return;
+                    }
+
+                    lvl.stateTimer = this.WAVE_STARTING_DELAY;
+                }
+                break;
+            case GameState.WAVE_CLEARED:
+                {
+                    const lvl = getLevelState(this.ecs);
+                    if (!lvl || lvl.gameState !== GameState.WAVE_CLEARED) {
+                        console.warn(this.waveClearedStateWarning);
+                        return;
+                    }
+
+                    lvl.stateTimer = this.WAVE_CLEAR_DELAY;
+                }
                 break;
         }
     }
 
     private resetGame(): void {
+        CommandBus.emit(GameCommands.RESET_UPGRADES);
         // Remove all existing spirit entities
         const spirits = this.ecs.getEntitiesWithComponent(Spirit);
         for (const spirit of spirits) {
@@ -75,6 +124,7 @@ export class LevelTransitionSystem extends System {
         lvl.spiritsCollected = 0;
         lvl.spiritsMissed = 0;
         lvl.stateTimer = 0;
+        lvl.isWaveGenerated = false;
 
         // Clean up any existing spirit spawn state entities
         const spawnStates = this.ecs.getEntitiesWithComponent(SpiritSpawnState);

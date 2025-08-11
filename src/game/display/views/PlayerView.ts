@@ -1,5 +1,7 @@
-import { ConfigManager } from "../../api/ConfigManager";
+import { ConfigManager } from "../../consts/ConfigManager";
 import { Entity } from "../../logic/core/ECS";
+import { ModifiableStat } from "../../logic/upgrades/ModifiableStat";
+import { Values } from "../../logic/upgrades/Values";
 import { HasBoomerang } from "../../logic/player/components/HasBoomerang";
 import { IsWalking } from "../../logic/player/components/IsWalking";
 import { View, ViewContext } from "../core/View";
@@ -47,6 +49,16 @@ export class PlayerView extends View {
         this.heldBoomerangDisplay.setVisible(hasBoomerang);
         const boomerangX = playerX + config.PlayerWidth / 2;
         const boomerangY = playerY - this.HELD_BOOMERANG_Y_OFFSET;
-        this.heldBoomerangDisplay.update(delta, boomerangX, boomerangY);
+
+        this.heldBoomerangDisplay.update(
+            delta,
+            boomerangX,
+            boomerangY,
+            Values.get(
+                this.context.ecs,
+                this.context.ecs.world,
+                ModifiableStat.BOOMERANG_SIZE,
+            ),
+        );
     }
 }

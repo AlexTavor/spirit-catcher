@@ -1,7 +1,9 @@
-import { ConfigManager, ConfigType } from "../../../api/ConfigManager";
+import { ConfigManager, ConfigType } from "../../../consts/ConfigManager";
 import { Transform } from "../../core/components/Transform";
 import { Velocity } from "../../core/components/Velocity";
 import { System, Entity } from "../../core/ECS";
+import { ModifiableStat } from "../../upgrades/ModifiableStat";
+import { Values } from "../../upgrades/Values";
 import { Airborne } from "../components/Airborne";
 
 export class BoomerangPhysicsSystem extends System {
@@ -62,7 +64,12 @@ export class BoomerangPhysicsSystem extends System {
 
         // Clamp position to game boundaries
         const config = ConfigManager.get();
-        const size = config.BoomerangWidth / 2;
+        const size =
+            Values.get(
+                this.ecs,
+                this.ecs.world,
+                ModifiableStat.BOOMERANG_SIZE,
+            ) / 2;
 
         transform.pos.x = Math.max(
             size,

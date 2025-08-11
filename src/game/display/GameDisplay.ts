@@ -13,7 +13,7 @@ import { Pos } from "../../utils/Math";
 import { EventBus } from "../api/EventBus";
 import { Boomerang } from "../logic/boomerang/components/Boomerang";
 import { BoomerangView } from "./views/BoomerangView";
-import { ConfigManager } from "../api/ConfigManager";
+import { ConfigManager } from "../consts/ConfigManager";
 import { Player } from "../logic/player/components/Player";
 import { Explosion } from "../logic/explosion/Explosion";
 import { ExplosionView } from "./views/ExplosionView";

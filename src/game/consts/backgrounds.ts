@@ -1,4 +1,4 @@
-import { ConfigManager } from "../api/ConfigManager";
+import { ConfigManager } from "./ConfigManager";
 import { NoiseData } from "../utils/createNoiseTexture";
 
 export function backgroundConfig(): NoiseData {

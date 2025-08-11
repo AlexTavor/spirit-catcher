@@ -1,6 +1,5 @@
 import { System, Entity } from "../core/ECS";
-import { TimeManager } from "../core/time/TimeManager";
-import { WaveState } from "./WaveState";
+import { GameState } from "./GameState";
 import { CommandBus } from "../../api/CommandBus";
 import {
     GameCommands,
@@ -12,13 +11,13 @@ import { getLevelState } from "../../utils/getLevelState";
 import { LevelState } from "./LevelState";
 
 /**
- * The single source of truth for level state. It listens for commands
- * and directs state changes based on game events.
+ * LevelDirectorSystem manages the state transitions of the game level.
+ * It listens for commands to transition between different wave states,
+ * handles the timing of state changes, and broadcasts state changes to
+ * interested listeners (like the UI).
  */
 export class LevelDirectorSystem extends System {
     public componentsRequired = new Set<Function>();
-
-    private readonly WAVE_CLEAR_DELAY = 2000; // 2 seconds
 
     constructor() {
         super();
@@ -35,7 +34,7 @@ export class LevelDirectorSystem extends System {
 
         // Command the initial state.
         this.handleTransitionTo({
-            newState: WaveState.PRE_GAME,
+            newState: GameState.PRE_GAME,
         });
     }
 
@@ -43,28 +42,42 @@ export class LevelDirectorSystem extends System {
         const lvl = getLevelState(this.ecs);
         if (!lvl) return;
 
-        switch (lvl.waveState) {
-            case WaveState.WAVE_CLEARED:
+        switch (lvl.gameState) {
+            case GameState.WAVE_CLEARED:
                 // After a delay, command a transition to the next wave.
                 this.updateWaveCleared(lvl, delta);
                 break;
-            case WaveState.WAVE_STARTING:
+            case GameState.WAVE_STARTING:
                 // Handle the pre-wave state, which is a transition state.
                 this.updateWaveStarting(lvl, delta);
                 break;
-            case WaveState.PRE_WAVE:
-                this.handleTransitionTo({
-                    newState: WaveState.WAVE_STARTING,
-                });
+            case GameState.PRE_WAVE:
+                this.updatePreWave(lvl, delta);
                 break;
+        }
+    }
+
+    private updatePreWave(lvl: LevelState, delta: number) {
+        lvl.stateTimer -= delta;
+        if (lvl.stateTimer <= 0) {
+            lvl.stateTimer = 0;
+
+            const isFirstWave = lvl.waveNumber === -1;
+            CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {
+                newState: isFirstWave
+                    ? GameState.WAVE_STARTING
+                    : GameState.UPGRADE_PLAYER,
+            });
         }
     }
 
     private updateWaveStarting(lvl: LevelState, delta: number) {
         lvl.stateTimer -= delta;
         if (lvl.stateTimer <= 0) {
+            lvl.stateTimer = 0;
+
             this.handleTransitionTo({
-                newState: WaveState.WAVE_ACTIVE,
+                newState: GameState.WAVE_ACTIVE,
             });
         }
     }
@@ -72,8 +85,10 @@ export class LevelDirectorSystem extends System {
     private updateWaveCleared(lvl: LevelState, delta: number) {
         lvl.stateTimer -= delta;
         if (lvl.stateTimer <= 0) {
+            lvl.stateTimer = 0;
+
             this.handleTransitionTo({
-                newState: WaveState.PRE_WAVE,
+                newState: GameState.PRE_WAVE,
             });
         }
     }
@@ -81,33 +96,17 @@ export class LevelDirectorSystem extends System {
     private handleTransitionTo(payload: TransitionToStatePayload): void {
         const { newState } = payload;
         const lvl = getLevelState(this.ecs);
-        if (!lvl || lvl.waveState === newState) return;
+        if (!lvl || lvl.gameState === newState) return;
 
-        lvl.waveState = newState;
-
-        // Handle side-effects of entering the new state.
-        switch (newState) {
-            case WaveState.PRE_GAME:
-                TimeManager.pause();
-                lvl.waveNumber = 0;
-                break;
-
-            case WaveState.PRE_WAVE:
-                lvl.waveNumber++;
-                break;
-
-            case WaveState.WAVE_CLEARED:
-                lvl.stateTimer = this.WAVE_CLEAR_DELAY;
-                break;
-        }
+        lvl.gameState = newState;
 
         console.log(
-            `Transitioning to state: ${WaveState[newState]}, wave number: ${lvl.waveNumber}`,
+            `Transitioning to state: ${GameState[newState]}, wave number: ${lvl.waveNumber}`,
         );
 
         // Broadcast the state change to any interested listeners (like the UI).
         EventBus.emit(GameEvents.WAVE_STATE_CHANGE, {
-            newState: lvl.waveState,
+            newState: lvl.gameState,
             waveNumber: lvl.waveNumber,
         } as WaveStateChangeEvent);
     }

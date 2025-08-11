@@ -2,8 +2,10 @@ import { System } from "../../core/ECS";
 import { Transform } from "../../core/components/Transform";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { Boomerang } from "../../boomerang/components/Boomerang";
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { HasBoomerang } from "../components/HasBoomerang";
+import { ModifiableStat } from "../../upgrades/ModifiableStat";
+import { Values } from "../../upgrades/Values";
 
 export class PlayerBoomerangCollisionSystem extends System {
     public componentsRequired = new Set<Function>();
@@ -33,12 +35,18 @@ export class PlayerBoomerangCollisionSystem extends System {
                 boomerang,
                 Transform,
             );
+            const size = Values.get(
+                this.ecs,
+                this.ecs.world,
+                ModifiableStat.BOOMERANG_SIZE,
+            );
+
             // Boomerang bounds (origin is center)
             const boomerangRect = {
-                x: boomerangTransform.pos.x - config.BoomerangWidth / 2,
-                y: boomerangTransform.pos.y - config.BoomerangHeight / 2,
-                width: config.BoomerangWidth,
-                height: config.BoomerangHeight,
+                x: boomerangTransform.pos.x - size / 2,
+                y: boomerangTransform.pos.y - size / 2,
+                width: size,
+                height: size,
             };
 
             // AABB collision check

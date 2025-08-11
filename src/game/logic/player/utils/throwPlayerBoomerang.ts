@@ -1,5 +1,5 @@
 import { CommandBus } from "../../../api/CommandBus";
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { GameCommands } from "../../../consts/GameCommands";
 import { Transform } from "../../core/components/Transform";
 import { ECS } from "../../core/ECS";

@@ -1,7 +1,7 @@
 import { getLevelState } from "../../../utils/getLevelState";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { System } from "../../core/ECS";
-import { WaveState } from "../../level/WaveState";
+import { GameState } from "../../level/GameState";
 import { HasBoomerang } from "../../player/components/HasBoomerang";
 import { Boomerang } from "../components/Boomerang";
 
@@ -11,18 +11,18 @@ import { Boomerang } from "../components/Boomerang";
  */
 export class BoomerangCleanupSystem extends System {
     public componentsRequired = new Set<Function>();
-    private lastKnownState: WaveState | null = null;
+    private lastKnownState: GameState | null = null;
 
     public override update(): void {
         const lvl = getLevelState(this.ecs);
         if (!lvl) return;
 
-        const currentState = lvl.waveState;
+        const currentState = lvl.gameState;
 
         // --- STATE CHANGE CHECK ---
         // We only act on the frame the state *changes* to PRE_WAVE.
         if (
-            currentState === WaveState.WAVE_CLEARED &&
+            currentState === GameState.WAVE_CLEARED &&
             this.lastKnownState !== currentState
         ) {
             this.cleanupBoomerangs();

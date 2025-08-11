@@ -1,4 +1,4 @@
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { EventBus } from "../../../api/EventBus";
 import { GameEvents } from "../../../consts/GameEvents";
 import { System, Entity } from "../../core/ECS";

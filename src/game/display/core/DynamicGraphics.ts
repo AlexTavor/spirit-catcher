@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from "phaser";
-import { ConfigManager } from "../../api/ConfigManager";
+import { ConfigManager } from "../../consts/ConfigManager";
 
 export class DynamicGraphics {
     private renderTexture: GameObjects.RenderTexture;

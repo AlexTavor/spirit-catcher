@@ -1,4 +1,4 @@
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { DragState } from "../../input/DragState";
 import { Velocity } from "../../core/components/Velocity";

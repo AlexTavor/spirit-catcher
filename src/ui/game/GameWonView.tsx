@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLevelState } from "../hooks/useLevelState";
 import { CommandBus } from "../../game/api/CommandBus";
 import { GameCommands } from "../../game/consts/GameCommands";
-import { WaveState } from "../../game/logic/level/WaveState";
+import { GameState } from "../../game/logic/level/GameState";
 import { EventBus } from "../../game/api/EventBus";
 import { GameEvents, WaveStateChangeEvent } from "../../game/consts/GameEvents";
 import { Overlay, TitleText, ScoreText, RestartText } from "./gameScreen.styles";
@@ -13,7 +13,7 @@ export const GameWonView: React.FC = () => {
 
     useEffect(() => {
         const handleStateChange = (data: WaveStateChangeEvent) => {
-            if (data.newState === WaveState.GAME_WON) {
+            if (data.newState === GameState.GAME_WON) {
                 setIsVisible(true);
             }
         };
@@ -30,7 +30,7 @@ export const GameWonView: React.FC = () => {
 
     const handleRestartClick = () => {
         CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {
-            newState: WaveState.PRE_GAME,
+            newState: GameState.PRE_GAME,
         });
         setIsVisible(false);
     };

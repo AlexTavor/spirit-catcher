@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ConfigEditorLine } from "./ConfigEditorLine";
 import styled from "@emotion/styled";
-import { ConfigManager } from "../../game/api/ConfigManager";
+import { ConfigManager } from "../../game/consts/ConfigManager";
 
 // --- Styled Components  ---
 const Overlay = styled.div`

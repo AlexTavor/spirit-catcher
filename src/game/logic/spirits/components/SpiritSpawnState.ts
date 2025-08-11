@@ -1,6 +1,6 @@
 import { SimplexNoise } from "../../../../utils/SimplexNoise";
 import { Component } from "../../core/ECS";
-import { SpawnerData } from "../systems/levelData";
+import { SpawnerData } from "../../level/levelData";
 
 /**
  * The SpiritSpawnState holds the state for spawning spirits.

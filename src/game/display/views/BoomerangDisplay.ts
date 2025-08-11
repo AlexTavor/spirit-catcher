@@ -1,4 +1,4 @@
-import { ConfigManager } from "../../api/ConfigManager";
+import { ConfigManager } from "../../consts/ConfigManager";
 import { getBoomerangColor } from "../../utils/getBoomerangColor";
 import { ViewContext } from "../core/View";
 import { GameObjects } from "phaser";
@@ -20,7 +20,7 @@ export class BoomerangDisplay {
         return this.rotation;
     }
 
-    public update(delta: number, x: number, y: number): void {
+    public update(delta: number, x: number, y: number, size: number): void {
         if (!this.visible) {
             return;
         }
@@ -28,8 +28,11 @@ export class BoomerangDisplay {
         const dt = delta / 1000;
         this.rotation += ConfigManager.get().BoomerangRotationSpeed * dt;
         const config = ConfigManager.get();
-        const width = config.BoomerangWidth;
-        const height = config.BoomerangHeight;
+
+        const sizeFactor = size / config.BoomerangWidth;
+
+        const width = size;
+        const height = config.BoomerangHeight * sizeFactor;
 
         // Use the new helper function to get the dynamic color
         const color = getBoomerangColor(this.context.ecs);

@@ -13,6 +13,7 @@ const DEFAULTS = {
     PlayerWidth: 64,
     PlayerPickupRadius: 100,
     PlayerMovementEaseValue: 0.15, // Smoothing factor for player movement (0 = instant, 1 = no movement)
+    MaxHealth: 100, // Maximum health of the player - can miss this many spirits before losing
 
     // --- Boomerang Config ---
     BoomerangGravity: 50,

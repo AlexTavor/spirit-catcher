@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { EventBus } from "../../game/api/EventBus";
 import { GameEvents, WaveStateChangeEvent } from "../../game/consts/GameEvents";
-import { WaveState } from "../../game/logic/level/WaveState";
+import { GameState } from "../../game/logic/level/GameState";
 import { AnimatedMessage } from "./AnimatedMessage";
-import { ConfigManager } from "../../game/api/ConfigManager";
+import { ConfigManager } from "../../game/consts/ConfigManager";
 
 /**
  * Acts as a controller that listens for game state changes and renders the
  * appropriate UI message component for the current state.
  */
 export const WaveMessageOverlay: React.FC = () => {
-    const [activeMessage, setActiveMessage] = useState<{ id: number; state: WaveState; wave: number } | null>(null);
+    const [activeMessage, setActiveMessage] = useState<{ id: number; state: GameState; wave: number } | null>(null);
 
     useEffect(() => {
         const handleStateChange = (data: WaveStateChangeEvent) => {
             // Only show messages for these specific states
-            if (data.newState === WaveState.WAVE_STARTING || data.newState === WaveState.WAVE_CLEARED) {
+            if (data.newState === GameState.WAVE_STARTING || data.newState === GameState.WAVE_CLEARED) {
                 setActiveMessage({
                     id: Date.now(), // Unique ID to force re-render
                     state: data.newState,
@@ -40,7 +40,7 @@ export const WaveMessageOverlay: React.FC = () => {
     };
 
     switch (activeMessage.state) {
-        case WaveState.WAVE_STARTING:
+        case GameState.WAVE_STARTING:
             return (
                 <AnimatedMessage
                     key={activeMessage.id}
@@ -49,7 +49,7 @@ export const WaveMessageOverlay: React.FC = () => {
                     onComplete={onMessageComplete}
                 />
             );
-        case WaveState.WAVE_CLEARED:
+        case GameState.WAVE_CLEARED:
             return (
                 <AnimatedMessage
                     key={activeMessage.id}

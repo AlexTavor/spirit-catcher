@@ -1,6 +1,6 @@
 import { Entity } from "../../logic/core/ECS";
 import { View, ViewContext } from "../core/View";
-import { ConfigManager } from "../../api/ConfigManager";
+import { ConfigManager } from "../../consts/ConfigManager";
 import { GameObjects } from "phaser";
 
 export class SpiritView extends View {

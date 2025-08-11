@@ -2,7 +2,7 @@ import { System, Entity } from "../core/ECS";
 import { Transform } from "../core/components/Transform";
 import { Velocity } from "../core/components/Velocity";
 import { HitWallFlag } from "../boomerang/components/HitWallFlag";
-import { ConfigManager } from "../../api/ConfigManager";
+import { ConfigManager } from "../../consts/ConfigManager";
 import { CommandBus } from "../../api/CommandBus";
 import { GameCommands } from "../../consts/GameCommands";
 import { getPlayerEntity } from "../../utils/getPlayerEntity";

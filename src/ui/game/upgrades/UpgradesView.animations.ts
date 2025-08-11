@@ -1,0 +1,20 @@
+// Animation Durations
+export const VIEW_FADE_IN_DURATION = 300; // ms
+export const VIEW_FADE_OUT_DURATION = 500; // ms
+export const CARD_SLIDE_IN_DURATION = 500; // ms
+export const CARD_SELECTION_DURATION = 400; // ms
+export const CARD_FADE_OUT_DURATION = 250; // ms
+export const CARD_WHITE_FLASH_DURATION = 600; // ms
+
+// Animation Delays
+export const CARD_SLIDE_IN_DELAY_INCREMENT = 150; // ms
+export const CARD_WHITE_FLASH_DELAY = 500; // ms
+export const EXIT_DELAY = 500; // ms
+
+// Calculated Total Durations
+export const TOTAL_ENTRY_ANIMATION_DURATION =
+    CARD_SLIDE_IN_DURATION + CARD_SLIDE_IN_DELAY_INCREMENT * 3;
+export const TOTAL_SELECTION_ANIMATION_DURATION =
+    CARD_SELECTION_DURATION + CARD_WHITE_FLASH_DURATION + EXIT_DELAY;
+export const TOTAL_EXIT_TRANSITION_DURATION =
+    TOTAL_SELECTION_ANIMATION_DURATION + VIEW_FADE_OUT_DURATION;

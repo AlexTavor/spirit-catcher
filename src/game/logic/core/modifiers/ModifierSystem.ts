@@ -30,6 +30,8 @@ export class ModifierSystem extends System {
             // This is more efficient than creating a new array if no modifiers are removed.
             let i = component.modifiers.length;
             while (i--) {
+                if (component.modifiers[i].timeRemaining === -1) continue; // Infinite duration modifier, skip it.
+
                 component.modifiers[i].timeRemaining -= delta;
                 if (component.modifiers[i].timeRemaining <= 0) {
                     component.modifiers.splice(i, 1);
@@ -43,3 +45,4 @@ export class ModifierSystem extends System {
      */
     public destroy(): void {}
 }
+

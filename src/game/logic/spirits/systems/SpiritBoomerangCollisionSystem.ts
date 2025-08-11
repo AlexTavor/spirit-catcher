@@ -1,10 +1,12 @@
 import { System, Entity } from "../../core/ECS";
 import { Transform } from "../../core/components/Transform";
 import { Spirit } from "../components/Spirit";
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { Boomerang } from "../../boomerang/components/Boomerang";
 import { EventBus } from "../../../api/EventBus";
 import { GameEvents } from "../../../consts/GameEvents";
+import { ModifiableStat } from "../../upgrades/ModifiableStat";
+import { Values } from "../../upgrades/Values";
 
 export class SpiritBoomerangCollisionSystem extends System {
     public componentsRequired = new Set<Function>([Spirit, Transform]);
@@ -22,7 +24,13 @@ export class SpiritBoomerangCollisionSystem extends System {
 
         // Calculate the squared collision distance for this frame.
         const config = ConfigManager.get();
-        const collisionRadius = config.MobWidth / 2 + config.BoomerangWidth / 2;
+        const size = Values.get(
+            this.ecs,
+            this.ecs.world,
+            ModifiableStat.BOOMERANG_SIZE,
+        );
+
+        const collisionRadius = config.MobWidth / 2 + size / 2;
         const collisionDistanceSq = collisionRadius * collisionRadius;
 
         for (const spirit of spirits) {

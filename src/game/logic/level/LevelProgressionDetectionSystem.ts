@@ -4,7 +4,7 @@ import { System, Entity } from "../core/ECS";
 import { Spirit } from "../spirits/components/Spirit";
 import { SpiritSpawnState } from "../spirits/components/SpiritSpawnState";
 import { LevelState } from "./LevelState";
-import { WaveState } from "./WaveState";
+import { GameState } from "./GameState";
 
 export class LevelProgressionDetectionSystem extends System {
     public componentsRequired = new Set<Function>([LevelState]);
@@ -14,7 +14,7 @@ export class LevelProgressionDetectionSystem extends System {
             const lvl = this.ecs.getComponent(entity, LevelState);
             if (!lvl) continue;
 
-            if (lvl.waveState !== WaveState.WAVE_ACTIVE) {
+            if (lvl.gameState !== GameState.WAVE_ACTIVE) {
                 continue; // Only operate when the wave is active
             }
 
@@ -40,7 +40,7 @@ export class LevelProgressionDetectionSystem extends System {
 
     handleGameLost(_lvl: LevelState) {
         CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {
-            newState: WaveState.GAME_LOST,
+            newState: GameState.GAME_LOST,
         });
     }
 
@@ -58,13 +58,13 @@ export class LevelProgressionDetectionSystem extends System {
 
     handleGameWon(_lvl: LevelState) {
         CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {
-            newState: WaveState.GAME_WON,
+            newState: GameState.GAME_WON,
         });
     }
 
     handleWaveCleared(_lvl: LevelState) {
         CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {
-            newState: WaveState.WAVE_CLEARED,
+            newState: GameState.WAVE_CLEARED,
         });
     }
 

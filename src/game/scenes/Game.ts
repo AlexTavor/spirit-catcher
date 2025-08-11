@@ -2,7 +2,7 @@ import { EventBus } from "../api/EventBus.ts";
 import { Scene } from "phaser";
 import { ECS } from "../logic/core/ECS.ts";
 import { setSceneType } from "../../ui/hooks/useActiveSceneType.ts";
-import { ConfigManager } from "../api/ConfigManager.ts";
+import { ConfigManager } from "../consts/ConfigManager.ts";
 import { GameDisplay } from "../display/GameDisplay.ts";
 import { BoomerangPhysicsSystem } from "../logic/boomerang/systems/BoomerangPhysicsSystem.ts";
 import { BoomerangBoundaryCollisionSystem } from "../logic/boomerang/systems/BoomerangBoundaryCollisionSystem.ts";
@@ -23,11 +23,10 @@ import { TimeManager } from "../logic/core/time/TimeManager.ts";
 import { UICommandSystem } from "../logic/input/UICommandSystem.ts";
 import { GameEvents } from "../consts/GameEvents.ts";
 import { BoomerangCleanupSystem } from "../logic/boomerang/systems/BoomerangCleanupSystem.ts";
-import { GameDataManager } from "../api/GameDataManager.ts";
 import { BoomerangNudgeSystem } from "../logic/boomerang/systems/BoomerangNudgeSystem.ts";
 import { PlayerPositionUpdateSystem } from "../logic/player/systems/PlayerPositionUpdateSystem.ts";
 import { LevelDirectorSystem } from "../logic/level/LevelDirectorSystem.ts";
-import { SpiritSpawnStatesSystem } from "../logic/spirits/systems/SpiritSpawnStatesSystem.ts";
+import { LevelStartSystem } from "../logic/spirits/systems/SpiritSpawnStatesSystem.ts";
 import { SpiritInstantiationSystem } from "../logic/spirits/systems/SpiritInstantiationSystem.ts";
 import { SpiritLiftSystem } from "../logic/spirits/systems/SpiritLiftSystem.ts";
 import { SpiritSpawnUpdateSystem } from "../logic/spirits/systems/SpiritSpawnUpdateSystem.ts";
@@ -38,6 +37,9 @@ import { LevelStateUpdateSystem } from "../logic/level/LevelStateUpdateSystem.ts
 import { LevelTransitionSystem } from "../logic/level/LevelTransitionSystem.ts";
 import { registerForResize } from "../utils/registerForResize.ts";
 import { LevelProgressionDetectionSystem } from "../logic/level/LevelProgressionDetectionSystem.ts";
+import { ActiveModifiersComponent } from "../logic/core/modifiers/ActiveModifiersComponent.ts";
+import { ModifierSystem } from "../logic/core/modifiers/ModifierSystem.ts";
+import { UpgradesSystem } from "../logic/upgrades/UpgradesSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -66,14 +68,7 @@ export class Game extends Scene {
         this.ecs = new ECS();
         this.gameDisplay = new GameDisplay(this, this.ecs);
 
-        GameDataManager.init({
-            mobs: this.cache.json.get("mobs"),
-            patterns: this.cache.json.get("patterns"),
-            levels: this.cache.json.get("levels"),
-        });
-
-        // --- Player Intention Systems ---
-        //this.ecs.addSystem(new MoveIntentionSystem());
+        this.ecs.addComponent(this.ecs.world, new ActiveModifiersComponent());
 
         // --- Player Systems ---
         this.ecs.addSystem(new ChargingSystem());
@@ -90,6 +85,7 @@ export class Game extends Scene {
         this.ecs.addSystem(new LevelTransitionSystem());
 
         // --- Game Logic Systems ---
+        this.ecs.addSystem(new ModifierSystem());
         this.ecs.addSystem(new BoomerangNudgeSystem());
         this.ecs.addSystem(new BoomerangPhysicsSystem());
         this.ecs.addSystem(new BoomerangBoundaryCollisionSystem());
@@ -100,6 +96,7 @@ export class Game extends Scene {
         this.ecs.addSystem(new ExplosionSystem());
         this.ecs.addSystem(new LevelStateUpdateSystem());
         this.ecs.addSystem(new LevelProgressionDetectionSystem());
+        this.ecs.addSystem(new UpgradesSystem());
 
         // --- Special Abilities and Effects ---
         // this.ecs.addSystem(new WallExplosionSystem());
@@ -107,7 +104,7 @@ export class Game extends Scene {
 
         // --- Spirit Systems ---
         this.ecs.addSystem(new SpiritSpawnUpdateSystem());
-        this.ecs.addSystem(new SpiritSpawnStatesSystem());
+        this.ecs.addSystem(new LevelStartSystem());
         this.ecs.addSystem(new SpiritInstantiationSystem());
         this.ecs.addSystem(new SpiritLiftSystem());
         this.ecs.addSystem(new SpiritCeilingCollisionSystem());

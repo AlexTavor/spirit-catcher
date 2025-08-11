@@ -1,7 +1,7 @@
 import { System, Entity } from "../core/ECS";
 import { Velocity } from "../core/components/Velocity";
 import { Transform } from "../core/components/Transform";
-import { ConfigManager } from "../../api/ConfigManager";
+import { ConfigManager } from "../../consts/ConfigManager";
 import { Pos } from "../../../utils/Math";
 import { HitWallFlag } from "../boomerang/components/HitWallFlag";
 import { createExplosion } from "./ExplosionFactory";

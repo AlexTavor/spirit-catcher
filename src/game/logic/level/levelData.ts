@@ -18,7 +18,7 @@ export const spawnerConfig2 = {
     ...spawnerConfig0,
     spawnXVariance: 40, // pixels
     duration: 10000,
-    initialYVelocity: 75,
+    initialYVelocity: 275,
     noiseTimeIncrement: 0.005,
 };
 const waveData0 = {

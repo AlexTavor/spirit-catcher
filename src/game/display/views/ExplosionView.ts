@@ -1,4 +1,4 @@
-import { ConfigManager } from "../../api/ConfigManager";
+import { ConfigManager } from "../../consts/ConfigManager";
 import { Entity } from "../../logic/core/ECS";
 import { View, ViewContext } from "../core/View";
 import { Explosion } from "../../logic/explosion/Explosion";

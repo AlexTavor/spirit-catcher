@@ -47,6 +47,13 @@ export class ActiveModifiersComponent extends Component {
     }
 
     /**
+     * Removes all active modifiers from the entity.
+     */
+    public reset(): void {
+        this.modifiers = [];
+    }
+
+    /**
      * Removes all instances of a specific modifier type.
      * @param modifierType The type identifier of the modifier to remove.
      */
@@ -80,3 +87,4 @@ export class ActiveModifiersComponent extends Component {
         };
     }
 }
+

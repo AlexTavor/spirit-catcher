@@ -1,5 +1,5 @@
 import { MathUtils } from "../../../../utils/Math";
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { Transform } from "../../core/components/Transform";
 import { Velocity } from "../../core/components/Velocity";
 import { Entity, System } from "../../core/ECS";

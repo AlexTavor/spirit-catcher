@@ -1,5 +1,5 @@
 import { LevelState } from "../logic/level/LevelState";
-import { WaveState } from "../logic/level/WaveState";
+import { GameState } from "../logic/level/GameState";
 
 export enum GameEvents {
     CANVAS_RESIZED = "CANVAS_RESIZED",
@@ -14,7 +14,7 @@ export enum GameEvents {
  * The data payload sent with a WAVE_STATE_CHANGE.
  */
 export interface WaveStateChangeEvent {
-    newState: WaveState;
+    newState: GameState;
     waveNumber: number;
 }
 

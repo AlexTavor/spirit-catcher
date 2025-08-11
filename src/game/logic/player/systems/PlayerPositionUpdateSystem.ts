@@ -3,7 +3,7 @@ import { Entity, System } from "../../core/ECS";
 import { DragState } from "../../input/DragState";
 import { Math as PhaserMath } from "phaser";
 import { Boomerang } from "../../boomerang/components/Boomerang";
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 
 export class PlayerPositionUpdateSystem extends System {

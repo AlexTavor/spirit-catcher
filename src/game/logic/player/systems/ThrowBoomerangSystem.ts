@@ -6,7 +6,7 @@ import { Transform } from "../../core/components/Transform";
 import { Velocity } from "../../core/components/Velocity";
 import { Boomerang } from "../../boomerang/components/Boomerang";
 import { Airborne } from "../../boomerang/components/Airborne";
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { HasBoomerang } from "../components/HasBoomerang";
 
 interface ThrowPayload {

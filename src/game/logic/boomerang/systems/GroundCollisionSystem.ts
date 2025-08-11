@@ -1,4 +1,4 @@
-import { ConfigManager } from "../../../api/ConfigManager";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import { groundConfig } from "../../../consts/backgrounds";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { Transform } from "../../core/components/Transform";

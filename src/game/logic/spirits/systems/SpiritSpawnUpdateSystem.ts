@@ -8,10 +8,6 @@ import { SpiritSpawnState } from "../components/SpiritSpawnState";
 export class SpiritSpawnUpdateSystem extends System {
     public componentsRequired = new Set<Function>([SpiritSpawnState]);
 
-    constructor() {
-        super();
-    }
-
     public update(entities: Set<Entity>, delta: number): void {
         const dt = delta;
         for (const entity of entities) {
@@ -27,7 +23,5 @@ export class SpiritSpawnUpdateSystem extends System {
         }
     }
 
-    public destroy(): void {
-        // Cleanup logic if needed
-    }
+    public destroy(): void {}
 }
