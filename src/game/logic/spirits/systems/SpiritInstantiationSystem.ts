@@ -4,7 +4,7 @@ import { Transform } from "../../core/components/Transform";
 import { Velocity } from "../../core/components/Velocity";
 import { Entity, System } from "../../core/ECS";
 import { Spirit } from "../components/Spirit";
-import { SpiritSpawnState } from "../components/SpiritSpawnState";
+import { SpawnerData, SpiritSpawnState } from "../components/SpiritSpawnState";
 import { SpiritSpawnDefinition } from "./SpiritSpawnDefinition";
 
 export class SpiritInstantiationSystem extends System {
@@ -26,42 +26,11 @@ export class SpiritInstantiationSystem extends System {
                 continue;
             }
 
-            const config = ConfigManager.get();
-            const size = config.MobHeight / 2;
-            const data = spawnState.data;
+            // Calculate the spawn position based on the spawn definition.
+            const spawn = this.generateSpawn(spawnState.data);
 
-            // Get a noise value between -1 and 1.
-            const noiseValue = spawnState.getNoiseValue();
-
-            // Remap it to a 0-1 range.
-            const t = MathUtils.remapNoiseToUnit(noiseValue);
-
-            // Lerp between the min and max spawn positions.
-            const spawnX =
-                size +
-                t * (config.GameWidth - size * 2) +
-                MathUtils.random(
-                    -data.spawnPosXVariance,
-                    data.spawnPosXVariance,
-                );
-
-            const clampedX = MathUtils.clamp(
-                spawnX,
-                size,
-                config.GameWidth - size,
-            );
-
-            const spawnY =
-                config.GameHeight -
-                this.SPAWN_Y_OFFSET -
-                MathUtils.random(0, data.spawnPosYVariance ?? 0);
-
-            const spawn = new SpiritSpawnDefinition(
-                {
-                    x: clampedX,
-                    y: spawnY,
-                },
-                { x: 0, y: data.initialYVelocity },
+            console.log(
+                `Spawning spirit at position: ${spawn.position.x}, ${spawn.position.y}`,
             );
 
             spawnState.resetTimer();
@@ -71,6 +40,32 @@ export class SpiritInstantiationSystem extends System {
             this.ecs.addComponent(spiritEntity, new Transform(spawn.position));
             this.ecs.addComponent(spiritEntity, new Velocity(spawn.velocity));
         }
+    }
+
+    private generateSpawn(data: SpawnerData): SpiritSpawnDefinition {
+        const spawn = new SpiritSpawnDefinition();
+        const xRand = MathUtils.random(
+            -data.spawnXVariance,
+            data.spawnXVariance,
+        );
+
+        const clampedX = MathUtils.clamp(
+            data.spawnX + xRand,
+            0,
+            ConfigManager.get().GameWidth,
+        );
+
+        spawn.position.x = clampedX;
+
+        const spawnY = ConfigManager.get().GameHeight + this.SPAWN_Y_OFFSET;
+        const yRand = MathUtils.random(
+            -data.spawnYVariance,
+            data.spawnYVariance,
+        );
+        spawn.position.y = spawnY + yRand;
+        spawn.velocity.y = data.yVelocity;
+
+        return spawn;
     }
 
     public destroy(): void {}

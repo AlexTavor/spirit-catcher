@@ -11,12 +11,12 @@ import { getLevelState } from "../../utils/getLevelState";
 import { LevelState } from "./LevelState";
 
 /**
- * LevelDirectorSystem manages the state transitions of the game level.
+ * GameTransitionCommandSystem manages the state transitions of the game level.
  * It listens for commands to transition between different wave states,
  * handles the timing of state changes, and broadcasts state changes to
  * interested listeners (like the UI).
  */
-export class LevelDirectorSystem extends System {
+export class GameTransitionCommandSystem extends System {
     public componentsRequired = new Set<Function>();
 
     constructor() {

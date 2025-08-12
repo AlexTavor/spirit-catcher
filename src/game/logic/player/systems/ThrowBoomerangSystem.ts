@@ -51,7 +51,7 @@ export class ThrowBoomerangSystem extends System {
         // Calculate throw velocity based on direction and charge level.
         // Get the direction from the spawn point to the target.
         const direction = MathUtils.subtract(target, from);
-        const normalizedDirection = MathUtils.normalize(direction);
+        const normalizedDirection = MathUtils.normalizePos(direction);
 
         const throwSpeed = ConfigManager.get().BoomerangThrowMinForce;
 

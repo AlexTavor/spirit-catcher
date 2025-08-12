@@ -116,6 +116,10 @@ export class MathUtils {
         return (value + 1) / 2;
     }
 
+    static normalizeValue(value: number, min: number, max: number): number {
+        return (value - min) / (max - min);
+    }
+
     static distance(pos1: Pos, pos2: Pos): number {
         // Simple Euclidean distance calculation
         return Math.sqrt(
@@ -123,7 +127,7 @@ export class MathUtils {
         );
     }
 
-    static normalize(pos: Pos): Pos {
+    static normalizePos(pos: Pos): Pos {
         const length = Math.sqrt(pos.x * pos.x + pos.y * pos.y);
         if (length == 0) return { x: 0, y: 0 };
         return { x: pos.x / length, y: pos.y / length };

@@ -1,5 +1,6 @@
 TODO:
 - Dynamic level generation
+- Add acceleration as separate from velocity (so that when hitting wall, rang will remain responsive)
 - Select abilities between waves
     - More abilities
         - Magnet zone around 'rang

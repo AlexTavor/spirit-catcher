@@ -14,7 +14,6 @@ import { HasBoomerang } from "../logic/player/components/HasBoomerang.ts";
 import { Player } from "../logic/player/components/Player.ts";
 import { PlayerBoomerangCollisionSystem } from "../logic/player/systems/PlayerBoomerangCollisionSystem.ts";
 import { ThrowBoomerangSystem } from "../logic/player/systems/ThrowBoomerangSystem.ts";
-import { ChargingSystem } from "../logic/systems/ChargingSystem.ts";
 import { FlagCleanupSystem } from "../logic/systems/FlagCleanupSystem.ts";
 import { ExplosionSystem } from "../logic/explosion/ExplosionSystem.ts";
 import { GroundedBoomerangCleanupSystem } from "../logic/boomerang/systems/GroundedBoomerangCleanupSystem.ts";
@@ -25,22 +24,23 @@ import { GameEvents } from "../consts/GameEvents.ts";
 import { BoomerangCleanupSystem } from "../logic/boomerang/systems/BoomerangCleanupSystem.ts";
 import { BoomerangNudgeSystem } from "../logic/boomerang/systems/BoomerangNudgeSystem.ts";
 import { PlayerPositionUpdateSystem } from "../logic/player/systems/PlayerPositionUpdateSystem.ts";
-import { LevelDirectorSystem } from "../logic/level/LevelDirectorSystem.ts";
-import { LevelStartSystem } from "../logic/spirits/systems/SpiritSpawnStatesSystem.ts";
+import { GameTransitionCommandSystem } from "../logic/level/GameTransitionCommandSystem.ts";
 import { SpiritInstantiationSystem } from "../logic/spirits/systems/SpiritInstantiationSystem.ts";
 import { SpiritLiftSystem } from "../logic/spirits/systems/SpiritLiftSystem.ts";
-import { SpiritSpawnUpdateSystem } from "../logic/spirits/systems/SpiritSpawnUpdateSystem.ts";
 import { SpiritCeilingCollisionSystem } from "../logic/spirits/systems/SpiritCeilingCollisionSystem.ts";
 import { SpiritBoomerangCollisionSystem } from "../logic/spirits/systems/SpiritBoomerangCollisionSystem.ts";
 import { LevelUiUpdateSystem } from "../logic/level/LevelUiUpdateSystem.ts";
 import { LevelStateUpdateSystem } from "../logic/level/LevelStateUpdateSystem.ts";
 import { LevelTransitionSystem } from "../logic/level/LevelTransitionSystem.ts";
 import { registerForResize } from "../utils/registerForResize.ts";
-import { LevelProgressionDetectionSystem } from "../logic/level/LevelProgressionDetectionSystem.ts";
 import { ActiveModifiersComponent } from "../logic/core/modifiers/ActiveModifiersComponent.ts";
 import { ModifierSystem } from "../logic/core/modifiers/ModifierSystem.ts";
 import { UpgradesSystem } from "../logic/upgrades/UpgradesSystem.ts";
 import { BoomerangNoDragBrakeSystem } from "../logic/boomerang/systems/BoomerangNoDragBrakeSystem.ts";
+import {
+    ActiveConductorState,
+    WaveConductorSystem,
+} from "../logic/wave_conductor/WaveConductorSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -72,18 +72,18 @@ export class Game extends Scene {
         this.ecs.addComponent(this.ecs.world, new ActiveModifiersComponent());
 
         // --- Player Systems ---
-        this.ecs.addSystem(new ChargingSystem());
-        //this.ecs.addSystem(new MovementSystem());
         this.ecs.addSystem(new ThrowBoomerangSystem());
         this.ecs.addSystem(new PlayerPositionUpdateSystem());
 
         // --- Level Direction ---
-        this.ecs.addSystem(new LevelDirectorSystem());
-        // this.ecs.addSystem(new WaveManagerSystem());
-        // this.ecs.addSystem(new WaveAdvanceSystem());
+        this.ecs.addSystem(new GameTransitionCommandSystem());
         this.ecs.addSystem(new UICommandSystem());
         this.ecs.addSystem(new LevelUiUpdateSystem());
         this.ecs.addSystem(new LevelTransitionSystem());
+
+        // --- Wave Systems ---
+        this.ecs.addSystem(new WaveConductorSystem());
+        this.ecs.addComponent(this.ecs.world, new ActiveConductorState());
 
         // --- Game Logic Systems ---
         this.ecs.addSystem(new ModifierSystem());
@@ -96,7 +96,6 @@ export class Game extends Scene {
         this.ecs.addSystem(new PlayerBoomerangCollisionSystem());
         this.ecs.addSystem(new ExplosionSystem());
         this.ecs.addSystem(new LevelStateUpdateSystem());
-        this.ecs.addSystem(new LevelProgressionDetectionSystem());
         this.ecs.addSystem(new UpgradesSystem());
         this.ecs.addSystem(new BoomerangNoDragBrakeSystem());
 
@@ -105,8 +104,6 @@ export class Game extends Scene {
         // this.ecs.addSystem(new WallHitBoomerangDuplicatorSystem());
 
         // --- Spirit Systems ---
-        this.ecs.addSystem(new SpiritSpawnUpdateSystem());
-        this.ecs.addSystem(new LevelStartSystem());
         this.ecs.addSystem(new SpiritInstantiationSystem());
         this.ecs.addSystem(new SpiritLiftSystem());
         this.ecs.addSystem(new SpiritCeilingCollisionSystem());

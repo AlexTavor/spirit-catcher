@@ -54,6 +54,18 @@ const DEFAULTS = {
     // --- Mobs Config --- //
     MobWidth: 80,
     MobHeight: 80,
+
+    // --- Spirit Config --- //
+    MinSpawnInterval: 1, // ms
+    MaxSpawnInterval: 500, // ms
+    MinSpiritSpeed: 50, // pixels per second
+    MaxSpiritSpeed: 250, // pixels per second
+    MinSpawnNoiseStep: 0.005, // Minimum noise increment for spawn position
+    MaxSpawnNoiseStep: 0.1, // Maximum noise increment for spawn position
+    MaxSpawnXVariance: 200, // Maximum horizontal variance for spirit spawn position
+    MaxSpawnYVariance: 200, // Maximum vertical variance for spirit spawn position
+    MinDurationAsPercentage: 0.1, // Minimum duration as a percentage of total wave duration
+    MaxDurationAsPercentage: 1, // Maximum duration as a percentage of total wave duration
 };
 
 export type ConfigType = typeof DEFAULTS;

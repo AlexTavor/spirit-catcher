@@ -1,5 +1,4 @@
 import { Component } from "../core/ECS";
-import { LevelData } from "./levelData";
 import { GameState } from "./GameState";
 
 /**
@@ -9,7 +8,6 @@ import { GameState } from "./GameState";
 
 export class LevelState extends Component {
     public gameState: GameState = GameState.PRE_GAME;
-    public data: LevelData;
     public waveNumber = 0;
     /** Timer for state-based delays, like time between waves. */
     public stateTimer = 0;
@@ -19,9 +17,8 @@ export class LevelState extends Component {
     public maxSpiritMisses = 100;
     public isWaveGenerated = false;
 
-    constructor(data: LevelData, maxHealth: number) {
+    constructor(maxHealth: number) {
         super();
-        this.data = data;
         this.gameState = GameState.PRE_GAME;
         this.maxSpiritMisses = maxHealth;
     }

@@ -1,6 +1,5 @@
 import { ECS } from "../logic/core/ECS";
 import { LevelState } from "../logic/level/LevelState";
-import { levelData } from "../logic/level/levelData";
 import { ModifiableStat } from "../logic/upgrades/ModifiableStat";
 import { Values } from "../logic/upgrades/Values";
 
@@ -14,7 +13,6 @@ export function getLevelState(ecs: ECS): LevelState {
     lvlState = ecs.getComponent(ecs.world, LevelState);
     if (!lvlState) {
         lvlState = new LevelState(
-            levelData,
             Values.get(ecs, ecs.world, ModifiableStat.MAX_HEALTH),
         );
         ecs.addComponent(ecs.world, lvlState);
