@@ -17,7 +17,7 @@ const DEFAULTS = {
 
     // --- Boomerang Config ---
     BoomerangGravity: 50,
-    BoomerangGravityScaleByVelocity: 12, // Multiplier for gravity at near-zero X velocity
+    BoomerangGravityScaleByVelocity: 18, // Multiplier for gravity at near-zero X velocity
     BoomerangGravityMaxVel: 100, // The X velocity at which the gravity bonus diminishes to zero
     BoomerangAirDrag: 0.95,
     BoomerangThrowMinForce: 1800,
@@ -30,9 +30,9 @@ const DEFAULTS = {
     BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
     BoomerangNudgeMaxDelta: 200, // The drag distance that produces the max nudge.
     BoomerangNudgeImpulse: 1600, // The impulse force applied at the max nudge delta, per second
-    BoomerangMaxNudgeVelocity: 1600, // Maximum horizontal velocity applied by nudging
+    BoomerangMaxNudgeVelocity: 1200, // Maximum horizontal velocity applied by nudging
     BoomerangeNudgeReverseMultiplier: 16, // Multiplier for nudge force when reversing boomerang direction
-    BoomerangNoDragXDecay: 2.5, // Decay factor for X velocity when no drag is active, per second
+    BoomerangNoDragBrakingForce: 1000, // Force applied per second to slow down the boomerang when no drag is active
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms

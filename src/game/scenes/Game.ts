@@ -40,7 +40,7 @@ import { LevelProgressionDetectionSystem } from "../logic/level/LevelProgression
 import { ActiveModifiersComponent } from "../logic/core/modifiers/ActiveModifiersComponent.ts";
 import { ModifierSystem } from "../logic/core/modifiers/ModifierSystem.ts";
 import { UpgradesSystem } from "../logic/upgrades/UpgradesSystem.ts";
-import { BoomerangNoDragDecaySystem } from "../logic/boomerang/systems/BoomerangNoDragDecaySystem.ts";
+import { BoomerangNoDragBrakeSystem } from "../logic/boomerang/systems/BoomerangNoDragBrakeSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -98,7 +98,7 @@ export class Game extends Scene {
         this.ecs.addSystem(new LevelStateUpdateSystem());
         this.ecs.addSystem(new LevelProgressionDetectionSystem());
         this.ecs.addSystem(new UpgradesSystem());
-        this.ecs.addSystem(new BoomerangNoDragDecaySystem());
+        this.ecs.addSystem(new BoomerangNoDragBrakeSystem());
 
         // --- Special Abilities and Effects ---
         // this.ecs.addSystem(new WallExplosionSystem());
