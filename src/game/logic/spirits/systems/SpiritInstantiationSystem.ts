@@ -40,12 +40,26 @@ export class SpiritInstantiationSystem extends System {
             const spawnX =
                 size +
                 t * (config.GameWidth - size * 2) +
-                MathUtils.random(-data.spawnXVariance, data.spawnXVariance);
+                MathUtils.random(
+                    -data.spawnPosXVariance,
+                    data.spawnPosXVariance,
+                );
+
+            const clampedX = MathUtils.clamp(
+                spawnX,
+                size,
+                config.GameWidth - size,
+            );
+
+            const spawnY =
+                config.GameHeight -
+                this.SPAWN_Y_OFFSET -
+                MathUtils.random(0, data.spawnPosYVariance ?? 0);
 
             const spawn = new SpiritSpawnDefinition(
                 {
-                    x: spawnX,
-                    y: config.GameHeight - this.SPAWN_Y_OFFSET,
+                    x: clampedX,
+                    y: spawnY,
                 },
                 { x: 0, y: data.initialYVelocity },
             );

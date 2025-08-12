@@ -4,6 +4,10 @@ export interface Pos {
 }
 
 export class MathUtils {
+    static clamp(value: number, min: number, max: number): number {
+        return Math.max(min, Math.min(max, value));
+    }
+
     static random(min: number, max: number): number {
         return Math.random() * (max - min) + min;
     }

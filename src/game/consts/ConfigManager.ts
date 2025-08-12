@@ -32,6 +32,7 @@ const DEFAULTS = {
     BoomerangNudgeImpulse: 1600, // The impulse force applied at the max nudge delta, per second
     BoomerangMaxNudgeVelocity: 1600, // Maximum horizontal velocity applied by nudging
     BoomerangeNudgeReverseMultiplier: 16, // Multiplier for nudge force when reversing boomerang direction
+    BoomerangNoDragXDecay: 2.5, // Decay factor for X velocity when no drag is active, per second
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms

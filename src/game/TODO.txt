@@ -1,10 +1,6 @@
 TODO:
+- Dynamic level generation
 - Select abilities between waves
-    - Pop 1-out-of-3 selection
-    - Abilities
-        - heal
-        - up max HP
-        - bigger 'rang
     - More abilities
         - Magnet zone around 'rang
         - Slowmo zone around 'rang
