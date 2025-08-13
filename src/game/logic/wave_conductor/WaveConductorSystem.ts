@@ -13,6 +13,7 @@ import {
 import { Component } from "../core/ECS";
 import { KeyframeUtil } from "./KeyframeUtil";
 import { allCurves, allSegs, allTracks } from "./data";
+import { ConfigManager } from "../../consts/ConfigManager";
 
 // --- State Management Components ---
 
@@ -89,10 +90,6 @@ export class WaveConductorSystem extends System {
             conductorState.activeSegs.push(seg);
             currentDuration += seg.duration;
         }
-
-        console.log(
-            `Starting new wave with ${conductorState.activeSegs.length} segments.`,
-        );
     }
 
     private updateActiveSpawners(conductorState: ActiveConductorState): void {
@@ -113,8 +110,6 @@ export class WaveConductorSystem extends System {
 
         // If the active segment has changed, manage spawners
         if (segIndex !== conductorState.currentSegIndex) {
-            console.log(`Switching to segment ${segIndex}.`);
-
             // Destroy old spawners
             for (const spawner of conductorState.activeSpawners) {
                 if (this.ecs.hasEntity(spawner.entity)) {
@@ -126,10 +121,6 @@ export class WaveConductorSystem extends System {
             // Create new spawners for the current segment
             if (segIndex !== -1) {
                 const currentSeg = conductorState.activeSegs[segIndex];
-
-                console.log(
-                    `Creating spawners for segment ${currentSeg.segId}, with ${currentSeg.trackIds.length} tracks.`,
-                );
 
                 for (const trackId of currentSeg.trackIds) {
                     const trackDef = allTracks.find(
@@ -150,10 +141,6 @@ export class WaveConductorSystem extends System {
                 }
             }
             conductorState.currentSegIndex = segIndex;
-
-            console.log(
-                `Active segment is now ${conductorState.currentSegIndex}, with ${conductorState.activeSpawners.length} spawners.`,
-            );
         }
     }
 
@@ -210,7 +197,14 @@ export class WaveConductorSystem extends System {
                 props.trackVolume,
                 timeInTrack,
             );
-            const finalVolume = Math.max(0.01, masterVolume * trackVolume); // Avoid division by zero
+
+            const waveMultiplier =
+                1 +
+                (getLevelState(this.ecs)?.waveNumber || 0) *
+                    ConfigManager.get().WaveNumberSpawnMultiplier; // Increase spawn rate with wave number
+
+            const finalVolume =
+                Math.max(0.01, masterVolume * trackVolume) * waveMultiplier; // Avoid division by zero
 
             data.spawnInterval = baseInterval / finalVolume;
 

@@ -1,6 +1,5 @@
 import { ConfigManager } from "../../../consts/ConfigManager";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
-import { Transform } from "../../core/components/Transform";
 import { Velocity } from "../../core/components/Velocity";
 import { Entity, System } from "../../core/ECS";
 import { DragState } from "../../input/DragState";

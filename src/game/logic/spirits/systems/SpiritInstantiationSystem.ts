@@ -29,10 +29,6 @@ export class SpiritInstantiationSystem extends System {
             // Calculate the spawn position based on the spawn definition.
             const spawn = this.generateSpawn(spawnState.data);
 
-            console.log(
-                `Spawning spirit at position: ${spawn.position.x}, ${spawn.position.y}`,
-            );
-
             spawnState.resetTimer();
 
             const spiritEntity = this.ecs.addEntity();

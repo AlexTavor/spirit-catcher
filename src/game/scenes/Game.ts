@@ -41,6 +41,8 @@ import {
     ActiveConductorState,
     WaveConductorSystem,
 } from "../logic/wave_conductor/WaveConductorSystem.ts";
+import { WaveEndDetectorSystem } from "../logic/wave_conductor/WaveEndDetectorSystem.ts";
+import { GameLostDetectionSystem } from "../logic/level/GameLostDetectionSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -74,6 +76,7 @@ export class Game extends Scene {
         // --- Player Systems ---
         this.ecs.addSystem(new ThrowBoomerangSystem());
         this.ecs.addSystem(new PlayerPositionUpdateSystem());
+        this.ecs.addSystem(new BoomerangNudgeSystem());
 
         // --- Level Direction ---
         this.ecs.addSystem(new GameTransitionCommandSystem());
@@ -87,7 +90,6 @@ export class Game extends Scene {
 
         // --- Game Logic Systems ---
         this.ecs.addSystem(new ModifierSystem());
-        this.ecs.addSystem(new BoomerangNudgeSystem());
         this.ecs.addSystem(new BoomerangPhysicsSystem());
         this.ecs.addSystem(new BoomerangBoundaryCollisionSystem());
         this.ecs.addSystem(new GroundCollisionSystem());
@@ -98,6 +100,8 @@ export class Game extends Scene {
         this.ecs.addSystem(new LevelStateUpdateSystem());
         this.ecs.addSystem(new UpgradesSystem());
         this.ecs.addSystem(new BoomerangNoDragBrakeSystem());
+        this.ecs.addSystem(new WaveEndDetectorSystem());
+        this.ecs.addSystem(new GameLostDetectionSystem());
 
         // --- Special Abilities and Effects ---
         // this.ecs.addSystem(new WallExplosionSystem());

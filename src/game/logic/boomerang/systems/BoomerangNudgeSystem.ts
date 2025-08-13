@@ -51,19 +51,8 @@ export class BoomerangNudgeSystem extends System {
             const velocity = this.ecs.getComponent(boomerang, Velocity);
             const currentVelocityX = velocity.x;
 
-            let totalImpulse = impulseX;
-
-            // Check if the nudge force is opposing the current velocity
-            const isReversing =
-                Math.sign(impulseX) !== Math.sign(currentVelocityX) &&
-                currentVelocityX !== 0;
-
-            if (isReversing) {
-                totalImpulse *= config.BoomerangeNudgeReverseMultiplier;
-            }
-
             velocity.x = PhaserMath.Clamp(
-                currentVelocityX + totalImpulse,
+                currentVelocityX + impulseX,
                 -maxVelocity,
                 maxVelocity,
             );

@@ -7,6 +7,7 @@ const DEFAULTS = {
     GameHeight: 1280,
     EntryScene: "Game",
     LevelTransitionDuration: 2000, // ms
+    WaveNumberSpawnMultiplier: 0.05, // Multiplier for spawn rate increase per wave
 
     // --- Player Config --- //
     PlayerHeight: 128,
@@ -28,10 +29,9 @@ const DEFAULTS = {
     BoomerangHeight: 8,
     BoomerangImpactMaxVelocity: 1000, // Max horizontal velocity for impact force calculation
     BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
-    BoomerangNudgeMaxDelta: 200, // The drag distance that produces the max nudge.
-    BoomerangNudgeImpulse: 1600, // The impulse force applied at the max nudge delta, per second
-    BoomerangMaxNudgeVelocity: 1200, // Maximum horizontal velocity applied by nudging
-    BoomerangeNudgeReverseMultiplier: 16, // Multiplier for nudge force when reversing boomerang direction
+    BoomerangNudgeMaxDelta: 1, // The drag distance that produces the max nudge.
+    BoomerangNudgeImpulse: 1000, // The impulse force applied at the max nudge delta, per second
+    BoomerangMaxNudgeVelocity: 1400, // Maximum horizontal velocity applied by nudging
     BoomerangNoDragBrakingForce: 1000, // Force applied per second to slow down the boomerang when no drag is active
 
     // --- Explosion Config ---
