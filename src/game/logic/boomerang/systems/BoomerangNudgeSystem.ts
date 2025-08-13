@@ -42,14 +42,28 @@ export class BoomerangNudgeSystem extends System {
 
         const dt = delta / 1000; // Convert delta from ms to seconds
 
-        // Calculate the player's intended impulse.
-
-        const impulseX = normalizedDelta * config.BoomerangNudgeImpulse * dt;
         const maxVelocity = config.BoomerangMaxNudgeVelocity;
 
         for (const boomerang of entities) {
             const velocity = this.ecs.getComponent(boomerang, Velocity);
             const currentVelocityX = velocity.x;
+
+            const velocityFactor = PhaserMath.Clamp(
+                1 - Math.abs(currentVelocityX) / maxVelocity,
+                0,
+                1,
+            );
+            const lerpedFactor = PhaserMath.Linear(
+                1,
+                velocityFactor,
+                config.BoomerangNudgeVelocityInfluence,
+            );
+
+            const impulseX =
+                normalizedDelta *
+                config.BoomerangNudgeImpulse *
+                lerpedFactor *
+                dt;
 
             velocity.x = PhaserMath.Clamp(
                 currentVelocityX + impulseX,
