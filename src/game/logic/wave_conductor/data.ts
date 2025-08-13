@@ -7,11 +7,20 @@ import {
     DifficultyCurveDefinition,
 } from "./types";
 import { ConfigManager } from "../../consts/ConfigManager";
+import { TracksUtil } from "./TracksUtil";
+
+const puffStep = ConfigManager.get().GameWidth / 6;
+const fingersStep = ConfigManager.get().GameWidth / 8;
+const fingerSpeeds = [80, 90, 120, 110, 100];
+
+const fatSnakeXStep = ConfigManager.get().GameWidth / 4;
+const wallBounceXStep = 30;
+const hWidth = ConfigManager.get().GameWidth / 2;
 
 // --- PREFABS ---
 // Reusable templates for spawner behaviors.
 
-const prefabs: { [key: string]: TrackPrefab } = {
+export const prefabs: { [key: string]: TrackPrefab } = {
     stream: {
         prefabId: "stream",
         yVelocity: 150,
@@ -23,7 +32,7 @@ const prefabs: { [key: string]: TrackPrefab } = {
     },
     wall: {
         prefabId: "wall",
-        yVelocity: 60,
+        yVelocity: 40,
         spawnXVariance: ConfigManager.get().GameWidth,
         spawnYVariance: 40,
         spawnInterval: 20,
@@ -39,17 +48,31 @@ const prefabs: { [key: string]: TrackPrefab } = {
         spawnX: 50, // Starts on the left
         trackVolume: 1.0,
     },
+    puff: {
+        prefabId: "puff",
+        yVelocity: 80,
+        spawnXVariance: 60,
+        spawnYVariance: 60,
+        spawnInterval: 20,
+        spawnX: ConfigManager.get().GameWidth / 2,
+        trackVolume: 1.0,
+    },
 };
 
 // --- TRACKS ---
 // Specific instances of prefabs with keyframed property timelines.
 
-const buildTrack = (
+export const buildTrack = (
     trackId: string,
     prefabId: string,
     overrides: Partial<TrackProperties>,
 ): TrackDefinition => {
     const prefab = prefabs[prefabId];
+
+    if (!prefab) {
+        throw new Error(`Track prefab '${prefabId}' not found.`);
+    }
+
     // Helper to create a default keyframe array if not provided
     const kf = <T>(value: T): Keyframe<T>[] => [
         { time: 0, value: value, ease: "step" },
@@ -70,6 +93,68 @@ const buildTrack = (
         },
     };
 };
+
+const { tracks: puffSlowTracks, seg: puffSlowSeg } = TracksUtil.buildStaggered(
+    "puffSlow",
+    "puff",
+    3,
+    {
+        delay: 3,
+        duration: 1,
+        segDurationPadding: 1,
+        valueFunctions: {
+            yVelocity: (step) => 60 + step * 15,
+            spawnX: (step) => {
+                let value = puffStep + puffStep * step * 2;
+                value = reflectFromWall(value);
+                return value;
+            },
+        },
+    },
+    10, // Rarity
+);
+
+const { tracks: puffQuickTracks, seg: puffQuickSeg } =
+    TracksUtil.buildStaggered(
+        "puffQuick",
+        "puff",
+        3,
+        {
+            delay: 3,
+            duration: 1,
+            segDurationPadding: 1,
+            valueFunctions: {
+                yVelocity: (step) => 80 + step * 30,
+                spawnX: (step) => {
+                    let value =
+                        ConfigManager.get().GameWidth -
+                        (puffStep + puffStep * step * 2);
+                    value = reflectFromWall(value);
+                    return value;
+                },
+            },
+        },
+        30, // Rarity
+    );
+
+const { tracks: fingersTracks, seg: fingersSeg } = TracksUtil.buildStaggered(
+    "fingers",
+    "stream",
+    5,
+    {
+        delay: 1,
+        duration: 5,
+        segDurationPadding: 2,
+        valueFunctions: {
+            yVelocity: (step) => fingerSpeeds[step % fingerSpeeds.length],
+            spawnX: (step) => {
+                const value = fingersStep + fingersStep * (step * 1.4);
+                return value;
+            },
+        },
+    },
+    60, // Rarity
+);
 
 export const allTracks: TrackDefinition[] = [
     buildTrack("steadyStream", "stream", {}),
@@ -102,6 +187,60 @@ export const allTracks: TrackDefinition[] = [
             { time: 8, value: 0, ease: "step" },
         ],
     }),
+    buildTrack("fatSnake", "stream", {
+        yVelocity: [{ time: 0, value: 80 }],
+        spawnInterval: [{ time: 0, value: 75 }],
+        spawnXVariance: [{ time: 0, value: 30 }],
+        spawnYVariance: [{ time: 0, value: 30 }],
+        spawnX: [
+            { time: 0, value: fatSnakeXStep },
+            {
+                time: 3,
+                value: ConfigManager.get().GameWidth - fatSnakeXStep,
+                ease: "expo",
+            },
+            { time: 6, value: fatSnakeXStep, ease: "expo" },
+            {
+                time: 9,
+                value: ConfigManager.get().GameWidth - fatSnakeXStep,
+                ease: "expo",
+            },
+            { time: 12, value: fatSnakeXStep, ease: "expo" },
+        ],
+        trackVolume: [
+            { time: 0, value: 1.0 },
+            { time: 12, value: 0, ease: "step" },
+        ],
+    }),
+    buildTrack("wallBounce", "stream", {
+        yVelocity: [{ time: 0, value: 100 }],
+        spawnInterval: [{ time: 0, value: 75 }],
+        spawnXVariance: [{ time: 0, value: wallBounceXStep }],
+        spawnYVariance: [{ time: 0, value: wallBounceXStep }],
+        spawnX: [
+            { time: 0, value: wallBounceXStep },
+            {
+                time: 3,
+                value: hWidth,
+                ease: "quint",
+            },
+            { time: 6, value: wallBounceXStep },
+            {
+                time: 9,
+                value: hWidth,
+                ease: "quint",
+            },
+            { time: 12, value: wallBounceXStep },
+        ],
+        trackVolume: [
+            { time: 0, value: 0.0 },
+            { time: 0.01, value: 1.0, ease: "step" },
+            { time: 12, value: 0, ease: "step" },
+        ],
+    }),
+    ...puffSlowTracks,
+    ...puffQuickTracks,
+    ...fingersTracks,
 ];
 
 // --- SEGMENTS ---
@@ -111,27 +250,42 @@ export const allSegs: SegDefinition[] = [
     {
         segId: "warmup",
         duration: 5, // seconds
-        rarity: 1,
+        rarity: 10,
         trackIds: ["steadyStream"],
     },
     {
         segId: "wallAttack",
         duration: 4,
-        rarity: 2,
+        rarity: 20,
         trackIds: ["wideWall"],
     },
     {
         segId: "pincerAttack",
         duration: 6,
-        rarity: 3,
+        rarity: 30,
         trackIds: ["pincerLeft", "pincerRight"],
     },
     {
         segId: "weaving",
         duration: 8,
-        rarity: 2,
+        rarity: 20,
         trackIds: ["weavingStream"],
     },
+    {
+        segId: "fatSnake",
+        duration: 13,
+        rarity: 10,
+        trackIds: ["fatSnake"],
+    },
+    {
+        segId: "wallBounce",
+        duration: 13,
+        rarity: 10,
+        trackIds: ["wallBounce"],
+    },
+    puffSlowSeg,
+    puffQuickSeg,
+    fingersSeg,
 ];
 
 // --- DIFFICULTY CURVES ---
@@ -148,3 +302,11 @@ export const allCurves: DifficultyCurveDefinition[] = [
         ],
     },
 ];
+
+function reflectFromWall(value: number) {
+    if (value > ConfigManager.get().GameWidth - puffStep) {
+        const overstep = value - (ConfigManager.get().GameWidth - puffStep);
+        value = ConfigManager.get().GameWidth - puffStep - overstep;
+    }
+    return value;
+}

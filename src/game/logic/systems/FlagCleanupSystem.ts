@@ -1,6 +1,7 @@
 import { System } from "../core/ECS";
 import { HitWallFlag } from "../boomerang/components/HitWallFlag";
 import { HitCeilingFlag } from "../boomerang/components/HitCeilingFlag";
+import { BrakingFlag } from "../boomerang/components/BrakingFlag";
 
 export class FlagCleanupSystem extends System {
     // This system doesn't operate on a specific component set.
@@ -17,6 +18,12 @@ export class FlagCleanupSystem extends System {
             this.ecs.getEntitiesWithComponent(HitCeilingFlag);
         for (const entity of ceilingHitters) {
             this.ecs.removeComponent(entity, HitCeilingFlag);
+        }
+
+        const brakingFlagEntities =
+            this.ecs.getEntitiesWithComponent(BrakingFlag);
+        for (const entity of brakingFlagEntities) {
+            this.ecs.removeComponent(entity, BrakingFlag);
         }
     }
 

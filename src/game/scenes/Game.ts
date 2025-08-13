@@ -43,6 +43,7 @@ import {
 } from "../logic/wave_conductor/WaveConductorSystem.ts";
 import { WaveEndDetectorSystem } from "../logic/wave_conductor/WaveEndDetectorSystem.ts";
 import { GameLostDetectionSystem } from "../logic/level/GameLostDetectionSystem.ts";
+import { DirectForceControllerSystem } from "../logic/boomerang/systems/DirectForceControllerSystem.ts";
 
 export class Game extends Scene {
     gameDisplay: GameDisplay;
@@ -76,7 +77,8 @@ export class Game extends Scene {
         // --- Player Systems ---
         this.ecs.addSystem(new ThrowBoomerangSystem());
         this.ecs.addSystem(new PlayerPositionUpdateSystem());
-        this.ecs.addSystem(new BoomerangNudgeSystem());
+        //this.ecs.addSystem(new BoomerangNudgeSystem());
+        this.ecs.addSystem(new DirectForceControllerSystem());
 
         // --- Level Direction ---
         this.ecs.addSystem(new GameTransitionCommandSystem());

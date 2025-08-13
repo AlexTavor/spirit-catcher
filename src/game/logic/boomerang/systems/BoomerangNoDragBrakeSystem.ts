@@ -2,8 +2,8 @@ import { ConfigManager } from "../../../consts/ConfigManager";
 import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { Velocity } from "../../core/components/Velocity";
 import { Entity, System } from "../../core/ECS";
-import { DragState } from "../../input/DragState";
 import { Airborne } from "../components/Airborne";
+import { BrakingFlag } from "../components/BrakingFlag";
 
 export class BoomerangNoDragBrakeSystem extends System {
     public componentsRequired = new Set<Function>([Airborne, Velocity]);
@@ -13,13 +13,12 @@ export class BoomerangNoDragBrakeSystem extends System {
 
         const dt = delta / 1000;
 
-        const drag = this.ecs.getComponent(
+        const brakingFlag = this.ecs.getComponent(
             getPlayerEntity(this.ecs),
-            DragState,
+            BrakingFlag,
         );
 
-        if (drag && drag.pointerId !== -1) {
-            // If there is active drag, do not apply slow.
+        if (!brakingFlag) {
             return;
         }
 

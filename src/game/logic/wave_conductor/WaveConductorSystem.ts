@@ -35,7 +35,6 @@ export class ActiveConductorState extends Component {
 
 export class WaveConductorSystem extends System {
     public componentsRequired = new Set<Function>();
-
     private readonly spawningDefaults = {
         spawnX: 0,
         yVelocity: 0,
@@ -52,7 +51,6 @@ export class WaveConductorSystem extends System {
             this.ecs.world,
             ActiveConductorState,
         );
-
         // Check if a new wave needs to start
         if (lvl.gameState === GameState.WAVE_STARTING && !lvl.isWaveGenerated) {
             this.startNewWave(conductorState);
@@ -64,10 +62,8 @@ export class WaveConductorSystem extends System {
         }
 
         conductorState.waveTime += delta;
-
         // Update spawner lifecycles (creation/destruction)
         this.updateActiveSpawners(conductorState);
-
         // Update properties of active spawners based on keyframes
         this.updateSpawnerProperties(conductorState, delta);
     }
@@ -78,7 +74,6 @@ export class WaveConductorSystem extends System {
 
         // Roll for a difficulty curve (for now, just pick the first one)
         conductorState.difficultyCurve = allCurves[0];
-
         // Roll for segments until the wave duration is met
         conductorState.activeSegs = [];
         let currentDuration = 0;
@@ -94,7 +89,6 @@ export class WaveConductorSystem extends System {
 
     private updateActiveSpawners(conductorState: ActiveConductorState): void {
         if (conductorState.activeSegs.length === 0) return;
-
         // Determine which segment should be active
         let cumulativeTime = 0;
         let segIndex = -1;
@@ -117,11 +111,9 @@ export class WaveConductorSystem extends System {
                 }
             }
             conductorState.activeSpawners = [];
-
             // Create new spawners for the current segment
             if (segIndex !== -1) {
                 const currentSeg = conductorState.activeSegs[segIndex];
-
                 for (const trackId of currentSeg.trackIds) {
                     const trackDef = allTracks.find(
                         (t) => t.trackId === trackId,
@@ -155,7 +147,6 @@ export class WaveConductorSystem extends System {
             curve.masterVolume,
             conductorState.waveTime / 1000,
         );
-
         for (const spawner of conductorState.activeSpawners) {
             const spawnState = this.ecs.getComponent(
                 spawner.entity,
@@ -167,7 +158,6 @@ export class WaveConductorSystem extends System {
 
             const timeInTrack =
                 (conductorState.waveTime - spawner.startTime) / 1000;
-
             const props = spawner.trackDef.properties;
 
             // Calculate each property based on its keyframes
@@ -187,7 +177,6 @@ export class WaveConductorSystem extends System {
                 ),
                 spawnInterval: 0, // This will be calculated last
             };
-
             // Calculate dynamic spawn interval
             const baseInterval = KeyframeUtil.calculateValue(
                 props.spawnInterval,
@@ -197,16 +186,20 @@ export class WaveConductorSystem extends System {
                 props.trackVolume,
                 timeInTrack,
             );
-
             const waveMultiplier =
                 1 +
                 (getLevelState(this.ecs)?.waveNumber || 0) *
-                    ConfigManager.get().WaveNumberSpawnMultiplier; // Increase spawn rate with wave number
+                    ConfigManager.get().WaveNumberSpawnMultiplier;
 
-            const finalVolume =
-                Math.max(0.01, masterVolume * trackVolume) * waveMultiplier; // Avoid division by zero
+            const combinedVolume = masterVolume * trackVolume;
 
-            data.spawnInterval = baseInterval / finalVolume;
+            if (combinedVolume <= 0) {
+                // Set a practically infinite interval to stop spawning.
+                data.spawnInterval = Number.MAX_SAFE_INTEGER;
+            } else {
+                const finalVolume = combinedVolume * waveMultiplier;
+                data.spawnInterval = baseInterval / finalVolume;
+            }
 
             // Update the component's data
             spawnState.data = data;

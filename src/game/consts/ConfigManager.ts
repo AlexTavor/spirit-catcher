@@ -24,16 +24,18 @@ const DEFAULTS = {
     BoomerangThrowMinForce: 1800,
     BoomerangSpawnOffsetY: 10,
     BoomerangRotationSpeed: 10,
-    BoomerangWallBounce: 0.8,
+    BoomerangWallBounce: 1,
     BoomerangWidth: 32,
     BoomerangHeight: 8,
     BoomerangImpactMaxVelocity: 1000, // Max horizontal velocity for impact force calculation
     BoomerangMaxActives: 5, // Maximum number of active boomerangs at once
     BoomerangNudgeMaxDelta: 1, // The drag distance that produces the max nudge.
-    BoomerangNudgeImpulse: 1000, // The impulse force applied at the max nudge delta, per second
-    BoomerangMaxNudgeVelocity: 1800, // Maximum horizontal velocity applied by nudging
+    BoomerangNudgeImpulse: 1500, // The impulse force applied at the max nudge delta, per second
+    BoomerangMaxVelocity: 1200, // Maximum horizontal velocity applied by nudging
     BoomerangNoDragBrakingForce: 1000, // Force applied per second to slow down the boomerang when no drag is active
     BoomerangNudgeVelocityInfluence: 0.5, // How much the current velocity affects the nudge impulse
+    BoomerangDirectForceFactor: 10, // Strength of the "elastic" pull in DirectForceController
+
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms
     ExplosionDurationPerForce: 700, // ms

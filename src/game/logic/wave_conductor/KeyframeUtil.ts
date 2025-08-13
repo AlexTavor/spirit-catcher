@@ -1,5 +1,20 @@
 import { MathUtils } from "../../../utils/Math";
 import { Keyframe } from "./types";
+import { Math as PhaserMath } from "phaser";
+
+const easingFunctions: { [key: string]: (v: number) => number } = {
+    linear: PhaserMath.Easing.Linear,
+    quad: PhaserMath.Easing.Quadratic.InOut,
+    cubic: PhaserMath.Easing.Cubic.InOut,
+    quart: PhaserMath.Easing.Quartic.InOut,
+    quint: PhaserMath.Easing.Quintic.InOut,
+    sine: PhaserMath.Easing.Sine.InOut,
+    expo: PhaserMath.Easing.Expo.InOut,
+    circ: PhaserMath.Easing.Circular.InOut,
+    back: PhaserMath.Easing.Back.InOut,
+    elastic: PhaserMath.Easing.Elastic.InOut,
+    bounce: PhaserMath.Easing.Bounce.InOut,
+};
 
 // --- Utility for Keyframe Interpolation ---
 export class KeyframeUtil {
@@ -31,7 +46,6 @@ export class KeyframeUtil {
 
     /**
      * Calculates the value of a property at a specific time based on its keyframes.
-     * Supports 'step' and 'linear' easing.
      */
     public static calculateValue(
         keyframes: Keyframe<number>[],
@@ -42,15 +56,20 @@ export class KeyframeUtil {
 
         const { prev, next } = frames;
 
-        if (prev === next || prev.ease === "step" || prev.time === next.time) {
+        if (prev === next || next.ease === "step" || prev.time === next.time) {
             return prev.value;
         }
+
+        const easeType = next.ease ?? "linear";
+
+        const easeFunc = easingFunctions[easeType] || PhaserMath.Easing.Linear;
 
         const duration = next.time - prev.time;
         const timeSincePrev = time - prev.time;
         const t = MathUtils.clamp(timeSincePrev / duration, 0, 1);
 
-        // Linear interpolation
-        return prev.value + (next.value - prev.value) * t;
+        const easedT = 1 - easeFunc(t);
+
+        return prev.value + (next.value - prev.value) * easedT;
     }
 }
