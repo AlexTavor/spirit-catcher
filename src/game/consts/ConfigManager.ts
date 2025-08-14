@@ -80,12 +80,15 @@ export class ConfigManager {
      * This is called automatically by get() on its first run.
      */
     private static load(): void {
+        this.activeConfig = { ...DEFAULTS };
+        return;
+
         const storedConfig = localStorage.getItem(STORAGE_KEY);
         let loadedConfig = {};
 
         if (storedConfig) {
             try {
-                loadedConfig = JSON.parse(storedConfig);
+                loadedConfig = JSON.parse(storedConfig!);
             } catch (e) {
                 console.error(
                     "Failed to parse stored config, using defaults.",
