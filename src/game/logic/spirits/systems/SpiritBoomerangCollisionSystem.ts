@@ -5,8 +5,8 @@ import { ConfigManager } from "../../../consts/ConfigManager";
 import { Boomerang } from "../../boomerang/components/Boomerang";
 import { EventBus } from "../../../api/EventBus";
 import { GameEvents } from "../../../consts/GameEvents";
-import { ModifiableStat } from "../../upgrades/ModifiableStat";
-import { Values } from "../../upgrades/Values";
+import { ModifiableStat } from "../../upgrades/mods/ModifiableStat";
+import { Values } from "../../upgrades/mods/Values";
 
 export class SpiritBoomerangCollisionSystem extends System {
     public componentsRequired = new Set<Function>([Spirit, Transform]);

@@ -4,8 +4,11 @@ import { getPlayerEntity } from "../../../utils/getPlayerEntity";
 import { Boomerang } from "../../boomerang/components/Boomerang";
 import { ConfigManager } from "../../../consts/ConfigManager";
 import { HasBoomerang } from "../components/HasBoomerang";
-import { ModifiableStat } from "../../upgrades/ModifiableStat";
-import { Values } from "../../upgrades/Values";
+import { ModifiableStat } from "../../upgrades/mods/ModifiableStat";
+import { Values } from "../../upgrades/mods/Values";
+import { GameEvents } from "../../../consts/GameEvents";
+import { EventBus } from "../../../api/EventBus";
+import { QuickFalling } from "../../boomerang/components/QuickFalling";
 
 export class PlayerBoomerangCollisionSystem extends System {
     public componentsRequired = new Set<Function>();
@@ -65,11 +68,23 @@ export class PlayerBoomerangCollisionSystem extends System {
 
                 // Give boomerang back to player and remove the boomerang entity.
                 this.ecs.addComponent(player, new HasBoomerang());
+
+                this.handleQuickFall(boomerang);
+
                 this.ecs.removeEntity(boomerang);
 
                 // We're done for this frame.
                 break;
             }
+        }
+    }
+
+    private handleQuickFall(boomerang: number) {
+        const quickFalling = this.ecs.hasComponent(boomerang, QuickFalling);
+        if (quickFalling) {
+            EventBus.emit(GameEvents.RANG_QUICK_FALL_CAUGHT, {
+                entityId: boomerang,
+            });
         }
     }
 

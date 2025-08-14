@@ -1,7 +1,7 @@
 import { ECS } from "../logic/core/ECS";
 import { LevelState } from "../logic/level/LevelState";
-import { ModifiableStat } from "../logic/upgrades/ModifiableStat";
-import { Values } from "../logic/upgrades/Values";
+import { ModifiableStat } from "../logic/upgrades/mods/ModifiableStat";
+import { Values } from "../logic/upgrades/mods/Values";
 
 let lvlState: LevelState | null = null;
 

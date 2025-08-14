@@ -1,14 +1,11 @@
 TODO:
-- Accelerate y speeds according to wave #
 - Select abilities between waves
-    - On 'rang collect by player while enough extra gravity
-        - explosion around player, popping spirits in radius
-        - top-seeking shot from player
-        - spirits slomo
-    - More abilities
-        - Magnet zone around 'rang
-        - Slowmo zone around 'rang
-        - Horizontally moving poppables
-            - Pops, shoots a projectile at topmost spirit
-            - Explodes, popping all spirits in radius
-            - Pops, producing vertical shot (up and down)
+    - Exploding projectiles
+        - Move explosion to command
+    - Horizontally moving poppables
+        - Pops, shoots a projectile at topmost spirit
+        - Explodes, popping all spirits in radius
+        - Pops, producing vertical shot (up and down)
+    - Magnet zone around 'rang
+    - Slowmo zone around 'rang
+

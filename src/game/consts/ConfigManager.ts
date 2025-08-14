@@ -36,6 +36,21 @@ const DEFAULTS = {
     BoomerangNoDragBrakingForce: 1000, // Force applied per second to slow down the boomerang when no drag is active
     BoomerangNudgeVelocityInfluence: 0.5, // How much the current velocity affects the nudge impulse
     BoomerangDirectForceFactor: 10, // Strength of the "elastic" pull in DirectForceController
+    QuickFallMinSpeed: 700, // Minimum speed for a boomerang to be considered "quick falling"
+
+    // --- Projectile Config --- //
+    ProjectileMaxSpeed: 1600, // Maximum speed of projectiles
+    ProjectileSteeringForce: 8, // How sharply projectiles can turn
+    ProjectileCollisionRadius: 20, // Radius for projectile collision detection
+    ProjectileTimeToMaxSpeed: 0.5, // Time in seconds to reach max speed
+    ProjectilesPerUpgrade: 2, // Number of projectiles spawned per upgrade level
+
+    // --- Caught Quick Fall Explosion Config --- //
+    CaughtQuickfallExplosionAddForce: 0.2, // Explosion force per upgrade level
+    CaughtQuickfallExplosionBaseForce: 0.3, // Base force of the explosion effect
+
+    // --- Projectile Explosion Config --- //
+    ProjectileExplosionForce: 0.2, // Force applied by projectile explosion per upgrade level
 
     // --- Explosion Config ---
     ExplosionBaseDuration: 300, // ms

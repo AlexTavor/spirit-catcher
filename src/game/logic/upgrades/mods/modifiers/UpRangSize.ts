@@ -2,7 +2,7 @@ import {
     ModifierDefinition,
     ModifierEffect,
     ModifierStackingBehavior,
-} from "../../core/modifiers/types";
+} from "../../../core/modifiers/types";
 import { UpRangSizeEffect } from "../effects/UpRangSizeEffect";
 
 export class UpRangSize implements ModifierDefinition {

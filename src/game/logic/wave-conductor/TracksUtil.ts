@@ -57,8 +57,6 @@ export class TracksUtil {
             rarity,
         };
 
-        console.log(seg);
-
         return { tracks, seg };
     }
 

@@ -1,4 +1,7 @@
-import { ModifierEffect, ModifierEffectType } from "../../core/modifiers/types";
+import {
+    ModifierEffect,
+    ModifierEffectType,
+} from "../../../core/modifiers/types";
 import { ModifiableStat } from "../ModifiableStat";
 
 export class UpRangSizeEffect implements ModifierEffect {

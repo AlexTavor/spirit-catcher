@@ -8,6 +8,8 @@ export enum GameEvents {
     SPIRIT_COLLECTED = "SPIRIT_COLLECTED",
     SPIRIT_MISSED = "SPIRIT_MISSED",
     LEVEL_STATE_CHANGE = "LEVEL_STATE_CHANGE",
+    RANG_QUICK_FALL_CAUGHT = "RANG_QUICK_FALL_CAUGHT",
+    UPGRADE_SHORTLIST_CHANGED = "UPGRADE_SHORTLIST_CHANGED",
 }
 
 /**
@@ -18,6 +20,16 @@ export interface WaveStateChangeEvent {
     waveNumber: number;
 }
 
+/**
+ * The data payload sent with a LEVEL_STATE_CHANGE.
+ */
 export interface LevelStateChangeEvent {
     newState: LevelState;
+}
+
+/**
+ * The data payload sent with a RANG_QUICK_FALL_CAUGHT.
+ */
+export interface BoomerangQuickFallCaughtPayload {
+    entityId: number;
 }

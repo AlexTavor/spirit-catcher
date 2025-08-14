@@ -2,8 +2,8 @@ import { ConfigManager, ConfigType } from "../../../consts/ConfigManager";
 import { Transform } from "../../core/components/Transform";
 import { Velocity } from "../../core/components/Velocity";
 import { System, Entity } from "../../core/ECS";
-import { ModifiableStat } from "../../upgrades/ModifiableStat";
-import { Values } from "../../upgrades/Values";
+import { ModifiableStat } from "../../upgrades/mods/ModifiableStat";
+import { Values } from "../../upgrades/mods/Values";
 import { Airborne } from "../components/Airborne";
 
 export class BoomerangPhysicsSystem extends System {

@@ -62,7 +62,7 @@ export class GameTransitionCommandSystem extends System {
         if (lvl.stateTimer <= 0) {
             lvl.stateTimer = 0;
 
-            const isFirstWave = lvl.waveNumber === 1;
+            const isFirstWave = lvl.waveNumber === -1;
             CommandBus.emit(GameCommands.TRANSITION_TO_STATE, {
                 newState: isFirstWave
                     ? GameState.WAVE_STARTING

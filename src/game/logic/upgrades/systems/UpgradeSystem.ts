@@ -1,25 +1,22 @@
-import { CommandBus } from "../../api/CommandBus";
-import { ConfigManager } from "../../consts/ConfigManager";
+import { CommandBus } from "../../../api/CommandBus";
+import { ConfigManager } from "../../../consts/ConfigManager";
 import {
     GameCommands,
-    PlayerUpgradeType,
     UpgradePlayerPayload,
-} from "../../consts/GameCommands";
-import { getLevelState } from "../../utils/getLevelState";
-import { Entity, System } from "../core/ECS";
-import { ActiveModifiersComponent } from "../core/modifiers/ActiveModifiersComponent";
-import { UpRangSize } from "./modifiers/UpRangSize";
+} from "../../../consts/GameCommands";
+import { PlayerUpgradeType } from "../PlayerUpgradeType";
+import { getLevelState } from "../../../utils/getLevelState";
+import { Entity, System } from "../../core/ECS";
+import { ActiveModifiersComponent } from "../../core/modifiers/ActiveModifiersComponent";
+import { UpRangSize } from "../mods/modifiers/UpRangSize";
+import { getUpgradesState } from "../../../utils/getUpgradesState";
 
-export class UpgradesSystem extends System {
+export class UpgradeSystem extends System {
     public componentsRequired: Set<Function> = new Set<Function>();
 
     constructor() {
         super();
-        CommandBus.on(
-            GameCommands.UPGRADE_PLAYER,
-            this.handleApplyModifier,
-            this,
-        );
+        CommandBus.on(GameCommands.UPGRADE_PLAYER, this.addUpdgrade, this);
 
         CommandBus.on(
             GameCommands.RESET_UPGRADES,
@@ -40,7 +37,13 @@ export class UpgradesSystem extends System {
         lvl.maxSpiritMisses = ConfigManager.get().MaxHealth;
     }
 
-    handleApplyModifier(payload: UpgradePlayerPayload): void {
+    addUpdgrade(payload: UpgradePlayerPayload): void {
+        const upgradesState = getUpgradesState(this.ecs);
+        if (!upgradesState.upgrades[payload.type]) {
+            upgradesState.upgrades[payload.type] = 0;
+        }
+        upgradesState.upgrades[payload.type]!++;
+
         switch (payload.type) {
             case PlayerUpgradeType.UP_RANG_SIZE: {
                 // Handle upgrading the boomerang size
@@ -80,11 +83,7 @@ export class UpgradesSystem extends System {
     }
 
     public destroy(): void {
-        CommandBus.off(
-            GameCommands.UPGRADE_PLAYER,
-            this.handleApplyModifier,
-            this,
-        );
+        CommandBus.off(GameCommands.UPGRADE_PLAYER, this.addUpdgrade, this);
 
         CommandBus.off(
             GameCommands.RESET_UPGRADES,
