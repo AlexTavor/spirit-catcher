@@ -201,6 +201,11 @@ export class WaveConductorSystem extends System {
                 data.spawnInterval = baseInterval / finalVolume;
             }
 
+            // Increase yVelocity based on wave number
+            data.yVelocity +=
+                (getLevelState(this.ecs)?.waveNumber || 0) *
+                ConfigManager.get().WaveNumberYVelocityIncrease;
+
             // Update the component's data
             spawnState.data = data;
         }

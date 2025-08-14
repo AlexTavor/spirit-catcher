@@ -8,6 +8,7 @@ const DEFAULTS = {
     EntryScene: "Game",
     LevelTransitionDuration: 2000, // ms
     WaveNumberSpawnMultiplier: 0.05, // Multiplier for spawn rate increase per wave
+    WaveNumberYVelocityIncrease: 5, // Increase in yVelocity per wave
 
     // --- Player Config --- //
     PlayerHeight: 128,
