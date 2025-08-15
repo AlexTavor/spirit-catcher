@@ -28,10 +28,8 @@ export class KeyframeUtil {
         if (keyframes.length === 0) return null;
         if (keyframes.length === 1)
             return { prev: keyframes[0], next: keyframes[0] };
-
         const first = keyframes[0];
         if (time < first.time) return { prev: first, next: first };
-
         for (let i = 0; i < keyframes.length - 1; i++) {
             const current = keyframes[i];
             const next = keyframes[i + 1];
@@ -55,7 +53,6 @@ export class KeyframeUtil {
         if (!frames) return 0;
 
         const { prev, next } = frames;
-
         if (prev === next || next.ease === "step" || prev.time === next.time) {
             return prev.value;
         }
@@ -63,12 +60,11 @@ export class KeyframeUtil {
         const easeType = next.ease ?? "linear";
 
         const easeFunc = easingFunctions[easeType] || PhaserMath.Easing.Linear;
-
         const duration = next.time - prev.time;
         const timeSincePrev = time - prev.time;
         const t = MathUtils.clamp(timeSincePrev / duration, 0, 1);
 
-        const easedT = 1 - easeFunc(t);
+        const easedT = easeFunc(t);
 
         return prev.value + (next.value - prev.value) * easedT;
     }

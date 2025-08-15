@@ -12,7 +12,9 @@ import {
 } from "../spirits/components/SpiritSpawnState";
 import { Component } from "../core/ECS";
 import { KeyframeUtil } from "./KeyframeUtil";
-import { allCurves, allSegs, allTracks } from "./data";
+import { allSegs } from "./data/data";
+import { allTracks } from "./data/allTracks";
+import { difficultyCurves } from "./data/difficultyCurves";
 import { ConfigManager } from "../../consts/ConfigManager";
 import { ThreatCalculator } from "./ThreatCalculator";
 
@@ -27,7 +29,7 @@ export interface ActiveSpawner {
 export class ActiveConductorState extends Component {
     public activeSegs: SegDefinition[] = [];
     public activeSpawners: ActiveSpawner[] = [];
-    public difficultyCurve: DifficultyCurveDefinition = allCurves[0];
+    public difficultyCurve: DifficultyCurveDefinition = difficultyCurves[0];
     public waveTime: number = 0;
     public currentSegIndex: number = -1;
 }

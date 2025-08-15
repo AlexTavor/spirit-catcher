@@ -1,4 +1,4 @@
-import { allTracks } from "./data";
+import { allTracks } from "./data/allTracks";
 import { KeyframeUtil } from "./KeyframeUtil";
 import { SegDefinition, TrackDefinition } from "./types";
 

@@ -1,13 +1,14 @@
 // src/game/logic/wave-conductor/TracksUtil.ts
 
-import { ConfigManager } from "../../consts/ConfigManager";
-import { allTracks, buildTrack } from "./data";
+import { ConfigManager } from "../../../consts/ConfigManager";
+import { allTracks } from "./allTracks";
+import { buildTrack } from "./buildTrack";
 import {
     Keyframe,
     SegDefinition,
     TrackDefinition,
     TrackProperties,
-} from "./types";
+} from "../types";
 
 type StaggerableValue<T> = T | ((step: number) => T);
 
@@ -48,7 +49,7 @@ export class TracksUtil {
         }
 
         const seg: SegDefinition = {
-            segId: `${idBase}_seg`,
+            segId: `${idBase}`,
             trackIds: tracks.map((track) => track.trackId),
             duration: TracksUtil.calculateTotalSegDuration(
                 staggerConfig,

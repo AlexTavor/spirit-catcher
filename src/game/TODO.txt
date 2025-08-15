@@ -1,6 +1,6 @@
 TODO:
 - Moar Segs!
-    - Add ThinSnake (high amplitude snake)
+    - Add Arrow
     - Add Circle
     - Add Cross
     - Add Starship
