@@ -1,9 +1,4 @@
 TODO:
-- Moar Segs!
-    - Add Arrow
-    - Add Circle
-    - Add Cross
-    - Add Starship
 - Select abilities between waves
     - Horizontally moving poppables
         - Pops, shoots a projectile at topmost spirit
@@ -16,4 +11,6 @@ TODO:
         - Pops, creates a wide horizontal band slowmo zone for spirits
     - Magnet zone around 'rang
     - Slowmo zone around 'rang
-
+- Moar Segs!
+    - Add Cross
+    - Add Starship

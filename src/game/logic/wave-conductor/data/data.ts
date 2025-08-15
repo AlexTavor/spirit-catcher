@@ -3,6 +3,7 @@ import { ConfigManager } from "../../../consts/ConfigManager";
 import { TracksUtil } from "./TracksUtil";
 import { allTracks } from "./allTracks";
 import { buildArrow } from "./arrowBuilder";
+import { buildCircle } from "./circleBuilder";
 
 const puffStep = ConfigManager.get().GameWidth / 6;
 const fingersStep = ConfigManager.get().GameWidth / 8;
@@ -121,7 +122,16 @@ const { tracks: arrowLeftTracks, seg: arrowLeftSeg } = buildArrow(
     200,
 );
 
+const { tracks: circleTracks, seg: circleSeg } = buildCircle(
+    "circle", // Unique ID for the circle segment
+    200, // Radius of the circle
+    50, // Speed of the circle
+    10, // Thickness of the circle
+    ConfigManager.get().GameWidth / 2, // Center x-coordinate
+);
+
 allTracks.push(...arrowLeftTracks);
+allTracks.push(...circleTracks);
 
 const { tracks: zigZagMirrorTracks, seg: zigZagMirrorSeg } =
     TracksUtil.mirror(zigZag);
@@ -176,4 +186,5 @@ export const allSegs: SegDefinition[] = [
     thinSnakeMirrorSeg,
     arrowLeftSeg,
     arrowRightSeg,
+    circleSeg,
 ];
