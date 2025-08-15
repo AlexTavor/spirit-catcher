@@ -14,6 +14,7 @@ import { Component } from "../core/ECS";
 import { KeyframeUtil } from "./KeyframeUtil";
 import { allCurves, allSegs, allTracks } from "./data";
 import { ConfigManager } from "../../consts/ConfigManager";
+import { ThreatCalculator } from "./ThreatCalculator";
 
 // --- State Management Components ---
 
@@ -69,21 +70,56 @@ export class WaveConductorSystem extends System {
     }
 
     private startNewWave(conductorState: ActiveConductorState): void {
+        // --- Reset state for the new wave ---
         conductorState.waveTime = 0;
         conductorState.currentSegIndex = -1;
-
-        // Roll for a difficulty curve (for now, just pick the first one)
-        conductorState.difficultyCurve = allCurves[0];
-        // Roll for segments until the wave duration is met
         conductorState.activeSegs = [];
-        let currentDuration = 0;
-        while (
-            currentDuration < conductorState.difficultyCurve.waveDuration &&
-            allSegs.length > 0
-        ) {
-            const seg = allSegs[Math.floor(Math.random() * allSegs.length)];
-            conductorState.activeSegs.push(seg);
-            currentDuration += seg.duration;
+
+        // --- Calculate Threat Budget ---
+        const config = ConfigManager.get();
+        const lvl = getLevelState(this.ecs);
+        const waveNumber = lvl?.waveNumber || 0;
+        const totalThreatBudget =
+            config.BaseThreat + waveNumber * config.ThreatBudgetIncreaseFactor;
+        let spentThreat = 0;
+
+        // --- Pre-calculate segment threats for efficiency ---
+        const segsWithThreat = allSegs
+            .map((seg) => ({
+                seg,
+                threat: ThreatCalculator.calculateSegThreat(seg),
+            }))
+            .filter((s) => s.threat > 0); // Exclude zero-threat segments
+
+        if (segsWithThreat.length === 0) return; // No segments to choose from
+
+        // console.log the threat budget and segments
+        console.log(
+            `Starting wave ${waveNumber} with threat budget: ${totalThreatBudget}`,
+            segsWithThreat.map((s) => `${Math.round(s.threat)} ${s.seg.segId}`),
+        );
+
+        const minThreat = Math.min(...segsWithThreat.map((s) => s.threat));
+
+        // --- Spend budget on segments ---
+        while (totalThreatBudget - spentThreat >= minThreat) {
+            const remainingBudget = totalThreatBudget - spentThreat;
+            const affordableSegs = segsWithThreat.filter(
+                (s) => s.threat <= remainingBudget,
+            );
+
+            if (affordableSegs.length === 0) {
+                break; // No affordable segments left
+            }
+
+            // Select a random affordable segment (ignoring rarity for now)
+            const selected =
+                affordableSegs[
+                    Math.floor(Math.random() * affordableSegs.length)
+                ];
+
+            conductorState.activeSegs.push(selected.seg);
+            spentThreat += selected.threat;
         }
     }
 

@@ -1,11 +1,20 @@
 TODO:
+- Moar Segs!
+    - Add seg mirroring
+    - Add ShortSnake (high amplitude snake)
+    - Add Circle
+    - Add Cross
+    - Add Starship
 - Select abilities between waves
-    - Exploding projectiles
-        - Move explosion to command
     - Horizontally moving poppables
         - Pops, shoots a projectile at topmost spirit
         - Explodes, popping all spirits in radius
         - Pops, producing vertical shot (up and down)
+    - Wall crawlers
+        - Explodes, popping all spirits in radius
+        - Pops, creates a temporary laser that pops spirits on impact
+        - Pops, shoots a projectile at topmost spirit
+        - Pops, creates a wide horizontal band slowmo zone for spirits
     - Magnet zone around 'rang
     - Slowmo zone around 'rang
 

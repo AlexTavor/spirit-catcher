@@ -9,6 +9,8 @@ const DEFAULTS = {
     LevelTransitionDuration: 2000, // ms
     WaveNumberSpawnMultiplier: 0.05, // Multiplier for spawn rate increase per wave
     WaveNumberYVelocityIncrease: 5, // Increase in yVelocity per wave
+    BaseThreat: 36, // The baseline threat budget for wave 1
+    ThreatBudgetIncreaseFactor: 4, // How much the budget increases per wave
 
     // --- Player Config --- //
     PlayerHeight: 128,
