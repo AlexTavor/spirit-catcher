@@ -11,6 +11,7 @@ import { SpiritSpawnState } from "../spirits/components/SpiritSpawnState";
 import { GameState } from "./GameState";
 import { CommandBus } from "../../api/CommandBus";
 import { GameCommands } from "../../consts/GameCommands";
+import { getUpgradesState } from "../../utils/getUpgradesState";
 
 /**
  * Handles the side-effects of game state transitions, such as resetting the game.
@@ -131,6 +132,10 @@ export class LevelTransitionSystem extends System {
         for (const state of spawnStates) {
             this.ecs.removeEntity(state);
         }
+
+        // Clean up upgrades
+        const up = getUpgradesState(this.ecs);
+        up.upgrades = {};
     }
 
     public update(): void {

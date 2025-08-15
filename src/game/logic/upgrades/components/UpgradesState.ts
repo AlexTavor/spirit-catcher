@@ -9,7 +9,7 @@ const AbilitiesTriggeringQuickFalling = [
 export class UpgradesState extends Component {
     public upgrades: Partial<Record<PlayerUpgradeType, number>> = {
         [PlayerUpgradeType.CAUGHT_RANG_PROJECTILE]: 0,
-        [PlayerUpgradeType.CAUGHT_RANG_EXPLOSION]: 1,
+        [PlayerUpgradeType.CAUGHT_RANG_EXPLOSION]: 0,
     };
 
     public get hasQuickFalling(): boolean {
