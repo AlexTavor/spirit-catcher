@@ -1,9 +1,12 @@
-import { buildTrack } from "./data";
+// src/game/logic/wave-conductor/TracksUtil.ts
+
+import { ConfigManager } from "../../consts/ConfigManager";
+import { allTracks, buildTrack } from "./data";
 import {
+    Keyframe,
     SegDefinition,
     TrackDefinition,
     TrackProperties,
-    Keyframe,
 } from "./types";
 
 type StaggerableValue<T> = T | ((step: number) => T);
@@ -30,20 +33,17 @@ export class TracksUtil {
         rarity: number = 10,
     ): { tracks: TrackDefinition[]; seg: SegDefinition } {
         const tracks: TrackDefinition[] = [];
-
         for (let i = 0; i < count; i++) {
             const trackId = `${idBase}_${i}`;
             const overrides: Partial<TrackDefinition["properties"]> = {};
 
             // Apply stagger values
             TracksUtil.applyStaggeredOverrides(staggerConfig, overrides, i);
-
             // Handle trackVolume
             overrides.trackVolume = TracksUtil.generateVolumeKeyframes(
                 i,
                 staggerConfig,
             );
-
             tracks.push(buildTrack(trackId, prefabId, overrides));
         }
 
@@ -56,8 +56,51 @@ export class TracksUtil {
             ),
             rarity,
         };
-
         return { tracks, seg };
+    }
+
+    /**
+     * Mirrors a segment horizontally.
+     * @param seg The segment definition to mirror.
+     * @returns An object containing the new mirrored tracks and the new mirrored segment.
+     */
+    public static mirror(seg: SegDefinition): {
+        tracks: TrackDefinition[];
+        seg: SegDefinition;
+    } {
+        const mirroredTracks: TrackDefinition[] = [];
+        const gameWidth = ConfigManager.get().GameWidth;
+
+        const mirroredSeg: SegDefinition = {
+            ...seg,
+            segId: `${seg.segId}_mirror`,
+            trackIds: [],
+        };
+
+        for (const trackId of seg.trackIds) {
+            const originalTrack = allTracks.find((t) => t.trackId === trackId);
+            if (originalTrack) {
+                // Deep copy the track to avoid modifying the original
+                const newTrack = JSON.parse(
+                    JSON.stringify(originalTrack),
+                ) as TrackDefinition;
+
+                newTrack.trackId = `${originalTrack.trackId}_mirror`;
+                mirroredSeg.trackIds.push(newTrack.trackId);
+
+                // Mirror the spawnX keyframe values
+                newTrack.properties.spawnX = newTrack.properties.spawnX.map(
+                    (kf) => ({
+                        ...kf,
+                        value: gameWidth - kf.value,
+                    }),
+                );
+
+                mirroredTracks.push(newTrack);
+            }
+        }
+
+        return { tracks: mirroredTracks, seg: mirroredSeg };
     }
 
     private static applyStaggeredOverrides(

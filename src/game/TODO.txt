@@ -1,7 +1,6 @@
 TODO:
 - Moar Segs!
-    - Add seg mirroring
-    - Add ShortSnake (high amplitude snake)
+    - Add ThinSnake (high amplitude snake)
     - Add Circle
     - Add Cross
     - Add Starship

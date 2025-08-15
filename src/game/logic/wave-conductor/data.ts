@@ -156,6 +156,43 @@ const { tracks: fingersTracks, seg: fingersSeg } = TracksUtil.buildStaggered(
     60, // Rarity
 );
 
+const thinLine: SegDefinition = {
+    segId: "warmup",
+    duration: 5, // seconds
+    rarity: 10,
+    trackIds: ["steadyStream"],
+};
+const wallAttack: SegDefinition = {
+    segId: "wallAttack",
+    duration: 4,
+    rarity: 20,
+    trackIds: ["wideWall"],
+};
+const parallelLines: SegDefinition = {
+    segId: "parallelLines",
+    duration: 6,
+    rarity: 30,
+    trackIds: ["pincerLeft", "pincerRight"],
+};
+const zigZag: SegDefinition = {
+    segId: "zigZag",
+    duration: 8,
+    rarity: 20,
+    trackIds: ["weavingStream"],
+};
+const fatSnake: SegDefinition = {
+    segId: "fatSnake",
+    duration: 13,
+    rarity: 10,
+    trackIds: ["fatSnake"],
+};
+const wallBounce: SegDefinition = {
+    segId: "wallBounce",
+    duration: 13,
+    rarity: 10,
+    trackIds: ["wallBounce"],
+};
+
 export const allTracks: TrackDefinition[] = [
     buildTrack("steadyStream", "stream", {}),
     buildTrack("fastStream", "stream", {
@@ -243,49 +280,49 @@ export const allTracks: TrackDefinition[] = [
     ...fingersTracks,
 ];
 
+const { tracks: zigZagMirrorTracks, seg: zigZagMirrorSeg } =
+    TracksUtil.mirror(zigZag);
+const { tracks: puffSlowMirrorTracks, seg: puffSlowMirrorSeg } =
+    TracksUtil.mirror(puffSlowSeg);
+const { tracks: puffQuickMirrorTracks, seg: puffQuickMirrorSeg } =
+    TracksUtil.mirror(puffQuickSeg);
+const { tracks: fingersMirrorTracks, seg: fingersMirrorSeg } =
+    TracksUtil.mirror(fingersSeg);
+const { tracks: wallBounceMirrorTracks, seg: wallBounceMirrorSeg } =
+    TracksUtil.mirror(wallBounce);
+const { tracks: fatSnakeMirrorTracks, seg: fatSnakeMirrorSeg } =
+    TracksUtil.mirror(fatSnake);
+
+export const allTracksWithMirrors: TrackDefinition[] = [
+    ...zigZagMirrorTracks,
+    ...puffSlowMirrorTracks,
+    ...puffQuickMirrorTracks,
+    ...fingersMirrorTracks,
+    ...wallBounceMirrorTracks,
+    ...fatSnakeMirrorTracks,
+];
+
+allTracks.push(...allTracksWithMirrors);
+
 // --- SEGMENTS ---
 // Compositions of tracks that represent a gameplay "moment".
 
 export const allSegs: SegDefinition[] = [
-    {
-        segId: "warmup",
-        duration: 5, // seconds
-        rarity: 10,
-        trackIds: ["steadyStream"],
-    },
-    {
-        segId: "wallAttack",
-        duration: 4,
-        rarity: 20,
-        trackIds: ["wideWall"],
-    },
-    {
-        segId: "pincerAttack",
-        duration: 6,
-        rarity: 30,
-        trackIds: ["pincerLeft", "pincerRight"],
-    },
-    {
-        segId: "weaving",
-        duration: 8,
-        rarity: 20,
-        trackIds: ["weavingStream"],
-    },
-    {
-        segId: "fatSnake",
-        duration: 13,
-        rarity: 10,
-        trackIds: ["fatSnake"],
-    },
-    {
-        segId: "wallBounce",
-        duration: 13,
-        rarity: 10,
-        trackIds: ["wallBounce"],
-    },
+    thinLine,
+    wallAttack,
+    parallelLines,
+    zigZag,
+    fatSnake,
+    wallBounce,
     puffSlowSeg,
     puffQuickSeg,
     fingersSeg,
+    zigZagMirrorSeg,
+    puffSlowMirrorSeg,
+    puffQuickMirrorSeg,
+    fingersMirrorSeg,
+    wallBounceMirrorSeg,
+    fatSnakeMirrorSeg,
 ];
 
 // --- DIFFICULTY CURVES ---
